@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('adresse');
             $table->string('telephone');
             $table->string('image')->nullable();
-            $table->enum('etat', ['actif', 'bloque', 'supprime'])->default('actif');
+            $table->enum('etat', ['actif', 'bloqué', 'supprimé'])->default('actif');
             $table->string('motif')->nullable();
             $table->string('email')->unique();
             $table->foreignIdFor(Role::class)->constrained()->cascadeOnDelete();

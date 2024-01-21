@@ -5,8 +5,9 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 
-class StoreAdminSystemRequest extends FormRequest
+class StoreUserRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -16,10 +17,13 @@ class StoreAdminSystemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['required', 'max:20', "string"],
-            'prenom' => ['required', 'max:50', "string"],
-            'email' => ["nullable", 'unique:admin_systems', 'max:255'],
-            'password' => ['required', 'confirmed'],
+            'nom' => ['required', 'max:30', "string"],
+            'prenom' => ['required', 'max:60', "string"],
+            "adresse" => ['required', 'max:100', "string"],
+            "telephone" => ['required', 'max:60', "integer"],
+            "image" => "image|sometimes",
+            "email" => "required|email|unique:users",
+            'password' => [PasswordRule::default(), 'confirmed'],
         ];
     }
 

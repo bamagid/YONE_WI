@@ -6,8 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreAdminSystemRequest extends FormRequest
+class LoginUserRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     /**
      * Get the validation rules that apply to the request.
      *
@@ -16,9 +19,7 @@ class StoreAdminSystemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['required', 'max:20', "string"],
-            'prenom' => ['required', 'max:50', "string"],
-            'email' => ["nullable", 'unique:admin_systems', 'max:255'],
+            'email' => ["email", 'unique:admin_systems', 'max:255'],
             'password' => ['required', 'confirmed'],
         ];
     }
