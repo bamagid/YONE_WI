@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -77,10 +78,17 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             "email" => "required|email",
             "password" => "required"
         ]);
+        if ($validator->fails()) {
+            // return response json
+            return response()->json([
+                "status" => false,
+                "error" => $validator->errors()
+            ]);
+        }
         $token = auth('admin')->attempt($request->only('email', 'password'));
         $user = auth('admin')->user();
         $typeUser = "admin";

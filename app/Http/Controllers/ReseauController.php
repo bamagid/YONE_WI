@@ -44,20 +44,27 @@ class ReseauController extends Controller
 
     public function update(UpdateReseauRequest $request, Reseau $reseau)
     {
-        dd($request->validated());
-        $reseauUpdate = $reseau->update($request->validated());
+        $reseau->update($request->validated());
         return response()->json([
             "message" => "Le reseau a bien été mise a jour",
-            "reseau" => $reseauUpdate
+            "reseau" => $reseau
         ], 200);
     }
 
     public function destroy(Reseau $reseau)
     {
         $reseau->update(['etat' => 'supprimé']);
+        return response()->json([
+            "message" => "Le reseau a bien été supprimé",
+            "reseau" => $reseau
+        ]);
     }
     public function restore(Reseau $reseau)
     {
         $reseau->update(['etat' => 'actif']);
+        return response()->json([
+            "message" => "Le reseau a bien été restauré",
+            "reseau" => $reseau
+        ]);
     }
 }

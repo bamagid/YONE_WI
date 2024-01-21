@@ -16,17 +16,17 @@ class AdminSystemController extends Controller
         $this->middleware('auth:admin');
     }
 
-    public function update(UpdateAdminSystemRequest $request, AdminSystem $adminSystem)
+    public function update(UpdateAdminSystemRequest $request)
     {
-        dd($adminSystem);
-        $adminSystemupdate = $adminSystem->update([
+        $adminSystem = auth()->guard('admin')->user();
+        $adminSystem->update([
             'nom' => $request->nom,
             'prenom' => $request->prenom,
             'password' => Hash::make($request->password),
         ]);
         return response()->json([
             "message" => "information mis a jour avec succés",
-            'adminreseau' => $adminSystemupdate
-        ],);
+            'adminreseau' => $adminSystem
+        ], 200);
     }
 }
