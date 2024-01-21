@@ -8,9 +8,10 @@ use App\Http\Requests\UpdateReseauRequest;
 
 class ReseauController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('auth:admin')->except('index', 'show');
+    }
     public function index()
     {
         $reseaux = Reseau::where('etat', 'actif')->get();
@@ -21,10 +22,6 @@ class ReseauController extends Controller
     }
 
 
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreReseauRequest $request)
     {
 
@@ -35,29 +32,32 @@ class ReseauController extends Controller
         ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Reseau $reseau)
     {
+        dd($reseau);
         return response()->json([
             "message" => "voici le reseau que vous rechercher",
             "reseau" => $reseau
         ], 200);
     }
-    /**
-     * Update the specified resource in storage.
-     */
+
+
     public function update(UpdateReseauRequest $request, Reseau $reseau)
     {
+        dd($request->validated());
         $reseauUpdate = $reseau->update($request->validated());
         return response()->json([
             "message" => "Le reseau a bien été mise a jour",
             "reseau" => $reseauUpdate
         ], 200);
     }
-    public function delete(Reseau $reseau)
+
+    public function destroy(Reseau $reseau)
     {
         $reseau->update(['etat' => 'supprimé']);
+    }
+    public function restore(Reseau $reseau)
+    {
+        $reseau->update(['etat' => 'actif']);
     }
 }

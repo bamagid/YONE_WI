@@ -2,36 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Role;
 use App\Models\User;
+use App\Models\Reseau;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
-    public function store(Request $request)
+    public function __construct()
     {
-        $request->validate(
-            [
-                "nom" => "required",
-                "prenom" => "required",
-                "adresse" => "required",
-                "telephone" => "required",
-                "image" => "image|sometimes",
-                "email" => "required|email|unique:users",
-                "password" => "required"
-            ]
-        );
+        $this->middleware('multiauth')->except('store', 'login');
+    }
+    public function store(StoreUserRequest $request)
+    {
+        Role::FindOrFail($request->role_id);
+        Reseau::FindOrFail($request->reseau_id);
 
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('images', $imageName, 'public');
+        }
         $user = User::create([
             "nom" => $request->nom,
             "prenom" => $request->prenom,
             "adresse" => $request->adresse,
             "telephone" => $request->telephone,
             "email" => $request->email,
-            "role_id" => 1,
-            "reseau_id" => 1,
+            "role_id" => $request->role_id,
+            "image" => $imagePath,
+            "reseau_id" => $request->reseau_id,
             "password" => Hash::make($request->password)
         ]);
         return response()->json([
@@ -40,52 +46,56 @@ class UserController extends Controller
             "user" => $user
         ], 201);
     }
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $request->validate(
-            [
-                "nom" => "required",
-                "prenom" => "required",
-                "adresse" => "required",
-                "telephone" => "required",
-                "image" => "image|sometimes",
-                "email" => "required|email|unique:users",
-                "password" => "required"
-            ]
-        );
+        $imagePath = null;
+        if ($request->file('image')) {
 
+            if (File::exists(public_path($user->image))) {
+                File::delete(public_path($user->image));
+            }
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('images', $imageName, 'public');
+        }
+        dd($request);
         $user->update([
             "nom" => $request->nom,
             "prenom" => $request->prenom,
             "adresse" => $request->adresse,
             "telephone" => $request->telephone,
             "email" => $request->email,
+            "image" => $imagePath,
             "password" => Hash::make($request->password)
         ]);
         return response()->json([
             "status" => true,
-            "message" => "Bienvenue dans la communauté ",
+            "message" => "Modification effectué avec succés",
             "user" => $user
         ], 201);
     }
 
     public function login(Request $request)
     {
-
         $request->validate([
             "email" => "required|email",
             "password" => "required"
         ]);
-        $token = JWTAuth::attempt([
-            "email" => $request->email,
-            "password" => $request->password
-        ]);
-
+        $token = auth('admin')->attempt($request->only('email', 'password'));
+        $user = auth('admin')->user();
+        $typeUser = "admin";
+        if (empty($token)) {
+            $token = auth('api')->attempt($request->only('email', 'password'));
+            $user = auth('api')->user();
+            $typeUser = "utilisateur";
+        }
         if (!empty($token)) {
 
             return response()->json([
                 "status" => true,
-                "message" => "Bienvenue dans votre espace ",
+                "type" => $typeUser,
+                "message" => "Bienvenue dans votre espace personnele, vous êtes connecté en tant qu'$typeUser ",
+                "user" => $user,
                 "token" => $token
             ], 200);
         }
@@ -98,9 +108,10 @@ class UserController extends Controller
 
     public function profile()
     {
-
-        $user = auth()->user();
-
+        $user = auth('api')->user();
+        if ($user === null) {
+            $user = auth('admin')->user();
+        }
         return response()->json([
             "status" => true,
             "message" => "Informations de profil",
@@ -111,9 +122,10 @@ class UserController extends Controller
 
     public function refreshToken()
     {
-
-        $nouveauToken = auth()->refresh();
-
+        $nouveauToken = auth('api')->user();
+        if ($nouveauToken === null) {
+            $nouveauToken = auth('admin')->user();
+        }
         return response()->json([
             "status" => true,
             "message" => "Votre nouveau token",
@@ -124,12 +136,24 @@ class UserController extends Controller
 
     public function logout()
     {
-
-        auth()->logout();
-
+        if (auth('admin')->check()) {
+            auth('admin')->logout();
+        } elseif (auth('api')->check()) {
+            auth('api')->logout();
+        }
         return response()->json([
             "status" => true,
             "message" => "Utilisateur deconnecté avec succés"
         ], 200);
+    }
+    public function destroy(User $user)
+    {
+        $user->update(["etat" => "supprimé"]);
+        return response()->json(["Le user a bien été supprimé"]);
+    }
+    public function changerEtat(User $user)
+    {
+        $user->update(['etat' => $user->etat === 'actif' ? 'bloqué' : 'actif']);
+        return response()->json(["Le user a bien été restoré"]);
     }
 }

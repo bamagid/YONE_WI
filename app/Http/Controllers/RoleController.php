@@ -8,20 +8,17 @@ use App\Http\Requests\UpdateRoleRequest;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('auth:admin');
+    }
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $roles = Role::all();
+        return response()->json([
+            "message" => "La liste des roles disponible",
+            "roles" => $roles
+        ]);
     }
 
     /**
@@ -37,34 +34,33 @@ class RoleController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Role $role)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Role $role)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
-        //
+        $roleupdate = $role->update($request->validated());
+        if ($roleupdate) {
+            return response()->json([
+                'message' => 'Mise à jour réussie !'
+            ], 200);
+        } else {
+            return response()->json(['message' => 'Une erreur est survenue lors de la mise a jour']);
+        }
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Role $role)
     {
-        //
+        $role->update(["etat" => "supprimé"]);
+        return response()->json([
+            "message" => "Le role a bien été supprimé",
+            "role" => $role
+        ]);
+    }
+    public function restore(Role $role)
+    {
+        $role->update(["etat" => "actif"]);
+        return response()->json([
+            "message" => "Le role a bien été restauré",
+            "role" => $role
+        ]);
     }
 }
