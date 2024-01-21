@@ -2,16 +2,25 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Auth\Middleware\Authenticate as Middleware;
-use Illuminate\Http\Request;
+use Closure;
+use Illuminate\Contracts\Auth\Factory as Auth;
 
-class Authenticate extends Middleware
+class Authenticate
 {
-    /**
-     * Get the path the user should be redirected to when they are not authenticated.
-     */
-    protected function redirectTo(Request $request): ?string
+    protected $auth;
+
+    public function __construct(Auth $auth)
     {
-        return $request->expectsJson() ? null : route('login');
+        $this->auth = $auth;
+    }
+
+    public function handle($request, Closure $next, $guard)
+    {
+        if ($this->auth->guard($guard)->check()) {
+            return $next($request);
+        }
+        return response()->json([
+            'error' => 'Veuillez vous connecter d\'abord puis fournir un token pour accéder à cette route.'
+        ], 401);
     }
 }
