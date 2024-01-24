@@ -5,10 +5,17 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Validation\Rules\Password as PasswordRule;
 
-class StoreUserRequest extends FormRequest
+class LigneRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -18,12 +25,10 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'nom' => ['required', 'max:30', "string"],
-            'prenom' => ['required', 'max:60', "string"],
-            "adresse" => ['required', 'max:100', "string"],
-            "telephone" => ['required', "integer"],
-            "image" => "image|sometimes",
-            "email" => "required|email|unique:users",
-            'password' => [PasswordRule::default(), 'confirmed'],
+            "type",
+            "etat",
+            "lieuxDepart",
+            "lieuxArrivee"
         ];
     }
 

@@ -34,7 +34,6 @@ class ReseauController extends Controller
 
     public function show(Reseau $reseau)
     {
-        dd($reseau);
         return response()->json([
             "message" => "voici le reseau que vous rechercher",
             "reseau" => $reseau

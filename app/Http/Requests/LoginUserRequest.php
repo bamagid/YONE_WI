@@ -19,8 +19,8 @@ class LoginUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ["email", 'unique:admin_systems', 'max:255'],
-            'password' => ['required', 'confirmed'],
+            'email' => ["email", 'max:255'],
+            'password' => ['required', 'string'],
         ];
     }
 

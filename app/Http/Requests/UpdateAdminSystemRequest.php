@@ -19,7 +19,7 @@ class UpdateAdminSystemRequest extends FormRequest
         return [
             'nom' => ['required', 'max:30', "string"],
             'prenom' => ['required', 'max:100', "string"],
-            'email' => ["nullable", 'unique:admin_systems', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . auth()->id()],
             'password' => [PasswordRule::default(), 'confirmed'],
         ];
     }

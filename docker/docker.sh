@@ -1,7 +1,7 @@
 sleep 10
 php artisan key:generate
+php artisan jwt:secret
+php artisan optimize:clear
 php artisan migrate --force
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+php artisan db:seed
 apache2-foreground

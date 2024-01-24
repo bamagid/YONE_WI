@@ -26,7 +26,7 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request)
     {
-        $role = Role::create(["nom" => $request->nom]);
+        $role = Role::create($request->validated());
         return response()->json([
             "message" => "Le role a bien été crée",
             "role" => $role
@@ -38,14 +38,11 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
-        $roleupdate = $role->update($request->validated());
-        if ($roleupdate) {
-            return response()->json([
-                'message' => 'Mise à jour réussie !'
-            ], 200);
-        } else {
-            return response()->json(['message' => 'Une erreur est survenue lors de la mise a jour']);
-        }
+        $role->update($request->validated());
+        return response()->json([
+            'message' => 'Role mise à jour avec succés !',
+            "role" => $role
+        ], 200);
     }
     public function destroy(Role $role)
     {

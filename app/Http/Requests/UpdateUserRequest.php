@@ -18,12 +18,12 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "nom" => ['nullable', 'max:30', "string"],
-            "prenom" => ['nullable', 'max:60', "string"],
-            "adresse" => ['nullable', 'max:30', "string"],
-            "telephone" => ['nullable', 'max:30', "string"],
+            "nom" => ['required', 'max:30', "string"],
+            "prenom" => ['required', 'max:60', "string"],
+            "adresse" => ['required', 'max:30', "string"],
+            "telephone" => ['required', "string"],
             "image" => "sometimes",
-            "email" => "nullable|email|unique:users",
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . auth()->id()],
             'password' => [PasswordRule::default(), 'confirmed'],
         ];
     }

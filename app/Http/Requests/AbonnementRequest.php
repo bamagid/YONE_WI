@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateRoleRequest extends FormRequest
+class AbonnementRequest extends FormRequest
 {
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -17,11 +17,15 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['required', 'max:20', "string"],
+            'prix' => ['required', 'integer', 'unsigned'], // Prix doit être un entier positif
+            'type' => ['required', 'string'],
+            'duree' => ['required', 'string'],
+            'etat' => ['required', 'string', Rule::in(['actif', 'supprimé'])],
+            'description' => ['nullable', 'string'],
         ];
     }
 
-    public function failedValidation(validator $validator)
+    public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
             'success' => false,
