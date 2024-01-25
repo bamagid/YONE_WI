@@ -8,16 +8,16 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class TarifRequest extends FormRequest
 {
+    public function authorize()
+    {
+        return true;
+    }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    public function rules()
     {
         return [
-            //
+            'prix' => ['required', 'integer'],
+            'type' => ['required', 'string'],
         ];
     }
 
