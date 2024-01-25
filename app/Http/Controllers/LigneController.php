@@ -24,6 +24,11 @@ class LigneController extends Controller
     // Méthode pour afficher une ligne spécifique
     public function show(Ligne $ligne)
     {
+        if ($ligne->etat == "supprimé") {
+            return response()->json([
+                "message" => "No query results for model [App\\Models\\Ligne] $ligne->id"
+            ], 404);
+        }
         return response()->json([
             "message" => "Voici la ligne que vous recherchez",
             "ligne" => $ligne
@@ -50,23 +55,41 @@ class LigneController extends Controller
         ], 200);
     }
 
-    // Méthode pour supprimer une ligne (marquer comme "supprimé")
     public function destroy(Ligne $ligne)
     {
-        $ligne->update(['etat' => 'supprimé']);
+        $ligne->update(['etat' => 'corbeille']);
         return response()->json([
-            "message" => "La ligne a bien été supprimée",
+            "message" => "La ligne a bien été mise dans la  corbeillee",
             "ligne" => $ligne
         ], 200);
     }
 
-    // Méthode pour restaurer une ligne supprimée
     public function restore(Ligne $ligne)
     {
         $ligne->update(['etat' => 'actif']);
         return response()->json([
             "message" => "La ligne a bien été restaurée",
             "ligne" => $ligne
+        ], 200);
+    }
+
+    public function deleted()
+    {
+        $lignesSupprimees = Ligne::where('etat', 'corbeille')->get();
+        return response()->json([
+            "message" => "La liste des lignes qui se trouve dans la corbeille",
+            "lignes" => $lignesSupprimees
+        ], 200);
+    }
+
+    public function emptyTrash()
+    {
+        $lignesSupprimes = Ligne::where('etat', 'corbeille')->get();
+        foreach ($lignesSupprimes as $ligne) {
+            $ligne->update(["etat" => "supprimé"]);
+        }
+        return response()->json([
+            "message" => "La corbeille a été vidée avec succès"
         ], 200);
     }
 }

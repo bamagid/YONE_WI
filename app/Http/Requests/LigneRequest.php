@@ -8,29 +8,22 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class LigneRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    public function rules()
     {
         return [
-            'nom' => ['required', 'max:30', "string"],
-            "type",
-            "etat",
-            "lieuxDepart",
-            "lieuxArrivee"
+            'nom' => ['required', 'string'],
+            'etat' => ['required', 'in:actif,corbeille,supprimé'],
+            'type_id' => ['required', 'exists:types,id'],
+            'lieuDepart' => ['required', 'string'],
+            'lieuArrivee' => ['required', 'string'],
         ];
     }
+
 
     public function failedValidation(validator $validator)
     {
