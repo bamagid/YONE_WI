@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
-use App\Http\Requests\StoreRoleRequest;
-use App\Http\Requests\UpdateRoleRequest;
+use App\Http\Requests\RoleRequest;
 
 class RoleController extends Controller
 {
@@ -21,10 +20,8 @@ class RoleController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreRoleRequest $request)
+
+    public function store(RoleRequest $request)
     {
         $role = Role::create($request->validated());
         return response()->json([
@@ -33,10 +30,8 @@ class RoleController extends Controller
         ], 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateRoleRequest $request, Role $role)
+
+    public function update(RoleRequest $request, Role $role)
     {
         $role->update($request->validated());
         return response()->json([
@@ -46,9 +41,9 @@ class RoleController extends Controller
     }
     public function destroy(Role $role)
     {
-        $role->update(["etat" => "supprimé"]);
+        $role->update(["etat" => "corbeille"]);
         return response()->json([
-            "message" => "Le role a bien été supprimé",
+            "message" => "Le role a bien été mis dans la corbeille",
             "role" => $role
         ]);
     }
@@ -59,5 +54,25 @@ class RoleController extends Controller
             "message" => "Le role a bien été restauré",
             "role" => $role
         ]);
+    }
+
+    public function deleted()
+    {
+        $rolesSupprimes = Role::where('etat', 'corbeille')->get();
+        return response()->json([
+            "message" => "La liste des roles qui sont dans la corbeille ",
+            "roles" => $rolesSupprimes
+        ], 200);
+    }
+
+    public function emptyTrash()
+    {
+        $rolesSupprimes = Role::where('etat', 'corbeille')->get();
+        foreach ($rolesSupprimes as $role) {
+            $role->update(["etat" => "supprimé"]);
+        }
+        return response()->json([
+            "message" => "La corbeille des roles a été vidée avec succès"
+        ], 200);
     }
 }
