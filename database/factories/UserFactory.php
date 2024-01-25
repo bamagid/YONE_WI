@@ -24,11 +24,11 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            "nom" => "magid",
-            "prenom" => "abdoul",
+            "nom" => "Diouf",
+            "prenom" => "Germaine",
             "adresse" => "dakar",
-            "telephone" => "77855224",
-            "email" => "email@gmail.com",
+            "telephone" => "785392600",
+            "email" => "dioufgermainedaba@gmail.com",
             "role_id" => 1,
             "reseau_id" => 1,
             'email_verified_at' => now(),

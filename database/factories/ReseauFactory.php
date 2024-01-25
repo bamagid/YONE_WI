@@ -17,7 +17,7 @@ class ReseauFactory extends Factory
     public function definition(): array
     {
         return [
-            "nom" => "yone_wi"
+            "nom" =>  $this->faker->randomElement(['aftu', 'dakar dem dikk', 'brt']),
         ];
     }
 }

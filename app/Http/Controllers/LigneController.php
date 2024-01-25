@@ -21,7 +21,7 @@ class LigneController extends Controller
         ], 200);
     }
 
-    // Méthode pour afficher une ligne spécifique
+
     public function show(Ligne $ligne)
     {
         if ($ligne->etat == "supprimé") {
@@ -35,7 +35,7 @@ class LigneController extends Controller
         ], 200);
     }
 
-    // Méthode pour créer une nouvelle ligne
+
     public function store(LigneRequest $request)
     {
         $ligne = Ligne::create($request->validated());
@@ -45,7 +45,7 @@ class LigneController extends Controller
         ], 201);
     }
 
-    // Méthode pour mettre à jour une ligne existante
+
     public function update(LigneRequest $request, Ligne $ligne)
     {
         $ligne->update($request->validated());
@@ -76,6 +76,11 @@ class LigneController extends Controller
     public function deleted()
     {
         $lignesSupprimees = Ligne::where('etat', 'corbeille')->get();
+        if (empty($lignesSupprimees)) {
+            return response()->json([
+                "error" => "Il n'y a pas de lignes supprimées"
+            ], 404);
+        }
         return response()->json([
             "message" => "La liste des lignes qui se trouve dans la corbeille",
             "lignes" => $lignesSupprimees
@@ -84,8 +89,13 @@ class LigneController extends Controller
 
     public function emptyTrash()
     {
-        $lignesSupprimes = Ligne::where('etat', 'corbeille')->get();
-        foreach ($lignesSupprimes as $ligne) {
+        $lignesSupprimees = Ligne::where('etat', 'corbeille')->get();
+        if (empty($lignesSupprimees)) {
+            return response()->json([
+                "error" => "Il n'y a pas de lignes supprimées"
+            ], 404);
+        }
+        foreach ($lignesSupprimees as $ligne) {
             $ligne->update(["etat" => "supprimé"]);
         }
         return response()->json([

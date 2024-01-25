@@ -21,7 +21,6 @@ class SectionRequest extends FormRequest
             'etat' => ['required', 'in:actif,corbeille,supprimé'],
             'ligne_id' => ['required', 'exists:ligens,id'],
             'tarif_id' => ['required', 'exists:tarifs,id'],
-            // Ajoutez d'autres règles de validation selon les besoins
         ];
     }
 

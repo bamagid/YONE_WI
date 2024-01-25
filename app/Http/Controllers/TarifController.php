@@ -70,6 +70,11 @@ class TarifController extends Controller
     public function deleted()
     {
         $tarifsSupprimes = Tarif::where('etat', 'corbeille')->get();
+        if (empty($tarifsSupprimes)) {
+            return response()->json([
+                "error" => "Il n'y a pas de tarifs supprimés"
+            ], 404);
+        }
         return response()->json([
             "message" => "La liste des tarifs qui sont dans la corbeille",
             "tarifs" => $tarifsSupprimes
@@ -79,6 +84,11 @@ class TarifController extends Controller
     public function emptyTrash()
     {
         $tarifsSupprimes = Tarif::where('etat', 'corbeille')->get();
+        if (empty($tarifsSupprimes)) {
+            return response()->json([
+                "error" => "Il n'y a pas de tarifs supprimés"
+            ], 404);
+        }
         foreach ($tarifsSupprimes as $tarif) {
             $tarif->update(["etat" => "supprimé"]);
         }

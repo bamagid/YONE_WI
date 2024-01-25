@@ -59,6 +59,11 @@ class RoleController extends Controller
     public function deleted()
     {
         $rolesSupprimes = Role::where('etat', 'corbeille')->get();
+        if (empty($rolesSupprimes)) {
+            return response()->json([
+                "error" => "Il n'y a pas de lignes supprimés"
+            ], 404);
+        }
         return response()->json([
             "message" => "La liste des roles qui sont dans la corbeille ",
             "roles" => $rolesSupprimes
@@ -68,6 +73,11 @@ class RoleController extends Controller
     public function emptyTrash()
     {
         $rolesSupprimes = Role::where('etat', 'corbeille')->get();
+        if (empty($rolesSupprimes)) {
+            return response()->json([
+                "error" => "Il n'y a pas de lignes supprimés"
+            ], 404);
+        }
         foreach ($rolesSupprimes as $role) {
             $role->update(["etat" => "supprimé"]);
         }

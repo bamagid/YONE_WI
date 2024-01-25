@@ -68,6 +68,11 @@ class AbonnementController extends Controller
     public function deleted()
     {
         $abonnementsSupprimes = Abonnement::where('etat', 'corbeille')->get();
+        if (empty($abonnementsSupprimes)) {
+            return response()->json([
+                "error" => "Il n'y a pas de abonnements supprimés"
+            ], 404);
+        }
         return response()->json([
             "message" => "La liste des abonnements qui se trouvent dans la corbeille",
             "abonnements" => $abonnementsSupprimes
@@ -77,6 +82,11 @@ class AbonnementController extends Controller
     public function emptyTrash()
     {
         $abonnementsSupprimes = Abonnement::where('etat', 'corbeille')->get();
+        if (empty($abonnementsSupprimes)) {
+            return response()->json([
+                "error" => "Il n'y a pas de abonnements supprimés"
+            ], 404);
+        }
         foreach ($abonnementsSupprimes as $abonnement) {
             $abonnement->update(["etat" => "supprimé"]);
         }

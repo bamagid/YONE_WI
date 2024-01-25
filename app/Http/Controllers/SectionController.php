@@ -9,7 +9,7 @@ class SectionController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:admin')->except('index', 'show');
+        $this->middleware('auth:api')->except('index', 'show');
     }
 
 
@@ -77,6 +77,11 @@ class SectionController extends Controller
     public function deleted()
     {
         $sectionsSupprimees = Section::where('etat', 'corbeille')->get();
+        if (empty($sectionsSupprimees)) {
+            return response()->json([
+                "error" => "Il n'y a pas de sections supprimées"
+            ], 404);
+        }
         return response()->json([
             "message" => "La liste des sections qui sont misent dans la corbeille",
             "sections" => $sectionsSupprimees
@@ -85,9 +90,13 @@ class SectionController extends Controller
 
     public function emptyTrash()
     {
-        dd('pas vraie');
-        $sectionsSupprimes = Section::where('etat', 'corbeille')->get();
-        foreach ($sectionsSupprimes as $section) {
+        $sectionsSupprimees = Section::where('etat', 'corbeille')->get();
+        if (empty($sectionsSupprimees)) {
+            return response()->json([
+                "error" => "Il n'y a pas de sections supprimées"
+            ], 404);
+        }
+        foreach ($sectionsSupprimees as $section) {
             $section->update(["etat" => "supprimé"]);
         }
         return response()->json([

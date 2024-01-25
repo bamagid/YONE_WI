@@ -70,6 +70,11 @@ class TypeController extends Controller
     public function deleted()
     {
         $typesSupprimes = Type::where('etat', 'corbeille')->get();
+        if (empty($typesSupprimes)) {
+            return response()->json([
+                "error" => "Il n'y a pas de types supprimés"
+            ], 404);
+        }
         return response()->json([
             "message" => "La liste des types qui sont dans la corbeille",
             "types" => $typesSupprimes
@@ -79,6 +84,11 @@ class TypeController extends Controller
     public function emptyTrash()
     {
         $typesSupprimes = Type::where('etat', 'corbeille')->get();
+        if (empty($typesSupprimes)) {
+            return response()->json([
+                "error" => "Il n'y a pas de types supprimés"
+            ], 404);
+        }
         foreach ($typesSupprimes as $type) {
             $type->update(["etat" => "supprimé"]);
         }

@@ -73,6 +73,11 @@ class ReseauController extends Controller
     public function deleted()
     {
         $reseauxSupprimes = Reseau::where('etat', 'corbeille')->get();
+        if (empty($reseauxSupprimes)) {
+            return response()->json([
+                "error" => "Il n'y a pas de réseaux supprimés"
+            ], 404);
+        }
         return response()->json([
             "message" => "La liste des reseaux quui son dans la corbeilles",
             "reseaux" => $reseauxSupprimes
@@ -82,6 +87,11 @@ class ReseauController extends Controller
     public function emptyTrash()
     {
         $reseausSupprimes = Reseau::where('etat', 'corbeille')->get();
+        if (empty($reseausSupprimes)) {
+            return response()->json([
+                "error" => "Il n'y a pas de réseaux supprimés"
+            ], 404);
+        }
         foreach ($reseausSupprimes as $reseau) {
             $reseau->update(["etat" => "supprimé"]);
         }

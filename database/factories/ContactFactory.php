@@ -17,7 +17,11 @@ class ContactFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'email' => $this->faker->safeEmail,
+            'sujet' => $this->faker->sentence(5),
+            'contenu' => $this->faker->paragraph(3),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }
