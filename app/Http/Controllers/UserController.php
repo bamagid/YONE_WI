@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Reseau;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreUserRequest;
@@ -43,7 +44,6 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         $user->fill($request->validated());
-        $user->password = Hash::make($request->get('password'));
         $imagePath = null;
         if ($request->file('image')) {
 
@@ -63,19 +63,8 @@ class UserController extends Controller
         ], 201);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            "email" => "required|email",
-            "password" => "required"
-        ]);
-        if ($validator->fails()) {
-            // return response json
-            return response()->json([
-                "status" => false,
-                "error" => $validator->errors()
-            ]);
-        }
         $token = auth('admin')->attempt($request->only('email', 'password'));
         $user = auth('admin')->user();
         $typeUser = "admin";
@@ -84,7 +73,7 @@ class UserController extends Controller
             $user = auth('api')->user();
             $typeUser = "utilisateur";
         }
-        if (!empty($token)) {
+        if (!empty($token) && (empty($user->etat) || $user->etat == "actif")) {
 
             return response()->json([
                 "status" => true,
@@ -93,7 +82,14 @@ class UserController extends Controller
                 "user" => $user,
                 "token" => $token
             ], 200);
+        } elseif (!empty($user->etat) &&  $user->etat == "bloqué") {
+            return response()->json([
+                "status" => false,
+                "message" => "Votre compte a été bloqué par l'administrateur",
+                "motif" => $user->motif
+            ]);
         }
+
 
         return response()->json([
             "status" => false,
