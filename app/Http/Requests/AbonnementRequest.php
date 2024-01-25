@@ -9,6 +9,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class AbonnementRequest extends FormRequest
 {
+
     /**
      * Get the validation rules that apply to the request.
      *
