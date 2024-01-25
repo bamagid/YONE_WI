@@ -7,7 +7,6 @@ use App\Http\Requests\AbonnementRequest;
 
 class AbonnementController extends Controller
 {
-    // Méthode pour afficher tous les abonnements
     public function index()
     {
         $abonnements = Abonnement::where('etat', 'actif')->get();
@@ -17,16 +16,19 @@ class AbonnementController extends Controller
         ], 200);
     }
 
-    // Méthode pour afficher un abonnement spécifique
     public function show(Abonnement $abonnement)
     {
+        if ($abonnement->etat == "supprimé") {
+            return response()->json([
+                "message" => "No query results for model [App\\Models\\Abonnement] $abonnement->id"
+            ], 404);
+        }
         return response()->json([
             "message" => "Voici l'abonnement que vous recherchez",
             "abonnement" => $abonnement
         ], 200);
     }
 
-    // Méthode pour créer un nouvel abonnement
     public function store(AbonnementRequest $request)
     {
         $abonnement = Abonnement::create($request->validated());
@@ -36,7 +38,6 @@ class AbonnementController extends Controller
         ], 201);
     }
 
-    // Méthode pour mettre à jour un abonnement existant
     public function update(AbonnementRequest $request, Abonnement $abonnement)
     {
         $abonnement->update($request->validated());
@@ -46,17 +47,15 @@ class AbonnementController extends Controller
         ], 200);
     }
 
-    // Méthode pour supprimer un abonnement (marquer comme "supprimé")
     public function destroy(Abonnement $abonnement)
     {
-        $abonnement->update(['etat' => 'supprimé']);
+        $abonnement->update(['etat' => 'corbeille']);
         return response()->json([
-            "message" => "L'abonnement a bien été supprimé",
+            "message" => "L'abonnement a bien été mis dans la corbeille",
             "abonnement" => $abonnement
         ]);
     }
 
-    // Méthode pour restaurer un abonnement supprimé
     public function restore(Abonnement $abonnement)
     {
         $abonnement->update(['etat' => 'actif']);
@@ -64,5 +63,25 @@ class AbonnementController extends Controller
             "message" => "L'abonnement a bien été restauré",
             "abonnement" => $abonnement
         ]);
+    }
+
+    public function deleted()
+    {
+        $abonnementsSupprimes = Abonnement::where('etat', 'corbeille')->get();
+        return response()->json([
+            "message" => "La liste des abonnements qui se trouvent dans la corbeille",
+            "abonnements" => $abonnementsSupprimes
+        ], 200);
+    }
+
+    public function emptyTrash()
+    {
+        $abonnementsSupprimes = Abonnement::where('etat', 'corbeille')->get();
+        foreach ($abonnementsSupprimes as $abonnement) {
+            $abonnement->update(["etat" => "supprimé"]);
+        }
+        return response()->json([
+            "message" => "La corbeille a été vidée avec succès"
+        ], 200);
     }
 }

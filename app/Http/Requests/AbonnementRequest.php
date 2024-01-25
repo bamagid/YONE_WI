@@ -20,7 +20,6 @@ class AbonnementRequest extends FormRequest
             'prix' => ['required', 'integer', 'unsigned'], // Prix doit être un entier positif
             'type' => ['required', 'string'],
             'duree' => ['required', 'string'],
-            'etat' => ['required', 'string', Rule::in(['actif', 'supprimé'])],
             'description' => ['nullable', 'string'],
         ];
     }
