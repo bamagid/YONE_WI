@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class NewsletterRequest extends FormRequest
 {
@@ -24,5 +26,14 @@ class NewsletterRequest extends FormRequest
         return [
             "email" => ['required', 'email', 'required']
         ];
+    }
+
+    public function failedValidation(validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'success' => false,
+            'status_code' => 422,
+            'errors' => $validator->errors()
+        ]));
     }
 }
