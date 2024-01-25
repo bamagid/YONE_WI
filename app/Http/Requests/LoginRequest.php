@@ -5,10 +5,12 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Validation\Rules\Password as PasswordRule;
 
-class UpdateAdminSystemRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     /**
      * Get the validation rules that apply to the request.
      *
@@ -17,10 +19,8 @@ class UpdateAdminSystemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['required', 'max:30', "string"],
-            'prenom' => ['required', 'max:100', "string"],
-            'email' => ['nullale', 'email', 'max:255', 'unique:admin_systems,email'],
-            'password' => ['nullable', PasswordRule::default(), 'confirmed'],
+            'email' => ["email", 'max:255'],
+            'password' => ['required', 'string'],
         ];
     }
 

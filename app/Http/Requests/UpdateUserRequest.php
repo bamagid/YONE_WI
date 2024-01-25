@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Validation\Rule;
+
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -10,25 +10,25 @@ use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class UpdateUserRequest extends FormRequest
 {
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    public function authorize()
+    {
+        return true;
+    }
+
+    public function rules()
     {
         return [
-            "nom" => ['required', 'max:30', "string"],
-            "prenom" => ['required', 'max:60', "string"],
-            "adresse" => ['required', 'max:30', "string"],
-            "telephone" => ['required', "string"],
-            "image" => "sometimes",
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . auth()->id()],
-            'password' => [PasswordRule::default(), 'confirmed'],
+            'nom' => ['required', 'string', 'max:30'],
+            'prenom' => ['required', 'string', 'max:60'],
+            'adresse' => ['required', 'string', 'max:100'],
+            'telephone' => ['required', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'numeric'],
+            'image' => ['image', 'sometimes'],
+            'email' => ['nullable', 'email', 'unique:users'],
+            'password' => ['nullable', PasswordRule::default(), 'confirmed'],
         ];
     }
 
-    public function failedValidation(validator $validator)
+    public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
             'success' => false,

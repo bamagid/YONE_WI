@@ -89,8 +89,6 @@ class UserController extends Controller
                 "motif" => $user->motif
             ]);
         }
-
-
         return response()->json([
             "status" => false,
             "message" => "Les informations fournis sont incorrect"
