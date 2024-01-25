@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reseau;
-use App\Http\Requests\StoreReseauRequest;
-use App\Http\Requests\UpdateReseauRequest;
+use App\Http\Requests\ReseauRequest;
 
 class ReseauController extends Controller
 {
@@ -12,6 +11,7 @@ class ReseauController extends Controller
     {
         $this->middleware('auth:admin')->except('index', 'show');
     }
+
     public function index()
     {
         $reseaux = Reseau::where('etat', 'actif')->get();
@@ -21,10 +21,8 @@ class ReseauController extends Controller
         ], 200);
     }
 
-
-    public function store(StoreReseauRequest $request)
+    public function store(ReseauRequest $request)
     {
-
         $reseau = Reseau::create(["nom" => $request->nom]);
         return response()->json([
             "message" => "Le reseau a bien été enregistré",
@@ -34,30 +32,35 @@ class ReseauController extends Controller
 
     public function show(Reseau $reseau)
     {
+        if ($reseau->etat == "supprimé") {
+            return response()->json([
+                "message" => "No query results for model [App\\Models\\Reseau] $reseau->id"
+            ], 404);
+        }
         return response()->json([
-            "message" => "voici le reseau que vous rechercher",
+            "message" => "Voici le reseau que vous recherchez",
             "reseau" => $reseau
         ], 200);
     }
 
-
-    public function update(UpdateReseauRequest $request, Reseau $reseau)
+    public function update(ReseauRequest $request, Reseau $reseau)
     {
         $reseau->update($request->validated());
         return response()->json([
-            "message" => "Le reseau a bien été mise a jour",
+            "message" => "Le reseau a bien été mise à jour",
             "reseau" => $reseau
         ], 200);
     }
 
     public function destroy(Reseau $reseau)
     {
-        $reseau->update(['etat' => 'supprimé']);
+        $reseau->update(['etat' => 'corbeille']);
         return response()->json([
-            "message" => "Le reseau a bien été supprimé",
+            "message" => "Le reseau a bien été mis dans la corbeille",
             "reseau" => $reseau
         ]);
     }
+
     public function restore(Reseau $reseau)
     {
         $reseau->update(['etat' => 'actif']);
@@ -65,5 +68,25 @@ class ReseauController extends Controller
             "message" => "Le reseau a bien été restauré",
             "reseau" => $reseau
         ]);
+    }
+
+    public function deleted()
+    {
+        $reseauxSupprimes = Reseau::where('etat', 'corbeille')->get();
+        return response()->json([
+            "message" => "La liste des reseaux quui son dans la corbeilles",
+            "reseaux" => $reseauxSupprimes
+        ], 200);
+    }
+
+    public function emptyTrash()
+    {
+        $reseausSupprimes = Reseau::where('etat', 'corbeille')->get();
+        foreach ($reseausSupprimes as $reseau) {
+            $reseau->update(["etat" => "supprimé"]);
+        }
+        return response()->json([
+            "message" => "La corbeille a été vidée avec succès"
+        ], 200);
     }
 }
