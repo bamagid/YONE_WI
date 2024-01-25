@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-// Importez les classes nécessaires
 use App\Models\Section;
-use App\Http\Requests\StoreSectionRequest;
-use App\Http\Requests\UpdateSectionRequest;
+use App\Http\Requests\SectionRequest;
 
 class SectionController extends Controller
 {
@@ -13,7 +11,8 @@ class SectionController extends Controller
     {
         $this->middleware('auth:admin')->except('index', 'show');
     }
-    // Méthode pour afficher toutes les sections
+
+
     public function index()
     {
         $sections = Section::where('etat', 'actif')->get();
@@ -23,17 +22,21 @@ class SectionController extends Controller
         ], 200);
     }
 
-    // Méthode pour afficher une section spécifique
+
     public function show(Section $section)
     {
+        if ($section->etat == "supprimé") {
+            return response()->json([
+                "message" => "No query results for model [App\\Models\\Section] $section->id"
+            ], 404);
+        }
         return response()->json([
             "message" => "Voici la section que vous recherchez",
             "section" => $section
         ], 200);
     }
 
-    // Méthode pour créer une nouvelle section
-    public function store(StoreSectionRequest $request)
+    public function store(SectionRequest $request)
     {
         $section = Section::create($request->validated());
         return response()->json([
@@ -42,8 +45,7 @@ class SectionController extends Controller
         ], 201);
     }
 
-    // Méthode pour mettre à jour une section existante
-    public function update(UpdateSectionRequest $request, Section $section)
+    public function update(SectionRequest $request, Section $section)
     {
         $section->update($request->validated());
         return response()->json([
@@ -52,17 +54,16 @@ class SectionController extends Controller
         ], 200);
     }
 
-    // Méthode pour supprimer une section (marquer comme "supprimée")
     public function destroy(Section $section)
     {
-        $section->update(['etat' => 'supprimé']);
+        $section->update(['etat' => 'corbeille']);
         return response()->json([
-            "message" => "La section a bien été supprimée",
+            "message" => "La section a bien été mis dans la corbeille",
             "section" => $section
         ]);
     }
 
-    // Méthode pour restaurer une section supprimée
+
     public function restore(Section $section)
     {
         $section->update(['etat' => 'actif']);
@@ -70,5 +71,27 @@ class SectionController extends Controller
             "message" => "La section a bien été restaurée",
             "section" => $section
         ]);
+    }
+
+
+    public function deleted()
+    {
+        $sectionsSupprimees = Section::where('etat', 'corbeille')->get();
+        return response()->json([
+            "message" => "La liste des sections qui sont misent dans la corbeille",
+            "sections" => $sectionsSupprimees
+        ], 200);
+    }
+
+    public function emptyTrash()
+    {
+        dd('pas vraie');
+        $sectionsSupprimes = Section::where('etat', 'corbeille')->get();
+        foreach ($sectionsSupprimes as $section) {
+            $section->update(["etat" => "supprimé"]);
+        }
+        return response()->json([
+            "message" => "La corbeille a été vidée avec succès"
+        ], 200);
     }
 }
