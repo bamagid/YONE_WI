@@ -6,17 +6,18 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreRoleRequest extends FormRequest
+class TarifRequest extends FormRequest
 {
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    public function authorize()
+    {
+        return true;
+    }
+
+    public function rules()
     {
         return [
-            'nom' => ['required', 'max:20', "string"],
+            'prix' => ['required', 'integer'],
+            'type' => ['required', 'string'],
         ];
     }
 

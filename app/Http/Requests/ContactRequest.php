@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateReseauRequest extends FormRequest
+class ContactRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -16,7 +16,9 @@ class UpdateReseauRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['required', 'max:20', "string"],
+            'email' => 'required|email',
+            'sujet' => 'required|string',
+            'contenu' => 'required|string',
         ];
     }
 

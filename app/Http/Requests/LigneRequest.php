@@ -6,23 +6,24 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class LoginUserRequest extends FormRequest
+class LigneRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    public function authorize()
+    {
+        return true;
+    }
+
+    public function rules()
     {
         return [
-            'email' => ["email", 'unique:admin_systems', 'max:255'],
-            'password' => ['required', 'confirmed'],
+            'nom' => ['required', 'string'],
+            'etat' => ['required', 'in:actif,corbeille,supprimé'],
+            'type_id' => ['required', 'exists:types,id'],
+            'lieuDepart' => ['required', 'string'],
+            'lieuArrivee' => ['required', 'string'],
         ];
     }
+
 
     public function failedValidation(validator $validator)
     {

@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
-use App\Http\Requests\StoreRoleRequest;
-use App\Http\Requests\UpdateRoleRequest;
+use App\Http\Requests\RoleRequest;
 
 class RoleController extends Controller
 {
@@ -21,37 +20,30 @@ class RoleController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreRoleRequest $request)
+
+    public function store(RoleRequest $request)
     {
-        $role = Role::create(["nom" => $request->nom]);
+        $role = Role::create($request->validated());
         return response()->json([
             "message" => "Le role a bien été crée",
             "role" => $role
         ], 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateRoleRequest $request, Role $role)
+
+    public function update(RoleRequest $request, Role $role)
     {
-        $roleupdate = $role->update($request->validated());
-        if ($roleupdate) {
-            return response()->json([
-                'message' => 'Mise à jour réussie !'
-            ], 200);
-        } else {
-            return response()->json(['message' => 'Une erreur est survenue lors de la mise a jour']);
-        }
+        $role->update($request->validated());
+        return response()->json([
+            'message' => 'Role mise à jour avec succés !',
+            "role" => $role
+        ], 200);
     }
     public function destroy(Role $role)
     {
-        $role->update(["etat" => "supprimé"]);
+        $role->update(["etat" => "corbeille"]);
         return response()->json([
-            "message" => "Le role a bien été supprimé",
+            "message" => "Le role a bien été mis dans la corbeille",
             "role" => $role
         ]);
     }
@@ -62,5 +54,35 @@ class RoleController extends Controller
             "message" => "Le role a bien été restauré",
             "role" => $role
         ]);
+    }
+
+    public function deleted()
+    {
+        $rolesSupprimes = Role::where('etat', 'corbeille')->get();
+        if (empty($rolesSupprimes)) {
+            return response()->json([
+                "error" => "Il n'y a pas de lignes supprimés"
+            ], 404);
+        }
+        return response()->json([
+            "message" => "La liste des roles qui sont dans la corbeille ",
+            "roles" => $rolesSupprimes
+        ], 200);
+    }
+
+    public function emptyTrash()
+    {
+        $rolesSupprimes = Role::where('etat', 'corbeille')->get();
+        if (empty($rolesSupprimes)) {
+            return response()->json([
+                "error" => "Il n'y a pas de lignes supprimés"
+            ], 404);
+        }
+        foreach ($rolesSupprimes as $role) {
+            $role->update(["etat" => "supprimé"]);
+        }
+        return response()->json([
+            "message" => "La corbeille des roles a été vidée avec succès"
+        ], 200);
     }
 }

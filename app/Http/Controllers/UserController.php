@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Reseau;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreUserRequest;
@@ -23,24 +24,17 @@ class UserController extends Controller
     {
         Role::FindOrFail($request->role_id);
         Reseau::FindOrFail($request->reseau_id);
-
+        $user = new User();
+        $user->fill($request->validated());
+        $user->password = Hash::make($request->get('password'));
         $imagePath = null;
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('images', $imageName, 'public');
+            $user->image = $imagePath;
         }
-        $user = User::create([
-            "nom" => $request->nom,
-            "prenom" => $request->prenom,
-            "adresse" => $request->adresse,
-            "telephone" => $request->telephone,
-            "email" => $request->email,
-            "role_id" => $request->role_id,
-            "image" => $imagePath,
-            "reseau_id" => $request->reseau_id,
-            "password" => Hash::make($request->password)
-        ]);
+        $user->save();
         return response()->json([
             "status" => true,
             "message" => "Bienvenue dans la communauté ",
@@ -49,6 +43,7 @@ class UserController extends Controller
     }
     public function update(UpdateUserRequest $request, User $user)
     {
+        $user->fill($request->validated());
         $imagePath = null;
         if ($request->file('image')) {
 
@@ -58,17 +53,9 @@ class UserController extends Controller
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('images', $imageName, 'public');
+            $user->image = $imagePath;
         }
-        dd($request);
-        $user->update([
-            "nom" => $request->nom,
-            "prenom" => $request->prenom,
-            "adresse" => $request->adresse,
-            "telephone" => $request->telephone,
-            "email" => $request->email,
-            "image" => $imagePath,
-            "password" => Hash::make($request->password)
-        ]);
+        $user->update();
         return response()->json([
             "status" => true,
             "message" => "Modification effectué avec succés",
@@ -76,19 +63,8 @@ class UserController extends Controller
         ], 201);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            "email" => "required|email",
-            "password" => "required"
-        ]);
-        if ($validator->fails()) {
-            // return response json
-            return response()->json([
-                "status" => false,
-                "error" => $validator->errors()
-            ]);
-        }
         $token = auth('admin')->attempt($request->only('email', 'password'));
         $user = auth('admin')->user();
         $typeUser = "admin";
@@ -97,7 +73,7 @@ class UserController extends Controller
             $user = auth('api')->user();
             $typeUser = "utilisateur";
         }
-        if (!empty($token)) {
+        if (!empty($token) && (empty($user->etat) || $user->etat == "actif")) {
 
             return response()->json([
                 "status" => true,
@@ -106,8 +82,13 @@ class UserController extends Controller
                 "user" => $user,
                 "token" => $token
             ], 200);
+        } elseif (!empty($user->etat) &&  $user->etat == "bloqué") {
+            return response()->json([
+                "status" => false,
+                "message" => "Votre compte a été bloqué par l'administrateur",
+                "motif" => $user->motif
+            ]);
         }
-
         return response()->json([
             "status" => false,
             "message" => "Les informations fournis sont incorrect"
@@ -154,14 +135,48 @@ class UserController extends Controller
             "message" => "Utilisateur deconnecté avec succés"
         ], 200);
     }
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
-        $user->update(["etat" => "supprimé"]);
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "motif" => ["required", "string"],
+            ]
+        );
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+        $user->update([
+            "etat" => "supprimé",
+            "motif" => $request->motif
+        ]);
         return response()->json(["Le user a bien été supprimé"]);
     }
-    public function changerEtat(User $user)
+    public function changerEtat(Request $request, User $user)
     {
+        if ($user->etat === "actif") {
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    "motif" => ["required", "string"],
+                ]
+            );
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            $user->update([
+                "motif" => $request->motif,
+            ]);
+        }
         $user->update(['etat' => $user->etat === 'actif' ? 'bloqué' : 'actif']);
-        return response()->json(["Le user a bien été restoré"]);
+        $statut = $user->etat === 'actif' ? 'restoré' : 'bloqué';
+        return response()->json(["Le user a bien été $statut"]);
     }
 }

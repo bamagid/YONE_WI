@@ -6,9 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateRoleRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
-
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     /**
      * Get the validation rules that apply to the request.
      *
@@ -17,7 +19,8 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['required', 'max:20', "string"],
+            'email' => ["email", 'max:255'],
+            'password' => ['required', 'string'],
         ];
     }
 

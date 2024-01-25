@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests;
 
-
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Validation\Rules\Password as PasswordRule;
 
-class UpdateUserRequest extends FormRequest
+class ReseauRequest extends FormRequest
 {
     public function authorize()
     {
@@ -18,13 +16,7 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'nom' => ['required', 'string', 'max:30'],
-            'prenom' => ['required', 'string', 'max:60'],
-            'adresse' => ['required', 'string', 'max:100'],
-            'telephone' => ['required', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'numeric'],
-            'image' => ['image', 'sometimes'],
-            'email' => ['nullable', 'email', 'unique:users'],
-            'password' => ['nullable', PasswordRule::default(), 'confirmed'],
+            'nom' => ['required', 'string'],
         ];
     }
 

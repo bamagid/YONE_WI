@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Reseau>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Newsletter>
  */
-class ReseauFactory extends Factory
+class NewsletterFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,9 @@ class ReseauFactory extends Factory
     public function definition(): array
     {
         return [
-            "nom" =>  $this->faker->randomElement(['aftu', 'dakar dem dikk', 'brt']),
+            'email' => $this->faker->safeEmail,
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

@@ -2,13 +2,14 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Validation\Rules\Password as PasswordRule;
 
-class UpdateAdminSystemRequest extends FormRequest
+class AbonnementRequest extends FormRequest
 {
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -17,14 +18,14 @@ class UpdateAdminSystemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['required', 'max:30', "string"],
-            'prenom' => ['required', 'max:100', "string"],
-            'email' => ['nullale', 'email', 'max:255', 'unique:admin_systems,email'],
-            'password' => ['nullable', PasswordRule::default(), 'confirmed'],
+            'prix' => ['required', 'integer', 'unsigned'], // Prix doit être un entier positif
+            'type' => ['required', 'string'],
+            'duree' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
         ];
     }
 
-    public function failedValidation(validator $validator)
+    public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
             'success' => false,
