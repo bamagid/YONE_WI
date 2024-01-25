@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('Depart');
             $table->string('Arrivee');
-            $table->enum('etat', ['actif', 'supprimé'])->default('actif');
+            $table->enum('etat', ['actif', 'corbeille', 'supprimé'])->default('actif');
             $table->foreignIdFor(Ligne::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Tarif::class)->constrained()->onDelete('cascade');
             $table->timestamps();

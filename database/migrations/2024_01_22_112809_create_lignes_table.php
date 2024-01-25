@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create('lignes', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-            $table->string('type');
-            $table->enum('etat', ['actif', 'supprimé'])->default('actif');
+            $table->enum('etat', ['actif', 'corbeille', 'supprimé'])->default('actif');
+            $table->foreignIdFor(Type::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Reseau::class)->constrained()->onDelete('cascade');
             $table->string('lieuDepart');
             $table->string('lieuArrivee');

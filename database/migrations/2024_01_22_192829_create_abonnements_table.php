@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('prix');
             $table->string('type');
             $table->string('duree');
-            $table->enum('etat', ['actif', 'supprimé'])->default('actif');
+            $table->enum('etat', ['actif', 'corbeille', 'supprimé'])->default('actif');
             $table->text('description')->nullable();
             $table->foreignIdFor(Reseau::class)->constrained()->onDelete('cascade');
             $table->timestamps();
