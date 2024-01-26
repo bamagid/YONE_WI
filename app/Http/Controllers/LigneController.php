@@ -39,6 +39,8 @@ class LigneController extends Controller
     public function store(LigneRequest $request)
     {
         $ligne = Ligne::create($request->validated());
+        $ligne->reseau_id = $request->user()->reseau_id;
+        $ligne->save();
         return response()->json([
             "message" => "La ligne a bien été enregistrée",
             "ligne" => $ligne

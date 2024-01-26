@@ -12,15 +12,16 @@ use App\Http\Controllers\SectionController;
 use App\Http\Controllers\AbonnementController;
 use App\Http\Controllers\AdminSystemController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\NewsletterController;
 
 Route::post("login", [UserController::class, "login"]);
 Route::get("profile", [UserController::class, "profile"]);
 Route::get("refresh", [UserController::class, "refreshToken"]);
 Route::get("logout", [UserController::class, "logout"]);
 Route::patch('updateadmin', [AdminSystemController::class, 'update']);
-Route::resource('users', UserController::class)->except('edit', 'create', 'show');
+Route::apiResource('users', UserController::class)->except('show');
 Route::get('users/etat/{user}', [UserController::class, "changerEtat"]);
-Route::resource('roles', RoleController::class)->except(['show', 'create', 'edit']);
+Route::apiResource('roles', RoleController::class)->except(['show']);
 Route::get("roles/restaure/{role}", [RoleController::class, "restore"]);
 Route::post('forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm'])
     ->name('forget.password.post');
@@ -53,3 +54,5 @@ Route::apiResource('types', TypeController::class);
 Route::patch('types/restaurer/{type}', [TypeController::class, "restore"]);
 Route::post('types/deleted', [TypeController::class, 'deleted']);
 Route::post('types/empty-trash', [TypeController::class, 'emptyTrash']);
+Route::post('newsletter', [NewsletterController::class, 'subscribe']);
+Route::post('newsletter/all', [NewsletterController::class, 'showSubscribers']);

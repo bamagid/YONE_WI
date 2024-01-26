@@ -26,7 +26,6 @@ class UserController extends Controller
         Reseau::FindOrFail($request->reseau_id);
         $user = new User();
         $user->fill($request->validated());
-        $user->password = Hash::make($request->get('password'));
         $imagePath = null;
         if ($request->hasFile('image')) {
             $image = $request->file('image');

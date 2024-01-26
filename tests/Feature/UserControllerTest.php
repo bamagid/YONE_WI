@@ -107,7 +107,16 @@ class UserControllerTest extends TestCase
         Reseau::factory()->create();
         $user = User::factory()->create();
         $this->actingAs($user, "api");
-        $response = $this->get('/api/users' . $user->id);
+        $response = $this->get('/api/users/' . $user->id);
+        $response->assertStatus(200)
+            ->assertJson(["Le user a bien été supprimé"]);
+    }
+
+    public function testchangerEtat()
+    {
+        $user = AdminSystem::factory()->create();
+        $this->actingAs($user, "api");
+        $response = $this->get('/api/users/' . $user->id);
         $response->assertStatus(200)
             ->assertJson(["Le user a bien été supprimé"]);
     }
