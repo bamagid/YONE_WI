@@ -15,18 +15,6 @@ use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class ForgotPasswordController extends Controller
 {
-    // /**
-    //  * Show the forget password form.
-    //  *
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
-
-    // /**
-    //  * Submit the forget password form.
-    //  *
-    //  * @param  \Illuminate\Http\Request  $request
-    //  * @return \Illuminate\Http\JsonResponse
-    //  */
     public function submitForgetPasswordForm(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -54,23 +42,11 @@ class ForgotPasswordController extends Controller
         ]);
     }
 
-    /**
-     * Show the reset password form.
-     *
-     * @param  string  $token
- 
-     */
     public function showResetPasswordForm($token)
     {
         return view('resetPassword', ['token' => $token]);
     }
 
-    /**
-     * Submit the reset password form.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function submitResetPasswordForm(Request $request)
     {
         $request->validate([

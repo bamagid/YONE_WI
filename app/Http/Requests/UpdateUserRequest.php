@@ -18,11 +18,11 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'nom' => ['required', 'string', 'max:30'],
+            'nom' => ['required', 'alpha', 'max:30'],
             'prenom' => ['required', 'string', 'max:60'],
             'adresse' => ['required', 'string', 'max:100'],
             'telephone' => ['required', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'numeric'],
-            'image' => ['image', 'sometimes'],
+            'image' => ['sometimes'],
             'email' => ['nullable', 'email', 'unique:users'],
             'password' => ['nullable', PasswordRule::default(), 'confirmed'],
         ];
