@@ -15,7 +15,7 @@ class MultiAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() || auth()->guard('admin')->check()) {
+        if (auth()->guard('api')->check() || auth()->guard('admin')->check()) {
             return $next($request);
         }
 
