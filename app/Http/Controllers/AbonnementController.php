@@ -63,11 +63,17 @@ class AbonnementController extends Controller
 
     public function destroy(Abonnement $abonnement)
     {
-        $abonnement->update(['etat' => 'corbeille']);
+        if ($abonnement->etat === "actif") {
+            $abonnement->update(['etat' => 'corbeille']);
+            return response()->json([
+                "message" => "L'abonnement a bien été mis dans la corbeille",
+                "abonnement" => $abonnement
+            ], 200);
+        }
         return response()->json([
-            "message" => "L'abonnement a bien été mis dans la corbeille",
-            "abonnement" => $abonnement
-        ], 200);
+            "status" => false,
+            "message" => "Desole vous ne pouvais mettre dans la corbeille que les abonnements actif",
+        ], 422);
     }
     public function delete(Abonnement $abonnement)
     {
@@ -86,11 +92,17 @@ class AbonnementController extends Controller
 
     public function restore(Abonnement $abonnement)
     {
-        $abonnement->update(['etat' => 'actif']);
+        if ($abonnement->etat === "corbeille") {
+            $abonnement->update(['etat' => 'actif']);
+            return response()->json([
+                "message" => "L'abonnement a bien été restauré",
+                "abonnement" => $abonnement
+            ]);
+        }
         return response()->json([
-            "message" => "L'abonnement a bien été restauré",
-            "abonnement" => $abonnement
-        ]);
+            "status" => false,
+            "message" => "Vous ne pouvais restaurer que les abonnements de la corbeille",
+        ], 422);
     }
 
     public function deleted()

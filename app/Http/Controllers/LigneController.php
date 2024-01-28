@@ -59,11 +59,17 @@ class LigneController extends Controller
 
     public function destroy(Ligne $ligne)
     {
-        $ligne->update(['etat' => 'corbeille']);
+        if ($ligne->etat === "actif") {
+            $ligne->update(['etat' => 'corbeille']);
+            return response()->json([
+                "message" => "La ligne a bien été mise dans la  corbeillee",
+                "ligne" => $ligne
+            ], 200);
+        }
         return response()->json([
-            "message" => "La ligne a bien été mise dans la  corbeillee",
-            "ligne" => $ligne
-        ], 200);
+            "status" => false,
+            "message" => "Desole vous ne pouvais mettre dans la corbeille que les lignes actif",
+        ], 422);
     }
     public function delete(Ligne $ligne)
     {
@@ -82,11 +88,18 @@ class LigneController extends Controller
 
     public function restore(Ligne $ligne)
     {
-        $ligne->update(['etat' => 'actif']);
+        if ($ligne->etat === "corbeille") {
+
+            $ligne->update(['etat' => 'actif']);
+            return response()->json([
+                "message" => "La ligne a bien été restaurée",
+                "ligne" => $ligne
+            ], 200);
+        }
         return response()->json([
-            "message" => "La ligne a bien été restaurée",
-            "ligne" => $ligne
-        ], 200);
+            "status" => false,
+            "message" => "Vous ne pouvais restaurer que les lignes de la corbeille",
+        ], 422);
     }
 
     public function deleted()

@@ -41,11 +41,17 @@ class RoleController extends Controller
     }
     public function destroy(Role $role)
     {
-        $role->update(["etat" => "corbeille"]);
+        if ($role->etat === "actif") {
+            $role->update(["etat" => "corbeille"]);
+            return response()->json([
+                "message" => "Le role a bien été mis dans la corbeille",
+                "role" => $role
+            ]);
+        }
         return response()->json([
-            "message" => "Le role a bien été mis dans la corbeille",
-            "role" => $role
-        ]);
+            "status" => false,
+            "message" => "Desole vous ne pouvais mettre dans la corbeille que les roles actif",
+        ], 422);
     }
     public function delete(Role $role)
     {
@@ -63,11 +69,18 @@ class RoleController extends Controller
     }
     public function restore(Role $role)
     {
-        $role->update(["etat" => "actif"]);
+        if ($role->etat === "corbeille") {
+            $role->update(["etat" => "actif"]);
+            return response()->json([
+                "message" => "Le role a bien été restauré",
+                "role" => $role
+            ]);
+        }
+
         return response()->json([
-            "message" => "Le role a bien été restauré",
-            "role" => $role
-        ]);
+            "status" => false,
+            "message" => "Vous ne pouvais restaurer que les roles de la corbeille",
+        ], 422);
     }
 
     public function deleted()

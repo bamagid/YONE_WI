@@ -56,11 +56,17 @@ class SectionController extends Controller
 
     public function destroy(Section $section)
     {
-        $section->update(['etat' => 'corbeille']);
+        if ($section->etat === "actif") {
+            $section->update(['etat' => 'corbeille']);
+            return response()->json([
+                "message" => "La section a bien été mis dans la corbeille",
+                "section" => $section
+            ]);
+        }
         return response()->json([
-            "message" => "La section a bien été mis dans la corbeille",
-            "section" => $section
-        ]);
+            "status" => false,
+            "message" => "Desole vous ne pouvais mettre dans la corbeille que les sections actif",
+        ], 422);
     }
     public function delete(Section $section)
     {
@@ -79,11 +85,17 @@ class SectionController extends Controller
 
     public function restore(Section $section)
     {
-        $section->update(['etat' => 'actif']);
+        if ($section->etat === "corbeille") {
+            $section->update(['etat' => 'actif']);
+            return response()->json([
+                "message" => "La section a bien été restaurée",
+                "section" => $section
+            ]);
+        }
         return response()->json([
-            "message" => "La section a bien été restaurée",
-            "section" => $section
-        ]);
+            "status" => false,
+            "message" => "Vous ne pouvais restaurer que les sections de la corbeille",
+        ], 422);
     }
 
 
