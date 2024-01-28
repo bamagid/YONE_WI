@@ -36,9 +36,10 @@ class AbonnementController extends Controller
 
     public function store(AbonnementRequest $request)
     {
-        $abonnement = Abonnement::create($request->validated());
+        $abonnement = new Abonnement();
+        $abonnement->fill($request->validated());
         $abonnement->reseau_id = $request->user()->reseau_id;
-        $abonnement->save();
+        $abonnement->saveOrFail();
         return response()->json([
             "message" => "L'abonnement a bien été enregistré",
             "abonnement" => $abonnement

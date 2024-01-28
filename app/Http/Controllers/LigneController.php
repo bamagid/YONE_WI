@@ -37,7 +37,8 @@ class LigneController extends Controller
 
     public function store(LigneRequest $request)
     {
-        $ligne = Ligne::create($request->validated());
+        $ligne = new Ligne();
+        $ligne->fill($request->validated());
         $ligne->reseau_id = $request->user()->reseau_id;
         $ligne->save();
         return response()->json([

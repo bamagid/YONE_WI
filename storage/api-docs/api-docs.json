@@ -19,86 +19,8 @@
             }
         }
     },
-    "consumes": [
-        "multipart/form-data"
-    ],
+    "consumes": ["multipart/form-data"],
     "paths": {
-        "/api/search": {
-            "post": {
-                "summary": "Effectuer une recherche",
-                "description": "",
-                "responses": {
-                    "201": {
-                        "description": "Created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Unauthorize",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Gestion des recherches"
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "",
-                        "type": "string"
-                    },
-                    {
-                        "in": "header",
-                        "name": "User-Agent",
-                        "type": "string"
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "nom": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "nom": "magid"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/api/forget-password": {
             "post": {
                 "summary": "Demade de reinitialisation de mot de passe",
@@ -141,9 +63,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de compte"
-                ],
+                "tags": ["Gestion de compte"],
                 "parameters": [
                     {
                         "in": "header",
@@ -212,9 +132,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de compte"
-                ],
+                "tags": ["Gestion de compte"],
                 "parameters": [
                     {
                         "in": "header",
@@ -278,9 +196,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de compte"
-                ],
+                "tags": ["Gestion de compte"],
                 "parameters": [
                     {
                         "in": "header",
@@ -323,9 +239,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de compte"
-                ],
+                "tags": ["Gestion de compte"],
                 "parameters": [
                     {
                         "in": "header",
@@ -335,13 +249,13 @@
                 ]
             }
         },
-        "/api/users/1": {
-            "patch": {
+        "/api/users/{user}": {
+            "post": {
                 "summary": "Modification de compte",
                 "description": "",
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created successfully",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -349,8 +263,8 @@
                             }
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -358,8 +272,17 @@
                             }
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorize",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -368,9 +291,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de compte"
-                ],
+                "tags": ["Gestion de compte"],
                 "parameters": [
                     {
                         "in": "path",
@@ -405,11 +326,14 @@
                                         "type": "string"
                                     },
                                     "reseau_id": {
-                                        "type": "integer"
+                                        "type": "string"
                                     },
-                                    "motif": {
+                                    "image": {
                                         "type": "string",
                                         "format": "binary"
+                                    },
+                                    "motif": {
+                                        "type": "string"
                                     },
                                     "password": {
                                         "type": "string"
@@ -425,8 +349,12 @@
                                 "adresse": "dakar",
                                 "telephone": "785392510",
                                 "etat": "actif",
-                                "reseau_id": 1,
-                                "motif": null,
+                                "reseau_id": "1",
+                                "image": {
+                                    "type": "string",
+                                    "format": "binary"
+                                },
+                                "motif": "\"\"",
                                 "password": "Password",
                                 "password_confirmation": "Password"
                             }
@@ -436,12 +364,12 @@
             }
         },
         "/api/updateadmin": {
-            "patch": {
+            "post": {
                 "summary": "Modification de compte admin",
                 "description": "",
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created successfully",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -449,8 +377,8 @@
                             }
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -458,8 +386,17 @@
                             }
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorize",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -468,9 +405,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de compte"
-                ],
+                "tags": ["Gestion de compte"],
                 "parameters": [
                     {
                         "in": "header",
@@ -495,14 +430,22 @@
                                     },
                                     "password_confirmation": {
                                         "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
                                     }
                                 }
                             },
                             "example": {
-                                "nom": "testmagid",
+                                "nom": "magid",
                                 "prenom": "testabdoul",
                                 "password": "Password1@",
-                                "password_confirmation": "Password1@"
+                                "password_confirmation": "Password1@",
+                                "image": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
                             }
                         }
                     }
@@ -542,9 +485,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de compte"
-                ],
+                "tags": ["Gestion de compte"],
                 "parameters": [
                     {
                         "in": "header",
@@ -596,9 +537,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des utilisateurs"
-                ],
+                "tags": ["Gestion des utilisateurs"],
                 "parameters": [
                     {
                         "in": "header",
@@ -696,9 +635,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des utilisateurs"
-                ],
+                "tags": ["Gestion des utilisateurs"],
                 "parameters": [
                     {
                         "in": "header",
@@ -708,7 +645,7 @@
                 ]
             }
         },
-        "/api/users/etat/{user}": {
+        "/api/users/etat/2": {
             "get": {
                 "summary": "Bloquer ou debloquer  un utilisateur",
                 "description": "",
@@ -741,9 +678,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des utilisateurs"
-                ],
+                "tags": ["Gestion des utilisateurs"],
                 "parameters": [
                     {
                         "in": "path",
@@ -775,7 +710,7 @@
                 }
             }
         },
-        "/api/users/{user}": {
+        "/api/users/1": {
             "delete": {
                 "summary": "supprimé",
                 "description": "",
@@ -817,9 +752,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des utilisateurs"
-                ],
+                "tags": ["Gestion des utilisateurs"],
                 "parameters": [
                     {
                         "in": "path",
@@ -893,9 +826,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des roles"
-                ],
+                "tags": ["Gestion des roles"],
                 "parameters": [
                     {
                         "in": "header",
@@ -938,9 +869,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des roles"
-                ],
+                "tags": ["Gestion des roles"],
                 "parameters": [
                     {
                         "in": "header",
@@ -983,9 +912,55 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des roles"
-                ],
+                "tags": ["Gestion des roles"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "role",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/roles/delete/{role}": {
+            "put": {
+                "summary": "supprimer un role dans la corbeille",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": ["Gestion des roles"],
                 "parameters": [
                     {
                         "in": "path",
@@ -1042,9 +1017,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des roles"
-                ],
+                "tags": ["Gestion des roles"],
                 "parameters": [
                     {
                         "in": "path",
@@ -1090,9 +1063,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des roles"
-                ],
+                "tags": ["Gestion des roles"],
                 "parameters": [
                     {
                         "in": "path",
@@ -1107,7 +1078,7 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "application/x-www-form-urlencoded": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
@@ -1157,9 +1128,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des roles"
-                ],
+                "tags": ["Gestion des roles"],
                 "parameters": [
                     {
                         "in": "header",
@@ -1209,9 +1178,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des roles"
-                ],
+                "tags": ["Gestion des roles"],
                 "parameters": [
                     {
                         "in": "header",
@@ -1280,9 +1247,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de reseaux"
-                ],
+                "tags": ["Gestion de reseaux"],
                 "parameters": [
                     {
                         "in": "header",
@@ -1325,9 +1290,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de reseaux"
-                ],
+                "tags": ["Gestion de reseaux"],
                 "parameters": [
                     {
                         "in": "header",
@@ -1338,7 +1301,7 @@
             }
         },
         "/api/reseaus/restaurer/{reseau}": {
-            "put": {
+            "patch": {
                 "summary": "restaurer un reseau",
                 "description": "",
                 "responses": {
@@ -1370,9 +1333,55 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de reseaux"
-                ],
+                "tags": ["Gestion de reseaux"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "reseau",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/reseaus/delete/{reseau}": {
+            "patch": {
+                "summary": "supprimer un reseau de la corbeille",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": ["Gestion de reseaux"],
                 "parameters": [
                     {
                         "in": "path",
@@ -1429,9 +1438,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de reseaux"
-                ],
+                "tags": ["Gestion de reseaux"],
                 "parameters": [
                     {
                         "in": "path",
@@ -1477,9 +1484,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de reseaux"
-                ],
+                "tags": ["Gestion de reseaux"],
                 "parameters": [
                     {
                         "in": "path",
@@ -1525,9 +1530,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de reseaux"
-                ],
+                "tags": ["Gestion de reseaux"],
                 "parameters": [
                     {
                         "in": "path",
@@ -1542,7 +1545,7 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "application/x-www-form-urlencoded": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
@@ -1592,9 +1595,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de reseaux"
-                ],
+                "tags": ["Gestion de reseaux"],
                 "parameters": [
                     {
                         "in": "header",
@@ -1644,9 +1645,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de reseaux"
-                ],
+                "tags": ["Gestion de reseaux"],
                 "parameters": [
                     {
                         "in": "header",
@@ -1667,6 +1666,71 @@
                             },
                             "example": {
                                 "nom": "aftu senegal"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/reseau/description": {
+            "patch": {
+                "summary": "Modifier la description d'un reseau",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": ["Gestion de reseaux"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "reseau",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "description": "description pour tester"
                             }
                         }
                     }
@@ -1715,9 +1779,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des lignes"
-                ],
+                "tags": ["Gestion des lignes"],
                 "parameters": [
                     {
                         "in": "header",
@@ -1760,9 +1822,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des lignes"
-                ],
+                "tags": ["Gestion des lignes"],
                 "parameters": [
                     {
                         "in": "header",
@@ -1805,9 +1865,55 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des lignes"
-                ],
+                "tags": ["Gestion des lignes"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "ligne",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/lignes/delete/{ligne}": {
+            "patch": {
+                "summary": "supprimer une ligne de la corbeille",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": ["Gestion des lignes"],
                 "parameters": [
                     {
                         "in": "path",
@@ -1864,9 +1970,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des lignes"
-                ],
+                "tags": ["Gestion des lignes"],
                 "parameters": [
                     {
                         "in": "path",
@@ -1912,9 +2016,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des lignes"
-                ],
+                "tags": ["Gestion des lignes"],
                 "parameters": [
                     {
                         "in": "path",
@@ -1960,9 +2062,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des lignes"
-                ],
+                "tags": ["Gestion des lignes"],
                 "parameters": [
                     {
                         "in": "path",
@@ -1977,15 +2077,15 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "application/x-www-form-urlencoded": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
                                     "nom": {
                                         "type": "string"
                                     },
-                                    "type": {
-                                        "type": "string"
+                                    "type_id": {
+                                        "type": "integer"
                                     },
                                     "lieuDepart": {
                                         "type": "string"
@@ -1997,7 +2097,7 @@
                             },
                             "example": {
                                 "nom": "baba",
-                                "type": "nouveau riche",
+                                "type_id": 2,
                                 "lieuDepart": "Dumont",
                                 "lieuArrivee": "Lefebvre"
                             }
@@ -2039,9 +2139,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des lignes"
-                ],
+                "tags": ["Gestion des lignes"],
                 "parameters": [
                     {
                         "in": "header",
@@ -2091,9 +2189,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des lignes"
-                ],
+                "tags": ["Gestion des lignes"],
                 "parameters": [
                     {
                         "in": "header",
@@ -2113,7 +2209,7 @@
                                     "type": {
                                         "type": "string"
                                     },
-                                    "reseau_id": {
+                                    "type_id": {
                                         "type": "integer"
                                     },
                                     "lieuDepart": {
@@ -2127,7 +2223,7 @@
                             "example": {
                                 "nom": "louga",
                                 "type": "urbain",
-                                "reseau_id": 1,
+                                "type_id": 1,
                                 "lieuDepart": "snhks",
                                 "lieuArrivee": "sfsfs"
                             }
@@ -2136,7 +2232,7 @@
                 }
             }
         },
-        "/api/newsletter": {
+        "/api/newsletter/subscribe": {
             "post": {
                 "summary": "souscrire a la newsletter",
                 "description": "",
@@ -2178,9 +2274,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des newsletters"
-                ],
+                "tags": ["Gestion des newsletters"],
                 "parameters": [
                     {
                         "in": "header",
@@ -2207,13 +2301,13 @@
                 }
             }
         },
-        "/api/newslettes/all": {
-            "post": {
-                "summary": "lister les personnes inscrits sur les newsletter",
+        "/api/newsletter/unscribe": {
+            "patch": {
+                "summary": "Se desabonner  a la newsletter",
                 "description": "",
                 "responses": {
-                    "201": {
-                        "description": "Created successfully",
+                    "200": {
+                        "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -2221,8 +2315,8 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "404": {
+                        "description": "Not Found",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -2230,17 +2324,8 @@
                             }
                         }
                     },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Unauthorize",
+                    "500": {
+                        "description": "Internal Server Error",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -2249,9 +2334,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des newsletters"
-                ],
+                "tags": ["Gestion des newsletters"],
                 "parameters": [
                     {
                         "in": "header",
@@ -2276,6 +2359,49 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/newsletter/all": {
+            "get": {
+                "summary": "lister les personnes inscrits sur les newsletter",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": ["Gestion des newsletters"],
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
             }
         },
         "/api/contacts": {
@@ -2311,9 +2437,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des contacts"
-                ],
+                "tags": ["Gestion des contacts"],
                 "parameters": [
                     {
                         "in": "header",
@@ -2363,9 +2487,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des contacts"
-                ],
+                "tags": ["Gestion des contacts"],
                 "parameters": [
                     {
                         "in": "header",
@@ -2442,9 +2564,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des abonnements"
-                ],
+                "tags": ["Gestion des abonnements"],
                 "parameters": [
                     {
                         "in": "header",
@@ -2487,9 +2607,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des abonnements"
-                ],
+                "tags": ["Gestion des abonnements"],
                 "parameters": [
                     {
                         "in": "header",
@@ -2532,9 +2650,55 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des abonnements"
-                ],
+                "tags": ["Gestion des abonnements"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "abonnement",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/abonnements/delete/{abonnement}": {
+            "patch": {
+                "summary": "supprimer un abonnement de la corbeille",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": ["Gestion des abonnements"],
                 "parameters": [
                     {
                         "in": "path",
@@ -2591,9 +2755,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des abonnements"
-                ],
+                "tags": ["Gestion des abonnements"],
                 "parameters": [
                     {
                         "in": "path",
@@ -2639,9 +2801,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des abonnements"
-                ],
+                "tags": ["Gestion des abonnements"],
                 "parameters": [
                     {
                         "in": "path",
@@ -2687,9 +2847,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des abonnements"
-                ],
+                "tags": ["Gestion des abonnements"],
                 "parameters": [
                     {
                         "in": "path",
@@ -2704,7 +2862,7 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "application/x-www-form-urlencoded": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
@@ -2770,9 +2928,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des abonnements"
-                ],
+                "tags": ["Gestion des abonnements"],
                 "parameters": [
                     {
                         "in": "header",
@@ -2822,9 +2978,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des abonnements"
-                ],
+                "tags": ["Gestion des abonnements"],
                 "parameters": [
                     {
                         "in": "header",
@@ -2900,9 +3054,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des tarifs"
-                ],
+                "tags": ["Gestion des tarifs"],
                 "parameters": [
                     {
                         "in": "header",
@@ -2912,7 +3064,7 @@
                 ]
             }
         },
-        "/api/tarfs/empty-trash": {
+        "/api/tarifs/empty-trash": {
             "post": {
                 "summary": "vider les tarifs qui sont dans la corbeille",
                 "description": "",
@@ -2954,9 +3106,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des tarifs"
-                ],
+                "tags": ["Gestion des tarifs"],
                 "parameters": [
                     {
                         "in": "header",
@@ -2999,9 +3149,55 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des tarifs"
-                ],
+                "tags": ["Gestion des tarifs"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "tarif",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/tarifs/delete/{tarif}": {
+            "patch": {
+                "summary": "supprimer un tarif de la corbeille",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": ["Gestion des tarifs"],
                 "parameters": [
                     {
                         "in": "path",
@@ -3058,9 +3254,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des tarifs"
-                ],
+                "tags": ["Gestion des tarifs"],
                 "parameters": [
                     {
                         "in": "path",
@@ -3106,9 +3300,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des tarifs"
-                ],
+                "tags": ["Gestion des tarifs"],
                 "parameters": [
                     {
                         "in": "path",
@@ -3154,9 +3346,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des tarifs"
-                ],
+                "tags": ["Gestion des tarifs"],
                 "parameters": [
                     {
                         "in": "path",
@@ -3171,7 +3361,7 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "application/x-www-form-urlencoded": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
@@ -3184,7 +3374,7 @@
                                 }
                             },
                             "example": {
-                                "prix": 200,
+                                "prix": 400,
                                 "type": "tata"
                             }
                         }
@@ -3225,9 +3415,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des tarifs"
-                ],
+                "tags": ["Gestion des tarifs"],
                 "parameters": [
                     {
                         "in": "header",
@@ -3277,9 +3465,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des tarifs"
-                ],
+                "tags": ["Gestion des tarifs"],
                 "parameters": [
                     {
                         "in": "header",
@@ -3298,16 +3484,12 @@
                                     },
                                     "type": {
                                         "type": "string"
-                                    },
-                                    "reseau_id": {
-                                        "type": "integer"
                                     }
                                 }
                             },
                             "example": {
                                 "prix": 65,
-                                "type": "tata",
-                                "reseau_id": 1
+                                "type": "tata"
                             }
                         }
                     }
@@ -3356,9 +3538,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des sections"
-                ],
+                "tags": ["Gestion des sections"],
                 "parameters": [
                     {
                         "in": "header",
@@ -3401,9 +3581,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des sections"
-                ],
+                "tags": ["Gestion des sections"],
                 "parameters": [
                     {
                         "in": "header",
@@ -3446,9 +3624,55 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des sections"
-                ],
+                "tags": ["Gestion des sections"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "section",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/api/sections/delete/{section}": {
+            "patch": {
+                "summary": "supprimer  un section de la corbeille",
+                "description": "",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": ["Gestion des sections"],
                 "parameters": [
                     {
                         "in": "path",
@@ -3505,9 +3729,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des sections"
-                ],
+                "tags": ["Gestion des sections"],
                 "parameters": [
                     {
                         "in": "path",
@@ -3553,9 +3775,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des sections"
-                ],
+                "tags": ["Gestion des sections"],
                 "parameters": [
                     {
                         "in": "path",
@@ -3601,9 +3821,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des sections"
-                ],
+                "tags": ["Gestion des sections"],
                 "parameters": [
                     {
                         "in": "path",
@@ -3618,7 +3836,7 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "application/x-www-form-urlencoded": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
@@ -3680,9 +3898,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des sections"
-                ],
+                "tags": ["Gestion des sections"],
                 "parameters": [
                     {
                         "in": "header",
@@ -3732,9 +3948,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion des sections"
-                ],
+                "tags": ["Gestion des sections"],
                 "parameters": [
                     {
                         "in": "header",
@@ -3815,9 +4029,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "Gestion de l'authentification"
-                ],
+                "tags": ["Gestion de l'authentification"],
                 "parameters": [
                     {
                         "in": "header",

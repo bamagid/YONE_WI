@@ -18,7 +18,7 @@ class AbonnementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'prix' => ['required', 'integer', 'unsigned'], // Prix doit être un entier positif
+            'prix' => ['required', 'integer', 'min:1000'], // Prix doit être un entier positif
             'type' => ['required', 'string'],
             'duree' => ['required', 'string'],
             'description' => ['nullable', 'string'],

@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Validator;
@@ -35,12 +34,9 @@ class UserController extends Controller
         Reseau::FindOrFail($request->reseau_id);
         $user = new User();
         $user->fill($request->validated());
-        $imagePath = null;
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('images', $imageName, 'public');
-            $user->image = $imagePath;
+            $user->image = $image->store('images', 'public');
         }
         $user->save();
         $user->notify(new SendEmailVerificationNotification);
@@ -54,16 +50,13 @@ class UserController extends Controller
     {
         $id_reseau = $user->reseau_id;
         $user->fill($request->validated());
-        $imagePath = null;
         if ($request->file('image')) {
 
-            if (File::exists(public_path($user->image))) {
-                File::delete(public_path($user->image));
+            if (File::exists(storage_path($user->image))) {
+                File::delete(storage_path($user->image));
             }
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('images', $imageName, 'public');
-            $user->image = $imagePath;
+            $user->image = $image->store('images', 'public');
         }
         if ($request->user() && $request->user()->role_id === 1) {
             $user->reseau_id == $id_reseau;
