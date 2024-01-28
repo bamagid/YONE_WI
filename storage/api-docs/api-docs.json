@@ -19,7 +19,9 @@
             }
         }
     },
-    "consumes": ["multipart/form-data"],
+    "consumes": [
+        "multipart/form-data"
+    ],
     "paths": {
         "/api/search": {
             "post": {
@@ -63,7 +65,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des recherches"],
+                "tags": [
+                    "Gestion des recherches"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -137,7 +141,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de compte"],
+                "tags": [
+                    "Gestion de compte"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -206,7 +212,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de compte"],
+                "tags": [
+                    "Gestion de compte"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -270,7 +278,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de compte"],
+                "tags": [
+                    "Gestion de compte"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -313,7 +323,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de compte"],
+                "tags": [
+                    "Gestion de compte"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -356,7 +368,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de compte"],
+                "tags": [
+                    "Gestion de compte"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -457,7 +471,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des utilisateurs"],
+                "tags": [
+                    "Gestion des utilisateurs"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -522,7 +538,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de compte"],
+                "tags": [
+                    "Gestion de compte"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -594,7 +612,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de compte"],
+                "tags": [
+                    "Gestion de compte"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -646,7 +666,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des utilisateurs"],
+                "tags": [
+                    "Gestion des utilisateurs"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -746,7 +768,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des utilisateurs"],
+                "tags": [
+                    "Gestion des utilisateurs"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -820,7 +844,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des roles"],
+                "tags": [
+                    "Gestion des roles"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -863,7 +889,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des roles"],
+                "tags": [
+                    "Gestion des roles"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -873,7 +901,7 @@
                 ]
             }
         },
-        "/api/roles/restaure/1": {
+        "/api/roles/restaure/{role}": {
             "put": {
                 "summary": "restaurer",
                 "description": "",
@@ -906,7 +934,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des roles"],
+                "tags": [
+                    "Gestion des roles"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -963,7 +993,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des roles"],
+                "tags": [
+                    "Gestion des roles"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -1011,7 +1043,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des roles"],
+                "tags": [
+                    "Gestion des roles"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -1061,7 +1095,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des roles"],
+                "tags": [
+                    "Gestion des roles"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -1130,7 +1166,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des roles"],
+                "tags": [
+                    "Gestion des roles"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -1187,7 +1225,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de reseaux"],
+                "tags": [
+                    "Gestion de reseaux"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -1230,7 +1270,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de reseaux"],
+                "tags": [
+                    "Gestion de reseaux"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -1273,7 +1315,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de reseaux"],
+                "tags": [
+                    "Gestion de reseaux"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -1330,7 +1374,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de reseaux"],
+                "tags": [
+                    "Gestion de reseaux"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -1376,7 +1422,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de reseaux"],
+                "tags": [
+                    "Gestion de reseaux"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -1441,7 +1489,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de reseaux"],
+                "tags": [
+                    "Gestion de reseaux"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -1491,7 +1541,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de reseaux"],
+                "tags": [
+                    "Gestion de reseaux"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -1551,7 +1603,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de reseaux"],
+                "tags": [
+                    "Gestion de reseaux"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -1603,7 +1657,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des lignes"],
+                "tags": [
+                    "Gestion des lignes"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -1646,7 +1702,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des lignes"],
+                "tags": [
+                    "Gestion des lignes"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -1689,7 +1747,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des lignes"],
+                "tags": [
+                    "Gestion des lignes"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -1746,7 +1806,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des lignes"],
+                "tags": [
+                    "Gestion des lignes"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -1792,7 +1854,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des lignes"],
+                "tags": [
+                    "Gestion des lignes"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -1869,7 +1933,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des lignes"],
+                "tags": [
+                    "Gestion des lignes"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -1919,7 +1985,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des lignes"],
+                "tags": [
+                    "Gestion des lignes"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -1995,7 +2063,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des lignes"],
+                "tags": [
+                    "Gestion des lignes"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -2047,7 +2117,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des newsletters"],
+                "tags": [
+                    "Gestion des newsletters"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -2116,7 +2188,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des newsletters"],
+                "tags": [
+                    "Gestion des newsletters"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -2176,7 +2250,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des contacts"],
+                "tags": [
+                    "Gestion des contacts"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -2226,7 +2302,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des contacts"],
+                "tags": [
+                    "Gestion des contacts"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -2303,7 +2381,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des abonnements"],
+                "tags": [
+                    "Gestion des abonnements"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -2346,7 +2426,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des abonnements"],
+                "tags": [
+                    "Gestion des abonnements"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -2389,7 +2471,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des abonnements"],
+                "tags": [
+                    "Gestion des abonnements"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -2446,7 +2530,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des abonnements"],
+                "tags": [
+                    "Gestion des abonnements"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -2492,7 +2578,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des abonnements"],
+                "tags": [
+                    "Gestion des abonnements"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -2573,7 +2661,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des abonnements"],
+                "tags": [
+                    "Gestion des abonnements"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -2623,7 +2713,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des abonnements"],
+                "tags": [
+                    "Gestion des abonnements"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -2699,7 +2791,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des abonnements"],
+                "tags": [
+                    "Gestion des abonnements"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -2742,7 +2836,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des tarifs"],
+                "tags": [
+                    "Gestion des tarifs"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -2794,7 +2890,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des tarifs"],
+                "tags": [
+                    "Gestion des tarifs"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -2837,7 +2935,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des tarifs"],
+                "tags": [
+                    "Gestion des tarifs"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -2894,7 +2994,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des tarifs"],
+                "tags": [
+                    "Gestion des tarifs"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -2940,7 +3042,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des tarifs"],
+                "tags": [
+                    "Gestion des tarifs"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -3009,7 +3113,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des tarifs"],
+                "tags": [
+                    "Gestion des tarifs"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -3059,7 +3165,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des tarifs"],
+                "tags": [
+                    "Gestion des tarifs"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -3127,7 +3235,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des tarifs"],
+                "tags": [
+                    "Gestion des tarifs"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -3179,7 +3289,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des sections"],
+                "tags": [
+                    "Gestion des sections"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -3222,7 +3334,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des sections"],
+                "tags": [
+                    "Gestion des sections"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -3265,7 +3379,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des sections"],
+                "tags": [
+                    "Gestion des sections"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -3322,7 +3438,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des sections"],
+                "tags": [
+                    "Gestion des sections"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -3368,7 +3486,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des sections"],
+                "tags": [
+                    "Gestion des sections"
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -3445,7 +3565,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des sections"],
+                "tags": [
+                    "Gestion des sections"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -3495,7 +3617,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des sections"],
+                "tags": [
+                    "Gestion des sections"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -3567,7 +3691,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion des sections"],
+                "tags": [
+                    "Gestion des sections"
+                ],
                 "parameters": [
                     {
                         "in": "header",
@@ -3619,7 +3745,9 @@
                         }
                     }
                 },
-                "tags": ["Gestion de l'authentification"],
+                "tags": [
+                    "Gestion de l'authentification"
+                ],
                 "parameters": [
                     {
                         "in": "header",
