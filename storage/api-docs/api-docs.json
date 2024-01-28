@@ -335,7 +335,7 @@
                 ]
             }
         },
-        "/api/users/{user}": {
+        "/api/users/1": {
             "patch": {
                 "summary": "Modification de compte",
                 "description": "",
@@ -404,6 +404,9 @@
                                     "etat": {
                                         "type": "string"
                                     },
+                                    "reseau_id": {
+                                        "type": "integer"
+                                    },
                                     "motif": {
                                         "type": "string",
                                         "format": "binary"
@@ -422,83 +425,10 @@
                                 "adresse": "dakar",
                                 "telephone": "785392510",
                                 "etat": "actif",
+                                "reseau_id": 1,
                                 "motif": null,
                                 "password": "Password",
                                 "password_confirmation": "Password"
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "summary": "supprimé",
-                "description": "",
-                "responses": {
-                    "204": {
-                        "description": "Deleted successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Unauthorize",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "Gestion des utilisateurs"
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "user",
-                        "type": "string"
-                    },
-                    {
-                        "in": "header",
-                        "name": "User-Agent",
-                        "type": "string"
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "motif": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "motif": "motif bidon"
                             }
                         }
                     }
@@ -839,6 +769,82 @@
                             },
                             "example": {
                                 "motif": "motif bidon1"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/{user}": {
+            "delete": {
+                "summary": "supprimé",
+                "description": "",
+                "responses": {
+                    "204": {
+                        "description": "Deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorize",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": ""
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Gestion des utilisateurs"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "user",
+                        "type": "string"
+                    },
+                    {
+                        "in": "header",
+                        "name": "User-Agent",
+                        "type": "string"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "motif": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "motif": "motif bidon"
                             }
                         }
                     }
@@ -3834,7 +3840,7 @@
                                 }
                             },
                             "example": {
-                                "email": "dioufgermainedaba@gmail.com",
+                                "email": "bamagid60@gmail.com",
                                 "password": "password"
                             }
                         }

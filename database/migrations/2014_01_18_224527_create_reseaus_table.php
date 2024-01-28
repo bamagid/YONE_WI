@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('reseaus', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
+            $table->string('description')->nullable();
             $table->enum('etat', ['actif', 'corbeille', 'supprimé'])->default('actif');
             $table->timestamps();
         });

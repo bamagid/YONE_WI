@@ -62,7 +62,20 @@ class SectionController extends Controller
             "section" => $section
         ]);
     }
-
+    public function delete(Section $section)
+    {
+        if ($section->etat === "corbeille") {
+            $section->update(['etat' => 'supprimé']);
+            return response()->json([
+                "message" => "La section a bien été supprimé",
+                "section" => $section
+            ], 200);
+        }
+        return response()->json([
+            "status" => false,
+            "message" => "Vous ne pouvez pas supprimé un element qui n'est pas dans la corbeille",
+        ], 422);
+    }
 
     public function restore(Section $section)
     {

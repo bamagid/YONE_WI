@@ -13,4 +13,8 @@ class Reseau extends Model
     {
         return $this->hasMany(User::class);
     }
+    public function abonnements()
+    {
+        return $this->hasMany(Abonnement::class);
+    }
 }

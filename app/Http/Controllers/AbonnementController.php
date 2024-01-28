@@ -9,7 +9,7 @@ class AbonnementController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api')->except('index', 'show');
+        $this->middleware('auth:api')->except('index', 'show', 'subscribe');
     }
 
     public function index()
@@ -44,6 +44,12 @@ class AbonnementController extends Controller
             "abonnement" => $abonnement
         ], 201);
     }
+    public function subscribe(Abonnement $abonnement)
+    {
+        $numeroWhatsApp = $abonnement->reseau->telephone;
+        $messageWhatsappEnvoye = "https://api.whatsapp.com/send?phone=$numeroWhatsApp";
+        return redirect()->to($messageWhatsappEnvoye);
+    }
 
     public function update(AbonnementRequest $request, Abonnement $abonnement)
     {
@@ -60,7 +66,21 @@ class AbonnementController extends Controller
         return response()->json([
             "message" => "L'abonnement a bien été mis dans la corbeille",
             "abonnement" => $abonnement
-        ]);
+        ], 200);
+    }
+    public function delete(Abonnement $abonnement)
+    {
+        if ($abonnement->etat === "corbeille") {
+            $abonnement->update(['etat' => 'supprimé']);
+            return response()->json([
+                "message" => "L'abonnement a bien été supprimé",
+                "abonnement" => $abonnement
+            ], 200);
+        }
+        return response()->json([
+            "status" => false,
+            "message" => "Vous ne pouvez pas supprimé un element qui n'est pas dans la corbeille",
+        ], 422);
     }
 
     public function restore(Abonnement $abonnement)

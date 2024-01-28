@@ -64,6 +64,20 @@ class LigneController extends Controller
             "ligne" => $ligne
         ], 200);
     }
+    public function delete(Ligne $ligne)
+    {
+        if ($ligne->etat === "corbeille") {
+            $ligne->update(['etat' => 'supprimé']);
+            return response()->json([
+                "message" => "La ligne a bien été supprimée",
+                "ligne" => $ligne
+            ], 200);
+        }
+        return response()->json([
+            "status" => false,
+            "message" => "Vous ne pouvez pas supprimé un element qui n'est pas dans la corbeille",
+        ], 422);
+    }
 
     public function restore(Ligne $ligne)
     {

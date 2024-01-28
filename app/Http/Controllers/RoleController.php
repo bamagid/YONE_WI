@@ -47,6 +47,20 @@ class RoleController extends Controller
             "role" => $role
         ]);
     }
+    public function delete(Role $role)
+    {
+        if ($role->etat === "corbeille") {
+            $role->update(['etat' => 'supprimé']);
+            return response()->json([
+                "message" => "Le role a bien été supprimé",
+                "role" => $role
+            ], 200);
+        }
+        return response()->json([
+            "status" => false,
+            "message" => "Vous ne pouvez pas supprimé un element qui n'est pas dans la corbeille",
+        ], 422);
+    }
     public function restore(Role $role)
     {
         $role->update(["etat" => "actif"]);

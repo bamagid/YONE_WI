@@ -2,7 +2,7 @@
 
 return [
 
-   /*
+    /*
     |--------------------------------------------------------------------------
     | Validation Language Lines
     |--------------------------------------------------------------------------
@@ -163,8 +163,11 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'telephone' => [
+            'telephone.regex' => 'Le numero de telephone doit etre un numero senegalais valide',
+        ],
+        'prenom' => [
+            'prenom.regex' => 'Le prenom doit comporté  uniquement des lettres ,des espaces ou de "-"',
         ],
     ],
 

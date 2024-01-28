@@ -24,7 +24,8 @@ class NewsletterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "email" => ['required', 'email', 'required']
+            "email" => ['required', 'email', 'required'],
+            'telephone' => ['required', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'numeric'],
         ];
     }
 

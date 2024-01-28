@@ -17,8 +17,8 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['required', 'max:30', "string"],
-            'prenom' => ['required', 'max:60', "string"],
+            'nom' => ['required', 'max:30', "alpha"],
+            'prenom' => ['required', 'regex:/^[a-zA-Z][a-zA-Z -]{2,100}$/'],
             "adresse" => ['required', 'max:100', "string"],
             'telephone' => ['required', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'numeric'],
             "image" => "sometimes",
