@@ -21,6 +21,14 @@ class UserController extends Controller
     {
         $this->middleware('multiauth')->except('store', 'login');
     }
+    public function index()
+    {
+        $users = User::where('etat', 'actif')->get();
+        return response()->json([
+            "message" => "La liste des types actifs",
+            "types" => $users
+        ], 200);
+    }
     public function store(StoreUserRequest $request)
     {
         Role::FindOrFail($request->role_id);
