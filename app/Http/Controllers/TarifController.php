@@ -70,6 +70,20 @@ class TarifController extends Controller
             "tarif" => $tarif
         ], 200);
     }
+    public function delete(Tarif $tarif)
+    {
+        if ($tarif->etat === "corbeille") {
+            $tarif->update(['etat' => 'supprimé']);
+            return response()->json([
+                "message" => "Le tarif a bien été supprimé",
+                "tarif" => $tarif
+            ], 200);
+        }
+        return response()->json([
+            "status" => false,
+            "message" => "Vous ne pouvez pas supprimé un element qui n'est pas dans la corbeille",
+        ], 422);
+    }
 
     public function deleted()
     {

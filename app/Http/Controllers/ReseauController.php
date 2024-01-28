@@ -23,7 +23,7 @@ class ReseauController extends Controller
 
     public function store(ReseauRequest $request)
     {
-        $reseau = Reseau::create(["nom" => $request->nom]);
+        $reseau = Reseau::create($request->validated());
         return response()->json([
             "message" => "Le reseau a bien été enregistré",
             "reseau" => $reseau
@@ -59,6 +59,20 @@ class ReseauController extends Controller
             "message" => "Le reseau a bien été mis dans la corbeille",
             "reseau" => $reseau
         ]);
+    }
+    public function delete(Reseau $reseau)
+    {
+        if ($reseau->etat === "corbeille") {
+            $reseau->update(['etat' => 'supprimé']);
+            return response()->json([
+                "message" => "Le reseau a bien été supprimé",
+                "reseau" => $reseau
+            ], 200);
+        }
+        return response()->json([
+            "status" => false,
+            "message" => "Vous ne pouvez pas supprimé un element qui n'est pas dans la corbeille",
+        ], 422);
     }
 
     public function restore(Reseau $reseau)

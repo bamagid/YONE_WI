@@ -52,6 +52,7 @@ class UserController extends Controller
     }
     public function update(UpdateUserRequest $request, User $user)
     {
+        $id_reseau = $user->reseau_id;
         $user->fill($request->validated());
         $imagePath = null;
         if ($request->file('image')) {
@@ -63,6 +64,9 @@ class UserController extends Controller
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('images', $imageName, 'public');
             $user->image = $imagePath;
+        }
+        if ($request->user() && $request->user()->role_id === 1) {
+            $user->reseau_id == $id_reseau;
         }
         $user->update();
         return response()->json([

@@ -21,12 +21,26 @@ class NewsletterController extends Controller
             ], 422);
         }
 
-        $subscriber = Newsletter::create(['email' => $email]);
-
+        $subscriber = Newsletter::create($request->validated());
         return response()->json([
             "message" => "L'email a bien été ajouté à la newsletter.",
             "subscriber" => $subscriber
         ], 201);
+    }
+    public function unscribe(NewsletterRequest $request)
+    {
+        $email = $request->validated()['email'];
+
+        if (Newsletter::where('email', $email)->exists()) {
+            $subscriber = Newsletter::update(['etat' => 'desabonner']);
+            return response()->json([
+                "message" => "L'email a bien été desabonné à la newsletter.",
+                "subscriber" => $subscriber
+            ], 201);
+        }
+        return response()->json([
+            "message" => "L'email est n'est pas abonné à la newsletter."
+        ], 422);
     }
 
     public function showSubscribers()

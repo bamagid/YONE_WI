@@ -61,7 +61,20 @@ class TypeController extends Controller
         ], 200);
     }
 
-
+    public function delete(Type $type)
+    {
+        if ($type->etat === "corbeille") {
+            $type->update(['etat' => 'supprimé']);
+            return response()->json([
+                "message" => "Le type a bien été supprimé",
+                "type" => $type
+            ], 200);
+        }
+        return response()->json([
+            "status" => false,
+            "message" => "Vous ne pouvez pas supprimé un element qui n'est pas dans la corbeille",
+        ], 422);
+    }
     public function restore(Type $type)
     {
         $type->update(['etat' => 'actif']);
