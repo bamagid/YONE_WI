@@ -775,64 +775,7 @@
                         "name": "User-Agent",
                         "type": "string"
                     }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "nom": {
-                                        "type": "string"
-                                    },
-                                    "prenom": {
-                                        "type": "string"
-                                    },
-                                    "adresse": {
-                                        "type": "string"
-                                    },
-                                    "telephone": {
-                                        "type": "string"
-                                    },
-                                    "role_id": {
-                                        "type": "string"
-                                    },
-                                    "reseau_id": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string"
-                                    },
-                                    "image": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "password": {
-                                        "type": "string"
-                                    },
-                                    "password_confirmation": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "nom": "Magid",
-                                "prenom": "Abdoul",
-                                "adresse": "Dakar",
-                                "telephone": "778855521",
-                                "role_id": "1",
-                                "reseau_id": "1",
-                                "email": "magid@gmail.com",
-                                "image": {
-                                    "type": "string",
-                                    "format": "binary"
-                                },
-                                "password": "Password1@",
-                                "password_confirmation": "Password1@"
-                            }
-                        }
-                    }
-                }
+                ]
             }
         },
         "/api/users/etat/{user}": {
@@ -1001,7 +944,7 @@
                 ]
             }
         },
-        "/api/roles/restaure/{role}": {
+        "/api/roles/restaurer/{role}": {
             "put": {
                 "summary": "restaurer",
                 "description": "",
@@ -1109,12 +1052,12 @@
                     }
                 ]
             },
-            "post": {
+            "put": {
                 "summary": "Modifier un role",
                 "description": "",
                 "responses": {
-                    "201": {
-                        "description": "Created successfully",
+                    "200": {
+                        "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -1122,8 +1065,8 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "404": {
+                        "description": "Not Found",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -1131,17 +1074,8 @@
                             }
                         }
                     },
-                    "401": {
-                        "description": "Unauthenticated",
-                        "content": {
-                            "application/json": {
-                                "schema": {},
-                                "example": ""
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Unauthorize",
+                    "500": {
+                        "description": "Internal Server Error",
                         "content": {
                             "application/json": {
                                 "schema": {},
@@ -1164,7 +1098,24 @@
                         "name": "User-Agent",
                         "type": "string"
                     }
-                ]
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nom": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "nom": "admin"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/roles": {
