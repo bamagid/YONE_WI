@@ -17,7 +17,7 @@ class ReseauRequest extends FormRequest
     {
         return [
             'nom' => ['required', 'string'],
-            'description' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
         ];
     }
 

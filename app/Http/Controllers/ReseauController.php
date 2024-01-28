@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Reseau;
 use App\Http\Requests\ReseauRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ReseauController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:admin')->except('index', 'show');
+        $this->middleware('auth:admin')->except('index', 'show', 'description');
     }
 
     public function index()
@@ -46,6 +48,22 @@ class ReseauController extends Controller
     public function update(ReseauRequest $request, Reseau $reseau)
     {
         $reseau->update($request->validated());
+        return response()->json([
+            "message" => "Le reseau a bien été mise à jour",
+            "reseau" => $reseau
+        ], 200);
+    }
+    public function description(Request $request)
+    {
+        $reseau = Reseau::FindOrFail($request->user()->reseau_id);
+        $validator = Validator::make($request->all(), [
+            'description' => ['required', 'string']
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+        $reseau->description = $request->description;
+        $reseau->update();
         return response()->json([
             "message" => "Le reseau a bien été mise à jour",
             "reseau" => $reseau

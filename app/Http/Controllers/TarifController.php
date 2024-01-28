@@ -37,7 +37,10 @@ class TarifController extends Controller
 
     public function store(TarifRequest $request)
     {
-        $tarif = Tarif::create($request->validated());
+        $tarif = new Tarif();
+        $tarif->fill($request->validated());
+        $tarif->reseau_id = $request->user()->reseau_id;
+        $tarif->saveOrFail();
         return response()->json([
             "message" => "Le tarif a bien été enregistré",
             "tarif" => $tarif

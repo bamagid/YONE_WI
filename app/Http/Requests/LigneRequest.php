@@ -17,7 +17,6 @@ class LigneRequest extends FormRequest
     {
         return [
             'nom' => ['required', 'string'],
-            'etat' => ['required', 'in:actif,corbeille,supprimé'],
             'type_id' => ['required', 'exists:types,id'],
             'lieuDepart' => ['required', 'string'],
             'lieuArrivee' => ['required', 'string'],

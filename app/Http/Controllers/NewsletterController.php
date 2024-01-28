@@ -9,7 +9,7 @@ class NewsletterController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:admin')->except('subscribe');
+        $this->middleware('auth:admin')->except('subscribe', 'unscribe');
     }
     public function subscribe(NewsletterRequest $request)
     {
@@ -32,10 +32,11 @@ class NewsletterController extends Controller
         $email = $request->validated()['email'];
 
         if (Newsletter::where('email', $email)->exists()) {
-            $subscriber = Newsletter::update(['etat' => 'desabonner']);
+            $newsletter = Newsletter::where('email', $email)->first();
+            $newsletter->update(['etat' => 'desabonné']);
             return response()->json([
                 "message" => "L'email a bien été desabonné à la newsletter.",
-                "subscriber" => $subscriber
+                "subscriber" => $newsletter
             ], 201);
         }
         return response()->json([

@@ -31,12 +31,10 @@ class ForgotPasswordController extends Controller
             'token' => $token,
             'created_at' => Carbon::now(),
         ]);
-
         Mail::send('PasswordResetMail', ['token' => $token], function ($message) use ($request) {
             $message->to($request->email);
             $message->subject('Reset Password');
         });
-
         return response()->json([
             'message' => 'Nous vous avons envoyé par mail le lien de réinitialisation du mot de passe !'
         ]);
