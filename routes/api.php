@@ -11,6 +11,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\AbonnementController;
 use App\Http\Controllers\AdminSystemController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\NewsletterController;
 
@@ -58,3 +59,5 @@ Route::get('types/deleted/all', [TypeController::class, 'deleted']);
 Route::post('types/empty-trash', [TypeController::class, 'emptyTrash']);
 Route::post('newsletter', [NewsletterController::class, 'subscribe']);
 Route::post('newsletter/all', [NewsletterController::class, 'showSubscribers']);
+Route::get('contacts', [ContactController::class, 'index']);
+Route::post('contacts', [ContactController::class, 'store']);
