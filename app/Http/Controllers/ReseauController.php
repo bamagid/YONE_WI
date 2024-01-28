@@ -72,11 +72,17 @@ class ReseauController extends Controller
 
     public function destroy(Reseau $reseau)
     {
-        $reseau->update(['etat' => 'corbeille']);
+        if ($reseau->etat === "actif") {
+            $reseau->update(['etat' => 'corbeille']);
+            return response()->json([
+                "message" => "Le reseau a bien été mis dans la corbeille",
+                "reseau" => $reseau
+            ]);
+        }
         return response()->json([
-            "message" => "Le reseau a bien été mis dans la corbeille",
-            "reseau" => $reseau
-        ]);
+            "status" => false,
+            "message" => "Desole vous ne pouvais mettre dans la corbeille que les reseaux actif",
+        ], 422);
     }
     public function delete(Reseau $reseau)
     {
@@ -95,11 +101,17 @@ class ReseauController extends Controller
 
     public function restore(Reseau $reseau)
     {
-        $reseau->update(['etat' => 'actif']);
+        if ($reseau->etat === "corbeille") {
+            $reseau->update(['etat' => 'actif']);
+            return response()->json([
+                "message" => "Le reseau a bien été restauré",
+                "reseau" => $reseau
+            ]);
+        }
         return response()->json([
-            "message" => "Le reseau a bien été restauré",
-            "reseau" => $reseau
-        ]);
+            "status" => false,
+            "message" => "Vous ne pouvais restaurer que les reseaux de la corbeille",
+        ], 422);
     }
 
     public function deleted()

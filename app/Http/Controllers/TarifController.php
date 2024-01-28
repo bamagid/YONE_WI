@@ -58,20 +58,32 @@ class TarifController extends Controller
 
     public function destroy(Tarif $tarif)
     {
-        $tarif->update(['etat' => 'corbeille']);
+        if ($tarif->etat === "actif") {
+            $tarif->update(['etat' => 'corbeille']);
+            return response()->json([
+                "message" => "Le tarif a bien été mis dans la corbeille",
+                "tarif" => $tarif
+            ], 200);
+        }
         return response()->json([
-            "message" => "Le tarif a bien été mis dans la corbeille",
-            "tarif" => $tarif
-        ], 200);
+            "status" => false,
+            "message" => "Desole vous ne pouvais mettre dans la corbeille que les tarifs actif",
+        ], 422);
     }
 
     public function restore(Tarif $tarif)
     {
-        $tarif->update(['etat' => 'actif']);
+        if ($tarif->etat === "corbeille") {
+            $tarif->update(['etat' => 'actif']);
+            return response()->json([
+                "message" => "Le tarif a bien été restauré",
+                "tarif" => $tarif
+            ], 200);
+        }
         return response()->json([
-            "message" => "Le tarif a bien été restauré",
-            "tarif" => $tarif
-        ], 200);
+            "status" => false,
+            "message" => "Vous ne pouvais restaurer que les tarifs de la corbeille",
+        ], 422);
     }
     public function delete(Tarif $tarif)
     {

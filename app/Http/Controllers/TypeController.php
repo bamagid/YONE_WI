@@ -54,11 +54,17 @@ class TypeController extends Controller
 
     public function destroy(Type $type)
     {
-        $type->update(['etat' => 'corbeille']);
+        if ($type->etat === "actif") {
+            $type->update(['etat' => 'corbeille']);
+            return response()->json([
+                "message" => "Le type a bien été mis dans la corbeille",
+                "type" => $type
+            ], 200);
+        }
         return response()->json([
-            "message" => "Le type a bien été mis dans la corbeille",
-            "type" => $type
-        ], 200);
+            "status" => false,
+            "message" => "Desole vous ne pouvais mettre dans la corbeille que les types actif",
+        ], 422);
     }
 
     public function delete(Type $type)
@@ -77,11 +83,17 @@ class TypeController extends Controller
     }
     public function restore(Type $type)
     {
-        $type->update(['etat' => 'actif']);
+        if ($type->etat === "corbeille") {
+            $type->update(['etat' => 'actif']);
+            return response()->json([
+                "message" => "Le type a bien été restauré",
+                "type" => $type
+            ], 200);
+        }
         return response()->json([
-            "message" => "Le type a bien été restauré",
-            "type" => $type
-        ], 200);
+            "status" => false,
+            "message" => "Vous ne pouvais restaurer que les types de la corbeille",
+        ], 422);
     }
 
     public function deleted()

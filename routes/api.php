@@ -34,7 +34,6 @@ Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showRese
     ->name('reset.password.get');
 Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])
     ->name('reset.password.post');
-Route::post('search', [SearchController::class, 'searching']);
 Route::apiResource('abonnements', AbonnementController::class);
 Route::patch('abonnements/restaurer/{abonnement}', [AbonnementController::class, "restore"]);
 Route::patch('abonnements/delete/{abonnement}', [AbonnementController::class, "delete"]);
