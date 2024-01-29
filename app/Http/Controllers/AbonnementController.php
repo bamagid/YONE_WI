@@ -36,6 +36,7 @@ class AbonnementController extends Controller
 
     public function store(AbonnementRequest $request)
     {
+        $this->authorize('create', Abonnement::class);
         $abonnement = new Abonnement();
         $abonnement->fill($request->validated());
         $abonnement->reseau_id = $request->user()->reseau_id;
@@ -54,6 +55,7 @@ class AbonnementController extends Controller
 
     public function update(AbonnementRequest $request, Abonnement $abonnement)
     {
+        $this->authorize('update', $abonnement);
         $abonnement->update($request->validated());
         return response()->json([
             "message" => "L'abonnement a bien été mis à jour",
@@ -63,6 +65,7 @@ class AbonnementController extends Controller
 
     public function destroy(Abonnement $abonnement)
     {
+        $this->authorize('delete', $abonnement);
         if ($abonnement->etat === "actif") {
             $abonnement->update(['etat' => 'corbeille']);
             return response()->json([
@@ -77,6 +80,7 @@ class AbonnementController extends Controller
     }
     public function delete(Abonnement $abonnement)
     {
+        $this->authorize('delete', $abonnement);
         if ($abonnement->etat === "corbeille") {
             $abonnement->update(['etat' => 'supprimé']);
             return response()->json([
@@ -92,6 +96,7 @@ class AbonnementController extends Controller
 
     public function restore(Abonnement $abonnement)
     {
+        $this->authorize('restore', $abonnement);
         if ($abonnement->etat === "corbeille") {
             $abonnement->update(['etat' => 'actif']);
             return response()->json([
@@ -108,6 +113,7 @@ class AbonnementController extends Controller
     public function deleted()
     {
         $abonnementsSupprimes = Abonnement::where('etat', 'corbeille')->get();
+        $this->authorize('view', $abonnementsSupprimes);
         if (empty($abonnementsSupprimes)) {
             return response()->json([
                 "error" => "Il n'y a pas de abonnements supprimés"
@@ -128,6 +134,7 @@ class AbonnementController extends Controller
             ], 404);
         }
         foreach ($abonnementsSupprimes as $abonnement) {
+            $this->authorize('delete', $abonnement);
             $abonnement->update(["etat" => "supprimé"]);
         }
         return response()->json([

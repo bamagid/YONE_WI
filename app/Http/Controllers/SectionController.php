@@ -38,6 +38,7 @@ class SectionController extends Controller
 
     public function store(SectionRequest $request)
     {
+        $this->authorize('create', Section::class);
         $section = Section::create($request->validated());
         return response()->json([
             "message" => "La section a bien été enregistrée",
@@ -47,6 +48,7 @@ class SectionController extends Controller
 
     public function update(SectionRequest $request, Section $section)
     {
+        $this->authorize("update", $section);
         $section->update($request->validated());
         return response()->json([
             "message" => "La section a bien été mise à jour",
@@ -56,6 +58,7 @@ class SectionController extends Controller
 
     public function destroy(Section $section)
     {
+        $this->authorize("delete", $section);
         if ($section->etat === "actif") {
             $section->update(['etat' => 'corbeille']);
             return response()->json([
@@ -70,6 +73,7 @@ class SectionController extends Controller
     }
     public function delete(Section $section)
     {
+        $this->authorize("delete", $section);
         if ($section->etat === "corbeille") {
             $section->update(['etat' => 'supprimé']);
             return response()->json([
@@ -85,6 +89,7 @@ class SectionController extends Controller
 
     public function restore(Section $section)
     {
+        $this->authorize("update", $section);
         if ($section->etat === "corbeille") {
             $section->update(['etat' => 'actif']);
             return response()->json([
@@ -102,6 +107,7 @@ class SectionController extends Controller
     public function deleted()
     {
         $sectionsSupprimees = Section::where('etat', 'corbeille')->get();
+        $this->authorize("view", $sectionsSupprimees);
         if (empty($sectionsSupprimees)) {
             return response()->json([
                 "error" => "Il n'y a pas de sections supprimées"
@@ -122,6 +128,7 @@ class SectionController extends Controller
             ], 404);
         }
         foreach ($sectionsSupprimees as $section) {
+            $this->authorize('delete', $section);
             $section->update(["etat" => "supprimé"]);
         }
         return response()->json([

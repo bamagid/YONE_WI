@@ -37,6 +37,7 @@ class LigneController extends Controller
 
     public function store(LigneRequest $request)
     {
+        $this->authorize('create', Ligne::class);
         $ligne = new Ligne();
         $ligne->fill($request->validated());
         $ligne->reseau_id = $request->user()->reseau_id;
@@ -50,6 +51,7 @@ class LigneController extends Controller
 
     public function update(LigneRequest $request, Ligne $ligne)
     {
+        $this->authorize("update", $ligne);
         $ligne->update($request->validated());
         return response()->json([
             "message" => "La ligne a bien été mise à jour",
@@ -59,6 +61,7 @@ class LigneController extends Controller
 
     public function destroy(Ligne $ligne)
     {
+        $this->authorize("delete", $ligne);
         if ($ligne->etat === "actif") {
             $ligne->update(['etat' => 'corbeille']);
             return response()->json([
@@ -73,6 +76,7 @@ class LigneController extends Controller
     }
     public function delete(Ligne $ligne)
     {
+        $this->authorize("delete", $ligne);
         if ($ligne->etat === "corbeille") {
             $ligne->update(['etat' => 'supprimé']);
             return response()->json([
@@ -88,6 +92,7 @@ class LigneController extends Controller
 
     public function restore(Ligne $ligne)
     {
+        $this->authorize("update", $ligne);
         if ($ligne->etat === "corbeille") {
 
             $ligne->update(['etat' => 'actif']);
@@ -119,12 +124,14 @@ class LigneController extends Controller
     public function emptyTrash()
     {
         $lignesSupprimees = Ligne::where('etat', 'corbeille')->get();
+        $this->authorize('view', $lignesSupprimees);
         if (empty($lignesSupprimees)) {
             return response()->json([
                 "error" => "Il n'y a pas de lignes supprimées"
             ], 404);
         }
         foreach ($lignesSupprimees as $ligne) {
+            $this->authorize("delete", $ligne);
             $ligne->update(["etat" => "supprimé"]);
         }
         return response()->json([

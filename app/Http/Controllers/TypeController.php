@@ -23,6 +23,7 @@ class TypeController extends Controller
 
     public function store(TypeRequest $request)
     {
+        $this->authorize('create', Type::class);
         $type = Type::create($request->validated());
         return response()->json([
             "message" => "Le type a bien été enregistré",
@@ -45,6 +46,7 @@ class TypeController extends Controller
 
     public function update(TypeRequest $request, Type $type)
     {
+        $this->authorize("update", $type);
         $type->update($request->validated());
         return response()->json([
             "message" => "Le type a bien été mis à jour",
@@ -54,6 +56,7 @@ class TypeController extends Controller
 
     public function destroy(Type $type)
     {
+        $this->authorize("delete", $type);
         if ($type->etat === "actif") {
             $type->update(['etat' => 'corbeille']);
             return response()->json([
@@ -69,6 +72,7 @@ class TypeController extends Controller
 
     public function delete(Type $type)
     {
+        $this->authorize("delete", $type);
         if ($type->etat === "corbeille") {
             $type->update(['etat' => 'supprimé']);
             return response()->json([
@@ -83,6 +87,7 @@ class TypeController extends Controller
     }
     public function restore(Type $type)
     {
+        $this->authorize("update", $type);
         if ($type->etat === "corbeille") {
             $type->update(['etat' => 'actif']);
             return response()->json([
@@ -99,6 +104,7 @@ class TypeController extends Controller
     public function deleted()
     {
         $typesSupprimes = Type::where('etat', 'corbeille')->get();
+        $this->authorize("view", $typesSupprimes);
         if (empty($typesSupprimes)) {
             return response()->json([
                 "error" => "Il n'y a pas de types supprimés"
@@ -119,6 +125,7 @@ class TypeController extends Controller
             ], 404);
         }
         foreach ($typesSupprimes as $type) {
+            $this->authorize("delete", $type);
             $type->update(["etat" => "supprimé"]);
         }
         return response()->json([

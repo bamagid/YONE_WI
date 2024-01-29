@@ -37,6 +37,7 @@ class TarifController extends Controller
 
     public function store(TarifRequest $request)
     {
+        $this->authorize('create', Tarif::class);
         $tarif = new Tarif();
         $tarif->fill($request->validated());
         $tarif->reseau_id = $request->user()->reseau_id;
@@ -49,6 +50,7 @@ class TarifController extends Controller
 
     public function update(TarifRequest $request, Tarif $tarif)
     {
+        $this->authorize("update", $tarif);
         $tarif->update($request->validated());
         return response()->json([
             "message" => "Le tarif a bien été mis à jour",
@@ -58,6 +60,7 @@ class TarifController extends Controller
 
     public function destroy(Tarif $tarif)
     {
+        $this->authorize("delete", $tarif);
         if ($tarif->etat === "actif") {
             $tarif->update(['etat' => 'corbeille']);
             return response()->json([
@@ -73,6 +76,7 @@ class TarifController extends Controller
 
     public function restore(Tarif $tarif)
     {
+        $this->authorize("update", $tarif);
         if ($tarif->etat === "corbeille") {
             $tarif->update(['etat' => 'actif']);
             return response()->json([
@@ -87,6 +91,7 @@ class TarifController extends Controller
     }
     public function delete(Tarif $tarif)
     {
+        $this->authorize("delete", $tarif);
         if ($tarif->etat === "corbeille") {
             $tarif->update(['etat' => 'supprimé']);
             return response()->json([
@@ -103,6 +108,7 @@ class TarifController extends Controller
     public function deleted()
     {
         $tarifsSupprimes = Tarif::where('etat', 'corbeille')->get();
+        $this->authorize('view', $tarifsSupprimes);
         if (empty($tarifsSupprimes)) {
             return response()->json([
                 "error" => "Il n'y a pas de tarifs supprimés"
@@ -123,6 +129,7 @@ class TarifController extends Controller
             ], 404);
         }
         foreach ($tarifsSupprimes as $tarif) {
+            $this->authorize("delete", $tarif);
             $tarif->update(["etat" => "supprimé"]);
         }
         return response()->json([
