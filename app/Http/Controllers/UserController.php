@@ -386,7 +386,7 @@ class UserController extends Controller
                 "etat" => "supprimé",
                 "motif" => $request->motif
             ]);
-            return response()->json(["Le user a bien été supprimé"]);
+            return response()->json(["message" => "Le user a bien été supprimé"]);
         }
         return response()->json([
             "message" => "No query results for model [App\\Models\\User] $user->id"
@@ -444,11 +444,11 @@ class UserController extends Controller
                     "motif" => $request->motif,
                 ]);
 
-                return response()->json(["Le user a bien été bloqué "]);
+                return response()->json(["message" => "Le user a bien été bloqué "]);
                 break;
             case 'bloqué':
                 $user->update(['etat' => 'actif']);
-                return response()->json(["Le user a bien été debloqué"]);
+                return response()->json(["message" => "Le user a bien été debloqué"]);
                 break;
             default:
                 return response()->json([
