@@ -12,6 +12,24 @@ class TypeController extends Controller
         $this->middleware('auth')->except('index', 'show');
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/types",
+     *     summary="Lister les types",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="path", name="", required=false, @OA\Schema(type="string")
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     tags={"Gestion des types"},
+     * ),
+     */
     public function index()
     {
         $types = Type::where('etat', 'actif')->get();
@@ -21,15 +39,68 @@ class TypeController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\POST(
+     *     path="/api/types",
+     *     summary="Ajouter un type",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="201", description="Created successfully"),
+     * @OA\Response(response="400", description="Bad Request"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="prix", type="integer"),
+     *                     @OA\Property(property="type", type="string"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion des types"},
+     * ),
+     */
     public function store(TypeRequest $request)
     {
-        $type = Type::create($request->validated());
+        $this->authorize('create', Type::class);
+        $type = new Type();
+        $type->fill($request->validated());
+        $type->created_by = $request->user()->email;
+        $type->created_at = now();
+        $type->saveOrFail();
         return response()->json([
             "message" => "Le type a bien été enregistré",
             "type" => $type
         ], 201);
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/types/{type}",
+     *     summary="Afficher un type",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="path", name="type", required=false, @OA\Schema(type="string")
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     tags={"Gestion des types"},
+     * ),
+     */
     public function show(Type $type)
     {
         if ($type->etat == "supprimé") {
@@ -45,15 +116,39 @@ class TypeController extends Controller
 
     public function update(TypeRequest $request, Type $type)
     {
-        $type->update($request->validated());
+        $this->authorize("update", $type);
+        $type->fill($request->validated());
+        $type->updated_by = $request->user()->email;
+        $type->updated_at = now();
+        $type->update();
         return response()->json([
             "message" => "Le type a bien été mis à jour",
             "type" => $type
         ], 200);
     }
 
+    /**
+     * @OA\DELETE(
+     *     path="/api/types/{type}",
+     *     summary="Supprimer un type",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="204", description="Deleted successfully"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     * @OA\Response(response="404", description="Not Found"),
+     *     @OA\Parameter(in="path", name="type", required=false, @OA\Schema(type="string")
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     tags={"Gestion des types"},
+     * ),
+     */
     public function destroy(Type $type)
     {
+        $this->authorize("delete", $type);
         if ($type->etat === "actif") {
             $type->update(['etat' => 'corbeille']);
             return response()->json([
@@ -67,8 +162,27 @@ class TypeController extends Controller
         ], 422);
     }
 
+    /**
+     * @OA\PATCH(
+     *     path="/api/types/delete/{type}",
+     *     summary="supprimer un type de la corbeille",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="path", name="type", required=false, @OA\Schema(type="string")
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     tags={"Gestion des types"},
+     * ),
+     */
     public function delete(Type $type)
     {
+        $this->authorize("delete", $type);
         if ($type->etat === "corbeille") {
             $type->update(['etat' => 'supprimé']);
             return response()->json([
@@ -81,8 +195,28 @@ class TypeController extends Controller
             "message" => "Vous ne pouvez pas supprimé un element qui n'est pas dans la corbeille",
         ], 422);
     }
+
+    /**
+     * @OA\PATCH(
+     *     path="/api/types/restaurer/{type}",
+     *     summary="restaurer un type",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="path", name="type", required=false, @OA\Schema(type="string")
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     tags={"Gestion des types"},
+     * ),
+     */
     public function restore(Type $type)
     {
+        $this->authorize("restore", $type);
         if ($type->etat === "corbeille") {
             $type->update(['etat' => 'actif']);
             return response()->json([
@@ -96,6 +230,22 @@ class TypeController extends Controller
         ], 422);
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/types/deleted/all",
+     *     summary="Lister les types qui sont dans la corbeille",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     tags={"Gestion des types"},
+     * ),
+     */
     public function deleted()
     {
         $typesSupprimes = Type::where('etat', 'corbeille')->get();
@@ -110,6 +260,23 @@ class TypeController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\POST(
+     *     path="/api/types/empty-trash",
+     *     summary="vider les types qui sont dans la corbeille",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="201", description="Created successfully"),
+     * @OA\Response(response="400", description="Bad Request"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     tags={"Gestion des types"},
+     * ),
+     */
     public function emptyTrash()
     {
         $typesSupprimes = Type::where('etat', 'corbeille')->get();

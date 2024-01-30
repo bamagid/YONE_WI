@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Models\Ligne;
 use App\Models\Tarif;
 use Illuminate\Support\Facades\Schema;
@@ -20,6 +21,8 @@ return new class extends Migration
             $table->enum('etat', ['actif', 'corbeille', 'supprimé'])->default('actif');
             $table->foreignIdFor(Ligne::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Tarif::class)->constrained()->onDelete('cascade');
+            $table->string('updated_by')->nullable();
+            $table->string('created_by')->default("magid@gmail.com");
             $table->timestamps();
         });
     }

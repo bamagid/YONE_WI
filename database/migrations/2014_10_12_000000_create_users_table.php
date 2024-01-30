@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('nom');
             $table->string('prenom');
             $table->string('adresse');
-            $table->string('telephone');
+            $table->string('telephone')->unique();
             $table->string('image')->nullable();
             $table->enum('etat', ['actif', 'bloqué', 'supprimé'])->default('actif');
             $table->string('motif')->nullable();

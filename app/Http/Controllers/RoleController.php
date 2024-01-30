@@ -11,15 +11,62 @@ class RoleController extends Controller
     {
         $this->middleware('auth:admin');
     }
+    /**
+     * @OA\GET(
+     *     path="/api/roles",
+     *     summary="Lister les roles",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion des roles"},
+
+     * ),
+     */
+
     public function index()
     {
-        $roles = Role::all();
+        $roles = Role::where('etat', 'actif')->get();
         return response()->json([
             "message" => "La liste des roles disponible",
             "roles" => $roles
         ]);
     }
+    /**
+     * @OA\POST(
+     *     path="/api/roles",
+     *     summary="Ajouter un role",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="201", description="Created successfully"),
+     * @OA\Response(response="400", description="Bad Request"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="nom", type="string"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion des roles"},
 
+     * ),
+     */
 
     public function store(RoleRequest $request)
     {
@@ -30,6 +77,37 @@ class RoleController extends Controller
         ], 201);
     }
 
+    /**
+     * @OA\PUT(
+     *     path="/api/roles/{role}",
+     *     summary="Modifier un role",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="path", name="role", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="nom", type="string"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion des roles"},
+
+     * ),
+     */
 
     public function update(RoleRequest $request, Role $role)
     {
@@ -39,6 +117,25 @@ class RoleController extends Controller
             "role" => $role
         ], 200);
     }
+    /**
+     * @OA\PUT(
+     *     path="/api/roles/delete/{role}",
+     *     summary="supprimer un role dans la corbeille",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="path", name="role", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion des roles"},
+
+     * ),
+     */
     public function destroy(Role $role)
     {
         if ($role->etat === "actif") {
@@ -53,6 +150,26 @@ class RoleController extends Controller
             "message" => "Desole vous ne pouvais mettre dans la corbeille que les roles actif",
         ], 422);
     }
+    /**
+     * @OA\DELETE(
+     *     path="/api/roles/{role}",
+     *     summary="supprimé un role",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="204", description="Deleted successfully"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     * @OA\Response(response="404", description="Not Found"),
+     *     @OA\Parameter(in="path", name="role", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion des roles"},
+
+     * ),
+     */
     public function delete(Role $role)
     {
         if ($role->etat === "corbeille") {
@@ -67,6 +184,26 @@ class RoleController extends Controller
             "message" => "Vous ne pouvez pas supprimé un element qui n'est pas dans la corbeille",
         ], 422);
     }
+    /**
+     * @OA\PUT(
+     *     path="/api/roles/restaurer/{role}",
+     *     summary="restaurer",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="path", name="role", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion des roles"},
+
+     * ),
+     */
+
     public function restore(Role $role)
     {
         if ($role->etat === "corbeille") {
@@ -83,6 +220,23 @@ class RoleController extends Controller
         ], 422);
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/roles/deleted",
+     *     summary="Lister les roles qui sont dans la corbeille",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion des roles"},
+
+     * ),
+     */
     public function deleted()
     {
         $rolesSupprimes = Role::where('etat', 'corbeille')->get();
@@ -96,7 +250,24 @@ class RoleController extends Controller
             "roles" => $rolesSupprimes
         ], 200);
     }
+    /**
+     * @OA\POST(
+     *     path="/api/roles/empty-trash",
+     *     summary="vider les roles qui sont dans la corbeille",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="201", description="Created successfully"),
+     * @OA\Response(response="400", description="Bad Request"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion des roles"},
 
+     * ),
+     */
     public function emptyTrash()
     {
         $rolesSupprimes = Role::where('etat', 'corbeille')->get();

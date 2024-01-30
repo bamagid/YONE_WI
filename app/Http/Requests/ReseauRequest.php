@@ -17,6 +17,7 @@ class ReseauRequest extends FormRequest
     {
         return [
             'nom' => ['required', 'string'],
+            "telephone" => ['nullable', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
             'description' => ['nullable', 'string'],
         ];
     }

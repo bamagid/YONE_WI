@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Reseau;
+use App\Models\User;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -20,6 +21,8 @@ return new class extends Migration
             $table->enum('etat', ['actif', 'corbeille', 'supprimé'])->default('actif');
             $table->text('description')->nullable();
             $table->foreignIdFor(Reseau::class)->constrained()->onDelete('cascade');
+            $table->string('updated_by')->nullable();
+            $table->string('created_by')->default("magid@gmail.com");
             $table->timestamps();
         });
     }
