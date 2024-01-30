@@ -18,7 +18,6 @@ class TypeRequest extends FormRequest
         return [
             'nom' => ['required', 'string'],
             'description' => ['nullable', 'string'],
-            // Ajoutez d'autres règles de validation selon les besoins
         ];
     }
 

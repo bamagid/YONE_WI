@@ -2779,7 +2779,7 @@
                 "operationId": "ac01b38322914b3bc69d454244a716f4",
                 "parameters": [
                     {
-                        "name": "{tarif}",
+                        "name": "tarif",
                         "in": "path",
                         "required": false,
                         "schema": {
@@ -3147,10 +3147,10 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
-                                    "prix": {
-                                        "type": "integer"
+                                    "nom": {
+                                        "type": "string"
                                     },
-                                    "type": {
+                                    "description": {
                                         "type": "string"
                                     }
                                 },

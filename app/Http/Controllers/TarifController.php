@@ -56,7 +56,7 @@ class TarifController extends Controller
     public function mestarifs()
     {
         $tarifs = Tarif::where('etat', 'actif')
-            ->where('reseau_id', auth()->user->reseau_id)
+            ->where('reseau_id', auth()->user()->reseau_id)
             ->get();
         return response()->json([
             "message" => "La liste de mes tarifs actifs",
@@ -76,7 +76,7 @@ class TarifController extends Controller
      * @OA\Response(response="200", description="OK"),
      * @OA\Response(response="404", description="Not Found"),
      * @OA\Response(response="500", description="Internal Server Error"),
-     *     @OA\Parameter(in="path", name="{tarif}", required=false, @OA\Schema(type="string"),
+     *     @OA\Parameter(in="path", name="tarif", required=false, @OA\Schema(type="string"),
      * ),
      *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
      * ),
@@ -338,7 +338,9 @@ class TarifController extends Controller
      */
     public function emptyTrash()
     {
-        $tarifsSupprimes = Tarif::where('etat', 'corbeille')->get();
+        $tarifsSupprimes = Tarif::where('etat', 'corbeille')
+            ->where('reseau_id', auth()->user()->reseau_id)
+            ->get();
         if (empty($tarifsSupprimes)) {
             return response()->json([
                 "error" => "Il n'y a pas de tarifs supprimés"

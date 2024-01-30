@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->enum('etat', ['actif', 'corbeille', 'supprimé'])->default('actif');
-            $table->foreignIdFor(Type::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Type::class)->nullable()->constrained()->onDelete('cascade');
             $table->foreignIdFor(Reseau::class)->constrained()->onDelete('cascade');
             $table->string('updated_by')->nullable();
             $table->string('created_by')->default("magid@gmail.com");

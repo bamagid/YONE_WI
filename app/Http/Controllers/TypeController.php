@@ -9,7 +9,7 @@ class TypeController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except('index', 'show');
+        $this->middleware('auth:api')->except('index', 'show');
     }
 
     /**
@@ -58,7 +58,7 @@ class TypeController extends Controller
     public function mestypes()
     {
         $types = Type::where('etat', 'actif')
-            ->where('reseau_id', auth()->user->reseau_id)
+            ->where('reseau_id', auth()->user()->reseau_id)
             ->get();
         return response()->json([
             "message" => "La liste de mes types actifs",
@@ -87,8 +87,8 @@ class TypeController extends Controller
      *             @OA\Schema(
      *                 type="object",
      *                 properties={
-     *                     @OA\Property(property="prix", type="integer"),
-     *                     @OA\Property(property="type", type="string"),
+     *                     @OA\Property(property="nom", type="string"),
+     *                     @OA\Property(property="description", type="string"),
      *                 },
      *             ),
      *         ),
@@ -102,6 +102,7 @@ class TypeController extends Controller
         $type = new Type();
         $type->fill($request->validated());
         $type->created_by = $request->user()->email;
+        $type->reseau_id = $request->user()->reseau_id;
         $type->created_at = now();
         $type->saveOrFail();
         return response()->json([
@@ -306,7 +307,9 @@ class TypeController extends Controller
      */
     public function emptyTrash()
     {
-        $typesSupprimes = Type::where('etat', 'corbeille')->get();
+        $typesSupprimes = Type::where('etat', 'corbeille')
+            ->where('reseau_id', auth()->user()->reseau_id)
+            ->get();
         if (empty($typesSupprimes)) {
             return response()->json([
                 "error" => "Il n'y a pas de types supprimés"

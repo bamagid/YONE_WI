@@ -296,9 +296,9 @@ class UserController extends Controller
 
     public function refreshToken()
     {
-        $nouveauToken = auth('api')->attempt(auth()->user()->email, auth()->user()->password);
+        $nouveauToken = auth()->refresh();
         if ($nouveauToken === null) {
-            $nouveauToken = auth('admin')->attempt(auth()->user()->email, auth()->user()->password);
+            $nouveauToken = auth('admin')->refresh();
         }
         return response()->json([
             "status" => true,

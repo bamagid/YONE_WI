@@ -56,7 +56,7 @@ class LigneController extends Controller
     public function meslignes()
     {
         $lignes = Ligne::where('etat', 'actif')
-            ->where('reseau_id', auth()->user->reseau_id)
+            ->where('reseau_id', auth()->user()->reseau_id)
             ->get();
         return response()->json([
             "message" => "La liste de mes lignes actifs",
@@ -344,7 +344,9 @@ class LigneController extends Controller
      */
     public function emptyTrash()
     {
-        $lignesSupprimees = Ligne::where('etat', 'corbeille')->get();
+        $lignesSupprimees = Ligne::where('etat', 'corbeille')
+            ->where('reseau_id', auth()->user()->reseau_id)
+            ->get();
         if (empty($lignesSupprimees)) {
             return response()->json([
                 "error" => "Il n'y a pas de lignes supprimées"
