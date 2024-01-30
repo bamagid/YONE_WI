@@ -142,6 +142,39 @@ class TypeController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Patch(
+     *     path="/api/types/{type}",
+     *     summary="Modifier un type",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="201", description="Created successfully"),
+     * @OA\Response(response="400", description="Bad Request"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     *     @OA\Parameter(in="path", name="type", required=false, @OA\Schema(type="string"),
+     *),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="nom", type="string"),
+     *                     @OA\Property(property="description", type="string"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion des types"},
+     * ),
+     */
+
     public function update(TypeRequest $request, Type $type)
     {
         $this->authorize("update", $type);
