@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Tarif;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;

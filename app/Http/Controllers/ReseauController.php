@@ -13,7 +13,22 @@ class ReseauController extends Controller
     {
         $this->middleware('auth:admin')->except('index', 'show', 'description');
     }
-
+    /**
+     * @OA\GET(
+     *     path="/api/reseaus",
+     *     summary="Lister les reseaux",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion de reseaux"},
+     * ),
+     */
     public function index()
     {
         $reseaux = Reseau::where('etat', 'actif')->get();
@@ -23,6 +38,35 @@ class ReseauController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\POST(
+     *     path="/api/reseaus",
+     *     summary="Ajouter un reseau",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="201", description="Created successfully"),
+     * @OA\Response(response="400", description="Bad Request"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="nom", type="string"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion de reseaux"},
+     * ),
+     */
     public function store(ReseauRequest $request)
     {
         $reseau = Reseau::create($request->validated());
@@ -31,7 +75,24 @@ class ReseauController extends Controller
             "reseau" => $reseau
         ], 201);
     }
-
+    /**
+     * @OA\GET(
+     *     path="/api/reseaus/{reseau}",
+     *     summary="Afficher un reseau",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="path", name="reseau", required=false, @OA\Schema(type="string")
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     tags={"Gestion de reseaux"},
+     * ),
+     */
     public function show(Reseau $reseau)
     {
         if ($reseau->etat == "supprimé") {
@@ -45,6 +106,36 @@ class ReseauController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\PATCH(
+     *     path="/api/reseaus/{reseau}",
+     *     summary="Modifier un reseau",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="path", name="reseau", required=false, @OA\Schema(type="string")
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="nom", type="string"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion de reseaux"},
+     * ),
+     */
     public function update(ReseauRequest $request, Reseau $reseau)
     {
         $reseau->update($request->validated());
@@ -53,23 +144,74 @@ class ReseauController extends Controller
             "reseau" => $reseau
         ], 200);
     }
-    public function description(Request $request)
+    /**
+     * @OA\PATCH(
+     *     path="/api/reseau/details",
+     *     summary="Modifier les details d'un reseau",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="path", name="reseau", required=false, @OA\Schema(type="string")
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="description", type="string"),
+     *                     @OA\Property(property="telephone", type="integer"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion de reseaux"},
+     * ),
+     */
+    public function details(Request $request)
     {
         $reseau = Reseau::FindOrFail($request->user()->reseau_id);
+        $this->authorize("update", $reseau);
         $validator = Validator::make($request->all(), [
-            'description' => ['required', 'string']
+            'description' => ['required', 'string'],
+            "telephone" => ['required', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-        $reseau->description = $request->description;
-        $reseau->update();
+        $reseau->update($validator->validated());
         return response()->json([
             "message" => "Le reseau a bien été mise à jour",
             "reseau" => $reseau
         ], 200);
     }
 
+    /**
+     * @OA\DELETE(
+     *     path="/api/reseaus/{reseau}",
+     *     summary="Supprimer un reseau",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="204", description="Deleted successfully"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     * @OA\Response(response="404", description="Not Found"),
+     *     @OA\Parameter(in="path", name="reseau", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion de reseaux"},
+     * ),
+     */
     public function destroy(Reseau $reseau)
     {
         if ($reseau->etat === "actif") {
@@ -84,6 +226,24 @@ class ReseauController extends Controller
             "message" => "Desole vous ne pouvais mettre dans la corbeille que les reseaux actif",
         ], 422);
     }
+    /**
+     * @OA\PATCH(
+     *     path="/api/reseaus/delete/{reseau}",
+     *     summary="supprimer un reseau de la corbeille",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="path", name="reseau", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion de reseaux"},
+     * ),
+     */
     public function delete(Reseau $reseau)
     {
         if ($reseau->etat === "corbeille") {
@@ -98,7 +258,24 @@ class ReseauController extends Controller
             "message" => "Vous ne pouvez pas supprimé un element qui n'est pas dans la corbeille",
         ], 422);
     }
-
+    /**
+     * @OA\PATCH(
+     *     path="/api/reseaus/restaurer/{reseau}",
+     *     summary="restaurer un reseau",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="path", name="reseau", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion de reseaux"},
+     * ),
+     */
     public function restore(Reseau $reseau)
     {
         if ($reseau->etat === "corbeille") {
@@ -113,7 +290,22 @@ class ReseauController extends Controller
             "message" => "Vous ne pouvais restaurer que les reseaux de la corbeille",
         ], 422);
     }
-
+    /**
+     * @OA\GET(
+     *     path="/api/reseaus/deleted/all",
+     *     summary="Lister les reseaux qui sont dans la corbeille",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion de reseaux"},
+     * ),
+     */
     public function deleted()
     {
         $reseauxSupprimes = Reseau::where('etat', 'corbeille')->get();
@@ -127,6 +319,23 @@ class ReseauController extends Controller
             "reseaux" => $reseauxSupprimes
         ], 200);
     }
+    /**
+     * @OA\POST(
+     *     path="/api/reseaus/empty-trash",
+     *     summary="vider les reseaux qui sont dans la corbeille",
+     *     description="",
+     *  security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="201", description="Created successfully"),
+     * @OA\Response(response="400", description="Bad Request"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     tags={"Gestion de reseaux"},
+     * ),
+     */
 
     public function emptyTrash()
     {

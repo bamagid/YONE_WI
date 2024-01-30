@@ -9,16 +9,6 @@ use Illuminate\Auth\Access\Response;
 class TarifPolicy
 {
     /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Tarif $tarif)
-    {
-        return $user->reseau_id === $tarif->reseau_id
-            ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à voir ces tarifs.');
-    }
-
-    /**
      * Determine whether the user can create models.
      */
     public function create(User $user)

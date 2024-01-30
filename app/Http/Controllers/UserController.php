@@ -9,10 +9,11 @@ use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use PhpParser\Node\Stmt\Switch_;
 
 class UserController extends Controller
 {
@@ -20,6 +21,22 @@ class UserController extends Controller
     {
         $this->middleware('multiauth')->except('store', 'login');
     }
+    /**
+     * @OA\GET(
+     *     path="/api/users",
+     *     summary="Lister les utilisateurs",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion des utilisateurs"},
+     * ),
+     */
     public function index()
     {
         $users = User::where('etat', 'actif')->get();
@@ -28,6 +45,44 @@ class UserController extends Controller
             "types" => $users
         ], 200);
     }
+    /**
+     * @OA\POST(
+     *     path="/api/users",
+     *     summary="Creation d'un admin reseau",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="201", description="Created successfully"),
+     * @OA\Response(response="400", description="Bad Request"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="nom", type="string"),
+     *                     @OA\Property(property="prenom", type="string"),
+     *                     @OA\Property(property="adresse", type="string"),
+     *                     @OA\Property(property="telephone", type="string"),
+     *                     @OA\Property(property="role_id", type="string"),
+     *                     @OA\Property(property="reseau_id", type="string"),
+     *                     @OA\Property(property="email", type="string"),
+     *                     @OA\Property(property="image", type="string", format="binary"),
+     *                     @OA\Property(property="password", type="string"),
+     *                     @OA\Property(property="password_confirmation", type="string"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion des utilisateurs"},
+     * ),
+     */
     public function store(StoreUserRequest $request)
     {
         Role::FindOrFail($request->role_id);
@@ -39,13 +94,51 @@ class UserController extends Controller
             $user->image = $image->store('images', 'public');
         }
         $user->save();
-        $user->notify(new SendEmailVerificationNotification);
+        event(new Registered($user));
         return response()->json([
             "status" => true,
             "message" => "Bienvenue dans la communauté ",
             "user" => $user
         ], 201);
     }
+    /**
+     * @OA\POST(
+     *     path="/api/users/{user}",
+     *     summary="Modification de compte",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="201", description="Created successfully"),
+     * @OA\Response(response="400", description="Bad Request"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     *     @OA\Parameter(in="path", name="user", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="nom", type="string"),
+     *                     @OA\Property(property="prenom", type="string"),
+     *                     @OA\Property(property="adresse", type="string"),
+     *                     @OA\Property(property="telephone", type="string"),
+     *                     @OA\Property(property="reseau_id", type="string"),
+     *                     @OA\Property(property="image", type="string", format="binary"),
+     *                     @OA\Property(property="password", type="string"),
+     *                     @OA\Property(property="password_confirmation", type="string"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion de compte"},
+     * ),
+     */
     public function update(UpdateUserRequest $request, User $user)
     {
         $id_reseau = $user->reseau_id;
@@ -66,8 +159,39 @@ class UserController extends Controller
             "status" => true,
             "message" => "Modification effectué avec succés",
             "user" => $user
-        ], 201);
+        ], 200);
     }
+
+    /**
+     * @OA\POST(
+     *     path="/api/login",
+     *     summary="connexion",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="201", description="Created successfully"),
+     * @OA\Response(response="400", description="Bad Request"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="email", type="string"),
+     *                     @OA\Property(property="password", type="string"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion de l'authentification"},
+     * ),
+     */
 
     public function login(LoginRequest $request)
     {
@@ -101,6 +225,22 @@ class UserController extends Controller
         ], 401);
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/profile",
+     *     summary="afficher l'utilisateur connecté ",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion de compte"},
+     * ),
+     */
     public function profile()
     {
         $user = auth('api')->user();
@@ -113,7 +253,22 @@ class UserController extends Controller
             "user" => $user
         ], 200);
     }
-
+    /**
+     * @OA\GET(
+     *     path="/api/refresh",
+     *     summary="Rafraichir le token",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion de compte"},
+     * ),
+     */
 
     public function refreshToken()
     {
@@ -128,6 +283,22 @@ class UserController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/logout",
+     *     summary="deconnexion",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion de compte"},
+     * ),
+     */
 
     public function logout()
     {
@@ -141,9 +312,39 @@ class UserController extends Controller
             "message" => "Utilisateur deconnecté avec succés"
         ], 200);
     }
+    /**
+     * @OA\PATCH(
+     *     path="/api/users/{user}",
+     *     summary="supprimé",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     * @OA\Response(response="404", description="Not Found"),
+     *     @OA\Parameter(in="path", name="user", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="motif", type="string"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion des utilisateurs"},
+     * ),
+     */
     public function destroy(Request $request, User $user)
     {
-
         $validator = Validator::make(
             $request->all(),
             [
@@ -162,27 +363,69 @@ class UserController extends Controller
         ]);
         return response()->json(["Le user a bien été supprimé"]);
     }
+    /**
+     * @OA\PATCH(
+     *     path="/api/users/etat/{user}",
+     *     summary="Bloquer ou debloquer  un utilisateur",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="path", name="user", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="motif", type="string"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion des utilisateurs"},
+     * ),
+     */
+
     public function changerEtat(Request $request, User $user)
     {
-        if ($user->etat === "actif") {
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    "motif" => ["required", "string"],
-                ]
-            );
-            if ($validator->fails()) {
+        switch ($user->etat) {
+            case 'actif':
+                $validator = Validator::make(
+                    $request->all(),
+                    [
+                        "motif" => ["required", "string"],
+                    ]
+                );
+                if ($validator->fails()) {
+                    return response()->json([
+                        'status' => false,
+                        'errors' => $validator->errors()
+                    ], 422);
+                }
+                $user->update([
+                    "etat" => "bloqué",
+                    "motif" => $request->motif,
+                ]);
+
+                return response()->json(["Le user a bien été bloqué "]);
+                break;
+            case 'bloqué':
+                $user->update(['etat' => 'actif']);
+                return response()->json(["Le user a bien été debloqué"]);
+                break;
+            default:
                 return response()->json([
-                    'status' => false,
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-            $user->update([
-                "motif" => $request->motif,
-            ]);
+                    "message" => "No query results for model [App\\Models\\User] $user->id"
+                ], 404);
+                break;
         }
-        $user->update(['etat' => $user->etat === 'actif' ? 'bloqué' : 'actif']);
-        $statut = $user->etat === 'actif' ? 'restoré' : 'bloqué';
-        return response()->json(["Le user a bien été $statut"]);
     }
 }

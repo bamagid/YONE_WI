@@ -21,7 +21,7 @@ class UpdateUserRequest extends FormRequest
             'nom' => ['required', 'alpha', 'max:30'],
             'prenom' => ['required', 'regex:/^[a-zA-Z][a-zA-Z -]{2,100}$/'],
             'adresse' => ['required', 'string', 'max:100'],
-            'telephone' => ['required', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'numeric'],
+            'telephone' => ['nullable', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
             'image' => ['sometimes'],
             'email' => ['nullable', 'email', 'unique:users'],
             'password' => ['nullable', PasswordRule::default(), 'confirmed'],

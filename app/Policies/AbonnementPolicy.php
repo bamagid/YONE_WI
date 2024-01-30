@@ -8,15 +8,6 @@ use Illuminate\Auth\Access\Response;
 
 class AbonnementPolicy
 {
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Abonnement $abonnement)
-    {
-        return $user->reseau_id === $abonnement->reseau_id
-            ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à voir ces abonnements.');
-    }
 
     /**
      * Determine whether the user can create models.

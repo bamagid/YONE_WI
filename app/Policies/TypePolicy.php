@@ -8,15 +8,6 @@ use Illuminate\Auth\Access\Response;
 
 class TypePolicy
 {
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Type $type)
-    {
-        return $user->reseau_id === $type->reseau_id
-            ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à voir ces types.');
-    }
 
     /**
      * Determine whether the user can create models.

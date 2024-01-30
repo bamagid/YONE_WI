@@ -9,16 +9,6 @@ use Illuminate\Auth\Access\Response;
 class LignePolicy
 {
     /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Ligne $ligne)
-    {
-        return $user->reseau_id === $ligne->reseau_id
-            ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à voir ces lignes.');
-    }
-
-    /**
      * Determine whether the user can create models.
      */
     public function create(User $user)

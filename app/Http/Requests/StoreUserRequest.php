@@ -20,7 +20,7 @@ class StoreUserRequest extends FormRequest
             'nom' => ['required', 'max:30', "alpha"],
             'prenom' => ['required', 'regex:/^[a-zA-Z][a-zA-Z -]{2,100}$/'],
             "adresse" => ['required', 'max:100', "string"],
-            'telephone' => ['required', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'numeric'],
+            'telephone' => ['required', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
             "image" => "sometimes",
             "role_id" => "required|integer",
             "reseau_id" => "required|integer",

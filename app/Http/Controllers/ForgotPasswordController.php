@@ -15,6 +15,35 @@ use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class ForgotPasswordController extends Controller
 {
+    /**
+     * @OA\POST(
+     *     path="/api/forget-password",
+     *     summary="Demade de reinitialisation de mot de passe",
+     *     description="",
+     *  security={
+     *   {"BearerAuth": {}},
+     *},
+     * @OA\Response(response="201", description="Created successfully"),
+     * @OA\Response(response="400", description="Bad Request"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="email", type="string"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion de compte"},
+     * ),
+     */
     public function submitForgetPasswordForm(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -45,6 +74,36 @@ class ForgotPasswordController extends Controller
         return view('resetPassword', ['token' => $token]);
     }
 
+    /**
+     * @OA\POST(
+     *     path="/api/reset-password",
+     *     summary="Reinitialisation de mot de passe",
+     *     description="",
+     *  security={
+     *   {"BearerAuth": {}},
+     *},
+     * @OA\Response(response="201", description="Created successfully"),
+     * @OA\Response(response="400", description="Bad Request"),
+     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="403", description="Unauthorize"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     * ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 properties={
+     *                     @OA\Property(property="password", type="string"),
+     *                     @OA\Property(property="password_confirmation", type="string"),
+     *                 },
+     *             ),
+     *         ),
+     *     ),
+     *     tags={"Gestion de compte"},
+     * ),
+     */
     public function submitResetPasswordForm(Request $request)
     {
         $request->validate([
