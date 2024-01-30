@@ -341,11 +341,12 @@ class TarifController extends Controller
         $tarifsSupprimes = Tarif::where('etat', 'corbeille')
             ->where('reseau_id', auth()->user()->reseau_id)
             ->get();
-        if (empty($tarifsSupprimes)) {
+        if (!$tarifsSupprimes) {
             return response()->json([
                 "error" => "Il n'y a pas de tarifs supprimés"
             ], 404);
         }
+        dd($tarifsSupprimes);
         foreach ($tarifsSupprimes as $tarif) {
             $tarif->update(["etat" => "supprimé"]);
         }
