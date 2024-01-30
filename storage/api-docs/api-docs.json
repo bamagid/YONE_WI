@@ -103,6 +103,42 @@
                 ]
             }
         },
+        "/api/mesabonnements": {
+            "get": {
+                "tags": [
+                    "Gestion des abonnements"
+                ],
+                "summary": "Lister mes abonnements",
+                "description": "",
+                "operationId": "923944393d6561ab336f2005a71636e7",
+                "parameters": [
+                    {
+                        "name": "User-Agent",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/abonnements/{abonnement}": {
             "get": {
                 "tags": [
@@ -843,6 +879,42 @@
                 ]
             }
         },
+        "/api/meslignes": {
+            "get": {
+                "tags": [
+                    "Gestion des lignes"
+                ],
+                "summary": "Lister mes lignes",
+                "description": "",
+                "operationId": "488f66d5b84fd4d56a3809a8445c9f13",
+                "parameters": [
+                    {
+                        "name": "User-Agent",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/lignes/{ligne}": {
             "get": {
                 "tags": [
@@ -1573,6 +1645,9 @@
                                     },
                                     "telephone": {
                                         "type": "integer"
+                                    },
+                                    "email": {
+                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
@@ -2180,7 +2255,7 @@
                                     "Arrivee": {
                                         "type": "string"
                                     },
-                                    "ligne_id": {
+                                    "section_id": {
                                         "type": "integer"
                                     },
                                     "tarif_id": {
@@ -2204,6 +2279,42 @@
                     },
                     "403": {
                         "description": "Unauthorize"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/messections": {
+            "get": {
+                "tags": [
+                    "Gestion des sections"
+                ],
+                "summary": "Lister mes sections",
+                "description": "",
+                "operationId": "694a6ffc169d601e7c09d693f06ad488",
+                "parameters": [
+                    {
+                        "name": "User-Agent",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 },
                 "security": [
@@ -2338,7 +2449,7 @@
                                     "Arrivee": {
                                         "type": "string"
                                     },
-                                    "ligne_id": {
+                                    "section_id": {
                                         "type": "integer"
                                     },
                                     "tarif_id": {
@@ -2613,6 +2724,42 @@
                     },
                     "403": {
                         "description": "Unauthorize"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/mestarifs": {
+            "get": {
+                "tags": [
+                    "Gestion des tarifs"
+                ],
+                "summary": "Lister mes tarifs",
+                "description": "",
+                "operationId": "fa576a93103cf7b7a78794573b0cbb8a",
+                "parameters": [
+                    {
+                        "name": "User-Agent",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 },
                 "security": [
@@ -3033,6 +3180,42 @@
                 ]
             }
         },
+        "/api/mestypes": {
+            "get": {
+                "tags": [
+                    "Gestion des types"
+                ],
+                "summary": "Lister mes types",
+                "description": "",
+                "operationId": "afb380f09e091dd98a1264adb06fe0a8",
+                "parameters": [
+                    {
+                        "name": "User-Agent",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/types/{type}": {
             "get": {
                 "tags": [
@@ -3392,6 +3575,42 @@
                     },
                     "403": {
                         "description": "Unauthorize"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users/blocked": {
+            "get": {
+                "tags": [
+                    "Gestion des utilisateurs"
+                ],
+                "summary": "Lister les utilisateurs bloqués",
+                "description": "",
+                "operationId": "89fd4584fb6530b1e61d660dc9da5888",
+                "parameters": [
+                    {
+                        "name": "User-Agent",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 },
                 "security": [

@@ -41,8 +41,32 @@ class UserController extends Controller
     {
         $users = User::where('etat', 'actif')->get();
         return response()->json([
-            "message" => "La liste des types actifs",
-            "types" => $users
+            "message" => "La liste des utilisateurs actifs",
+            "users" => $users
+        ], 200);
+    }
+    /**
+     * @OA\GET(
+     *     path="/api/users/blocked",
+     *     summary="Lister les utilisateurs bloqués",
+     *     description="",
+     * security={
+     * {"BearerAuth":{} },
+     * } ,
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion des utilisateurs"},
+     * ),
+     */
+    public function usersblocked()
+    {
+        $users = User::where('etat', 'bloqué')->get();
+        return response()->json([
+            "message" => "La liste des utilisateurs bloqués",
+            "users" => $users
         ], 200);
     }
     /**
@@ -272,9 +296,9 @@ class UserController extends Controller
 
     public function refreshToken()
     {
-        $nouveauToken = auth('api')->user();
+        $nouveauToken = auth('api')->attempt(auth()->user()->email, auth()->user()->password);
         if ($nouveauToken === null) {
-            $nouveauToken = auth('admin')->user();
+            $nouveauToken = auth('admin')->attempt(auth()->user()->email, auth()->user()->password);
         }
         return response()->json([
             "status" => true,
@@ -357,11 +381,16 @@ class UserController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-        $user->update([
-            "etat" => "supprimé",
-            "motif" => $request->motif
-        ]);
-        return response()->json(["Le user a bien été supprimé"]);
+        if ($user->etat !== "suprimé") {
+            $user->update([
+                "etat" => "supprimé",
+                "motif" => $request->motif
+            ]);
+            return response()->json(["Le user a bien été supprimé"]);
+        }
+        return response()->json([
+            "message" => "No query results for model [App\\Models\\User] $user->id"
+        ], 404);
     }
     /**
      * @OA\PATCH(

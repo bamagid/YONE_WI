@@ -37,6 +37,33 @@ class LigneController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/meslignes",
+     *     summary="Lister mes lignes",
+     *     description="",
+     *  security={
+     *   {"BearerAuth": {}},
+     *},
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion des lignes"},
+     * ),
+     */
+    public function meslignes()
+    {
+        $lignes = Ligne::where('etat', 'actif')
+            ->where('reseau_id', auth()->user->reseau_id)
+            ->get();
+        return response()->json([
+            "message" => "La liste de mes lignes actifs",
+            "lignes" => $lignes
+        ], 200);
+    }
+
 
     /**
      * @OA\GET(
