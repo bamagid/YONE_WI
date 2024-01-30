@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->enum('etat', ['actif', 'corbeille', 'supprimé'])->default('actif');
             $table->integer('telephone')->unique()->nullable();
+            $table->string('email')->unique()->nullable();
             $table->timestamps();
         });
     }

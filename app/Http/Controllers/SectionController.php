@@ -38,6 +38,32 @@ class SectionController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/messections",
+     *     summary="Lister mes sections",
+     *     description="",
+     *  security={
+     *   {"BearerAuth": {}},
+     *},
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion des sections"},
+     * ),
+     */
+    public function messections()
+    {
+        $sections = Section::where('etat', 'actif')
+            ->where('reseau_id', auth()->user->reseau_id)
+            ->get();
+        return response()->json([
+            "message" => "La liste de mes sections actifs",
+            "sections" => $sections
+        ], 200);
+    }
 
     /**
      * @OA\GET(
@@ -93,7 +119,7 @@ class SectionController extends Controller
      *                 properties={
      *                     @OA\Property(property="Depart", type="string"),
      *                     @OA\Property(property="Arrivee", type="string"),
-     *                     @OA\Property(property="ligne_id", type="integer"),
+     *                     @OA\Property(property="section_id", type="integer"),
      *                     @OA\Property(property="tarif_id", type="integer"),
      *                 },
      *             ),
@@ -139,7 +165,7 @@ class SectionController extends Controller
      *                 properties={
      *                     @OA\Property(property="Depart", type="string"),
      *                     @OA\Property(property="Arrivee", type="string"),
-     *                     @OA\Property(property="ligne_id", type="integer"),
+     *                     @OA\Property(property="section_id", type="integer"),
      *                     @OA\Property(property="tarif_id", type="integer"),
      *                 },
      *             ),

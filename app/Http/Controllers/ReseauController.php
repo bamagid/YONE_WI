@@ -168,6 +168,7 @@ class ReseauController extends Controller
      *                 properties={
      *                     @OA\Property(property="description", type="string"),
      *                     @OA\Property(property="telephone", type="integer"),
+     *                     @OA\Property(property="email", type="string"),
      *                 },
      *             ),
      *         ),
@@ -180,8 +181,9 @@ class ReseauController extends Controller
         $reseau = Reseau::FindOrFail($request->user()->reseau_id);
         $this->authorize("update", $reseau);
         $validator = Validator::make($request->all(), [
-            'description' => ['required', 'string'],
-            "telephone" => ['required', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
+            'description' => ['nullable', 'string'],
+            "telephone" => ['nullable', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
+            "email" => ['nullable', 'email', 'unique:users,email'],
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
