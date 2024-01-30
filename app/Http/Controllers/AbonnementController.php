@@ -56,7 +56,7 @@ class AbonnementController extends Controller
     public function mesabonnements()
     {
         $abonnements = Abonnement::where('etat', 'actif')
-            ->where('reseau_id', auth()->user->reseau_id)
+            ->where('reseau_id', auth()->user()->reseau_id)
             ->get();
         return response()->json([
             "message" => "La liste de mes abonnements actifs",
@@ -415,7 +415,10 @@ class AbonnementController extends Controller
      */
     public function emptyTrash()
     {
-        $abonnementsSupprimes = Abonnement::where('etat', 'corbeille')->get();
+        $abonnementsSupprimes = Abonnement::where('etat', 'corbeille')
+            ->where('reseau_id', auth()->user()->reseau_id)
+            ->get();
+
         if (empty($abonnementsSupprimes)) {
             return response()->json([
                 "error" => "Il n'y a pas de abonnements supprimés"

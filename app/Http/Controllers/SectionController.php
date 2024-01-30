@@ -57,7 +57,7 @@ class SectionController extends Controller
     public function messections()
     {
         $sections = Section::where('etat', 'actif')
-            ->where('reseau_id', auth()->user->reseau_id)
+            ->where('reseau_id', auth()->user()->reseau_id)
             ->get();
         return response()->json([
             "message" => "La liste de mes sections actifs",
@@ -342,7 +342,9 @@ class SectionController extends Controller
      */
     public function emptyTrash()
     {
-        $sectionsSupprimees = Section::where('etat', 'corbeille')->get();
+        $sectionsSupprimees = Section::where('etat', 'corbeille')
+            ->where('reseau_id', auth()->user()->reseau_id)
+            ->get();
         if (empty($sectionsSupprimees)) {
             return response()->json([
                 "error" => "Il n'y a pas de sections supprimées"
