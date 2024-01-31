@@ -11,7 +11,7 @@ class ReseauController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:admin')->except('index', 'show', 'description');
+        $this->middleware('auth:admin')->except('index', 'show', 'details');
     }
     /**
      * @OA\GET(
@@ -311,7 +311,7 @@ class ReseauController extends Controller
     public function deleted()
     {
         $reseauxSupprimes = Reseau::where('etat', 'corbeille')->get();
-        if (empty($reseauxSupprimes)) {
+        if ($reseauxSupprimes->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de réseaux supprimés"
             ], 404);
@@ -342,7 +342,7 @@ class ReseauController extends Controller
     public function emptyTrash()
     {
         $reseausSupprimes = Reseau::where('etat', 'corbeille')->get();
-        if (empty($reseausSupprimes)) {
+        if ($reseausSupprimes->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de réseaux supprimés"
             ], 404);

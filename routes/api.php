@@ -12,6 +12,7 @@ use App\Http\Controllers\AbonnementController;
 use App\Http\Controllers\AdminSystemController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\HistoriqueController;
 use App\Http\Controllers\NewsletterController;
 
 Route::post("login", [UserController::class, "login"]);
@@ -77,3 +78,6 @@ Route::patch('newsletter/unscribe', [NewsletterController::class, 'unscribe']);
 Route::get('newsletter/all', [NewsletterController::class, 'showSubscribers']);
 Route::get('contacts', [ContactController::class, 'index']);
 Route::post('contacts', [ContactController::class, 'store']);
+Route::get('historiques', [HistoriqueController::class, 'index']);
+Route::post('historiques/classe', [HistoriqueController::class, 'historiquesentite']);
+Route::post('historiques/user', [HistoriqueController::class, 'historiquesuser']);

@@ -49,7 +49,6 @@ class LigneControllerTest extends TestCase
 
         $response = $this->actingAs($user)->patch("/api/lignes/{$ligne->id}", [
             "nom" => "Ligne Modifiée",
-            // Ajoutez d'autres champs requis pour la mise à jour d'une ligne
         ]);
 
         $response->assertStatus(200);

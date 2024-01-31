@@ -57,7 +57,9 @@
         <h2>Réinitialisation du Mot de Passe</h2>
         <p>Vous avez demandé une réinitialisation du mot de passe. Cliquez sur
             le lien ci-dessous pour procéder :</p><br>
-        <a href="api/reset-password/{{ $token }}">Réinitialiser le Mot de Passe</a>
+        <a href="http://127.0.0.1:8000/api/reset-password/{{ $token }} " style="color: white">Réinitialiser le
+            Mot de
+            Passe</a>
         <p>Si vous n'avez pas demandé cette réinitialisation, veuillez ignorer cet e-mail.</p>
     </div>
 </body>

@@ -46,19 +46,19 @@ class ForgotPasswordController extends Controller
      */
     public function submitForgetPasswordForm(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|exists:users',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+        // $validator = Validator::make($request->all(), [
+        //     'email' => 'required|email|exists:users',
+        // ]);
+        // if ($validator->fails()) {
+        //     return response()->json(['errors' => $validator->errors()], 422);
+        // }
 
         $token = Str::random(64);
 
         DB::table('password_reset_tokens')->insert([
             'email' => $request->email,
             'token' => $token,
-            'created_at' => Carbon::now(),
+            'created_at' => now(),
         ]);
         Mail::send('PasswordResetMail', ['token' => $token], function ($message) use ($request) {
             $message->to($request->email);

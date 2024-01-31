@@ -240,7 +240,7 @@ class RoleController extends Controller
     public function deleted()
     {
         $rolesSupprimes = Role::where('etat', 'corbeille')->get();
-        if (empty($rolesSupprimes)) {
+        if ($rolesSupprimes->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de lignes supprimés"
             ], 404);
@@ -271,7 +271,7 @@ class RoleController extends Controller
     public function emptyTrash()
     {
         $rolesSupprimes = Role::where('etat', 'corbeille')->get();
-        if (empty($rolesSupprimes)) {
+        if ($rolesSupprimes->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de lignes supprimés"
             ], 404);

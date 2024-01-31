@@ -7,7 +7,7 @@
     <title>Reset Password</title>
     <style>
         body {
-            background-color: #2CCED2;
+            background-color: white;
             font-family: 'Arial', sans-serif;
         }
 
@@ -53,6 +53,7 @@
             padding: 10px;
             margin-top: 5px;
             margin-bottom: 15px;
+            outline: none;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -60,7 +61,7 @@
         }
 
         button {
-            background-color: #F2743B;
+            background-color: #2CCED2;
             color: #fff;
             padding: 10px 15px;
             border: none;
@@ -70,7 +71,7 @@
         }
 
         button:hover {
-            background-color: #D45A31;
+            background-color: #2ccfd296;
         }
     </style>
 </head>

@@ -19,7 +19,7 @@ class UpdateAdminSystemRequest extends FormRequest
         return [
             'nom' => ['required', 'max:30', "alpha"],
             'prenom' => ['required', 'regex:/^[a-zA-Z][a-zA-Z -]{2,100}$/'],
-            'email' => ['nullale', 'email', 'max:255', 'unique:admin_systems,email'],
+            'email' => ['nullable', 'email', 'max:255', 'unique:admin_systems,email'],
             'image' => ['sometimes'],
             'password' => ['nullable', PasswordRule::default(), 'confirmed'],
         ];
