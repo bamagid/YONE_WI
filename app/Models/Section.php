@@ -9,4 +9,8 @@ class Section extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    public function ligne()
+    {
+        return $this->belongsTo(Ligne::class);
+    }
 }

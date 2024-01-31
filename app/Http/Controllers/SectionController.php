@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Section;
+use App\Models\Historique;
 use App\Http\Requests\SectionRequest;
 
 class SectionController extends Controller
@@ -56,9 +57,13 @@ class SectionController extends Controller
      */
     public function messections()
     {
-        $sections = Section::where('etat', 'actif')
-            ->where('reseau_id', auth()->user()->reseau_id)
+        $lignes = auth()->user()->reseau->lignes;
+        $sections = Section::whereHas('ligne', function ($query) use ($lignes) {
+            $query->whereIn('id', $lignes->pluck('id'));
+        })
+            ->where('etat', 'actif')
             ->get();
+
         return response()->json([
             "message" => "La liste de mes sections actifs",
             "sections" => $sections
@@ -85,7 +90,7 @@ class SectionController extends Controller
      */
     public function show(Section $section)
     {
-        if ($section->etat == "supprimé") {
+        if ($section->etat == "supprimé"  ||  $section->ligne->reseau_id !== auth()->user()->reseau_id) {
             return response()->json([
                 "message" => "No query results for model [App\\Models\\Section] $section->id"
             ], 404);
@@ -119,7 +124,7 @@ class SectionController extends Controller
      *                 properties={
      *                     @OA\Property(property="Depart", type="string"),
      *                     @OA\Property(property="Arrivee", type="string"),
-     *                     @OA\Property(property="section_id", type="integer"),
+     *                     @OA\Property(property="ligne_id", type="integer"),
      *                     @OA\Property(property="tarif_id", type="integer"),
      *                 },
      *             ),
@@ -135,6 +140,17 @@ class SectionController extends Controller
         $section->fill($request->validated());
         $section->created_by = $request->user()->email;
         $section->created_at = now();
+        $section->saveOrFail();
+        Historique::enregistrerHistorique(
+            'sections',
+            $section->id,
+            auth()->user()->id,
+            'create',
+            auth()->user()->email,
+            auth()->user()->reseau->nom,
+            null,
+            json_encode($section->toArray())
+        );
         return response()->json([
             "message" => "La section a bien été enregistrée",
             "section" => $section
@@ -165,7 +181,7 @@ class SectionController extends Controller
      *                 properties={
      *                     @OA\Property(property="Depart", type="string"),
      *                     @OA\Property(property="Arrivee", type="string"),
-     *                     @OA\Property(property="section_id", type="integer"),
+     *                     @OA\Property(property="ligne_id", type="integer"),
      *                     @OA\Property(property="tarif_id", type="integer"),
      *                 },
      *             ),
@@ -177,10 +193,21 @@ class SectionController extends Controller
 
     public function update(SectionRequest $request, Section $section)
     {
+        $valeurAvant = $section->toArray();
         $this->authorize("update", $section);
         $section->fill($request->validated());
         $section->updated_by = $request->user()->email;
         $section->updated_at = now();
+        Historique::enregistrerHistorique(
+            'sections',
+            $section->id,
+            auth()->user()->id,
+            'update',
+            auth()->user()->email,
+            auth()->user()->reseau->nom,
+            json_encode($valeurAvant),
+            json_encode($section->toArray())
+        );
         $section->update();
         return response()->json([
             "message" => "La section a bien été mise à jour",
@@ -210,7 +237,18 @@ class SectionController extends Controller
 
     public function destroy(Section $section)
     {
+        $valeurAvant = $section->toArray();
         $this->authorize("delete", $section);
+        Historique::enregistrerHistorique(
+            'sections',
+            $section->id,
+            auth()->user()->id,
+            'update',
+            auth()->user()->email,
+            auth()->user()->reseau->nom,
+            json_encode($valeurAvant),
+            json_encode($section->toArray())
+        );
         if ($section->etat === "actif") {
             $section->update(['etat' => 'corbeille']);
             return response()->json([
@@ -243,8 +281,19 @@ class SectionController extends Controller
      */
     public function delete(Section $section)
     {
+        $valeurAvant = $section->toArray();
         $this->authorize("delete", $section);
         if ($section->etat === "corbeille") {
+            Historique::enregistrerHistorique(
+                'sections',
+                $section->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($section->toArray())
+            );
             $section->update(['etat' => 'supprimé']);
             return response()->json([
                 "message" => "La section a bien été supprimé",
@@ -277,8 +326,19 @@ class SectionController extends Controller
      */
     public function restore(Section $section)
     {
+        $valeurAvant = $section->toArray();
         $this->authorize("restore", $section);
         if ($section->etat === "corbeille") {
+            Historique::enregistrerHistorique(
+                'sections',
+                $section->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($section->toArray())
+            );
             $section->update(['etat' => 'actif']);
             return response()->json([
                 "message" => "La section a bien été restaurée",
@@ -311,8 +371,13 @@ class SectionController extends Controller
 
     public function deleted()
     {
-        $sectionsSupprimees = Section::where('etat', 'corbeille')->get();
-        if (empty($sectionsSupprimees)) {
+        $lignes = auth()->user()->reseau->lignes;
+        $sectionsSupprimees = Section::whereHas('ligne', function ($query) use ($lignes) {
+            $query->whereIn('id', $lignes->pluck('id'));
+        })
+            ->where('etat', 'corbeille')
+            ->get();
+        if ($sectionsSupprimees->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de sections supprimées"
             ], 404);
@@ -342,15 +407,29 @@ class SectionController extends Controller
      */
     public function emptyTrash()
     {
-        $sectionsSupprimees = Section::where('etat', 'corbeille')
-            ->where('reseau_id', auth()->user()->reseau_id)
+        $lignes = auth()->user()->reseau->lignes;
+        $sectionsSupprimees = Section::whereHas('ligne', function ($query) use ($lignes) {
+            $query->whereIn('id', $lignes->pluck('id'));
+        })
+            ->where('etat', 'corbeille')
             ->get();
-        if (empty($sectionsSupprimees)) {
+        if ($sectionsSupprimees->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de sections supprimées"
             ], 404);
         }
         foreach ($sectionsSupprimees as $section) {
+            $valeurAvant = $section->toArray();
+            Historique::enregistrerHistorique(
+                'sections',
+                $section->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($section->toArray())
+            );
             $section->update(["etat" => "supprimé"]);
         }
         return response()->json([

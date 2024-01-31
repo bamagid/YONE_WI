@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ligne;
+use App\Models\Historique;
 use App\Http\Requests\LigneRequest;
 
 class LigneController extends Controller
@@ -119,7 +120,6 @@ class LigneController extends Controller
      *                 type="object",
      *                 properties={
      *                     @OA\Property(property="nom", type="string"),
-     *                     @OA\Property(property="type", type="string"),
      *                     @OA\Property(property="type_id", type="integer"),
      *                     @OA\Property(property="lieuDepart", type="string"),
      *                     @OA\Property(property="lieuArrivee", type="string"),
@@ -138,7 +138,17 @@ class LigneController extends Controller
         $ligne->reseau_id = $request->user()->reseau_id;
         $ligne->created_by = $request->user()->email;
         $ligne->created_at = now();
-        $ligne->save();
+        $ligne->saveOrFail();
+        Historique::enregistrerHistorique(
+            'lignes',
+            $ligne->id,
+            auth()->user()->id,
+            'create',
+            auth()->user()->email,
+            auth()->user()->reseau->nom,
+            null,
+            json_encode($ligne->toArray())
+        );
         return response()->json([
             "message" => "La ligne a bien été enregistrée",
             "ligne" => $ligne
@@ -181,10 +191,21 @@ class LigneController extends Controller
      */
     public function update(LigneRequest $request, Ligne $ligne)
     {
+        $valeurAvant = $ligne->toArray();
         $this->authorize("update", $ligne);
         $ligne->fill($request->validated());
         $ligne->updated_by = $request->user()->email;
         $ligne->updated_at = now();
+        Historique::enregistrerHistorique(
+            'lignes',
+            $ligne->id,
+            auth()->user()->id,
+            'update',
+            auth()->user()->email,
+            auth()->user()->reseau->nom,
+            json_encode($valeurAvant),
+            json_encode($ligne->toArray())
+        );
         $ligne->update();
         return response()->json([
             "message" => "La ligne a bien été mise à jour",
@@ -213,8 +234,19 @@ class LigneController extends Controller
      */
     public function destroy(Ligne $ligne)
     {
+        $valeurAvant = $ligne->toArray();
         $this->authorize("delete", $ligne);
         if ($ligne->etat === "actif") {
+            Historique::enregistrerHistorique(
+                'lignes',
+                $ligne->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($ligne->toArray())
+            );
             $ligne->update(['etat' => 'corbeille']);
             return response()->json([
                 "message" => "La ligne a bien été mise dans la  corbeillee",
@@ -246,8 +278,19 @@ class LigneController extends Controller
      */
     public function delete(Ligne $ligne)
     {
+        $valeurAvant = $ligne->toArray();
         $this->authorize("delete", $ligne);
         if ($ligne->etat === "corbeille") {
+            Historique::enregistrerHistorique(
+                'lignes',
+                $ligne->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($ligne->toArray())
+            );
             $ligne->update(['etat' => 'supprimé']);
             return response()->json([
                 "message" => "La ligne a bien été supprimée",
@@ -280,9 +323,19 @@ class LigneController extends Controller
      */
     public function restore(Ligne $ligne)
     {
+        $valeurAvant = $ligne->toArray();
         $this->authorize("restore", $ligne);
         if ($ligne->etat === "corbeille") {
-
+            Historique::enregistrerHistorique(
+                'lignes',
+                $ligne->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($ligne->toArray())
+            );
             $ligne->update(['etat' => 'actif']);
             return response()->json([
                 "message" => "La ligne a bien été restaurée",
@@ -313,8 +366,10 @@ class LigneController extends Controller
      */
     public function deleted()
     {
-        $lignesSupprimees = Ligne::where('etat', 'corbeille')->get();
-        if (empty($lignesSupprimees)) {
+        $lignesSupprimees = Ligne::where('etat', 'corbeille')
+            ->where('reseau_id', auth()->user()->reseau_id)
+            ->get();
+        if ($lignesSupprimees->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de lignes supprimées"
             ], 404);
@@ -347,13 +402,24 @@ class LigneController extends Controller
         $lignesSupprimees = Ligne::where('etat', 'corbeille')
             ->where('reseau_id', auth()->user()->reseau_id)
             ->get();
-        if (empty($lignesSupprimees)) {
+        if ($lignesSupprimees->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de lignes supprimées"
             ], 404);
         }
         foreach ($lignesSupprimees as $ligne) {
+            $valeurAvant = $ligne->toArray();
             $this->authorize("delete", $ligne);
+            Historique::enregistrerHistorique(
+                'lignes',
+                $ligne->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($ligne->toArray())
+            );
             $ligne->update(["etat" => "supprimé"]);
         }
         return response()->json([

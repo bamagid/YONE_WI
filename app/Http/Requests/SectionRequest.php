@@ -17,7 +17,7 @@ class SectionRequest extends FormRequest
     {
         return [
             'Depart' => ['required', 'string'],
-            'Arrivee' => ['required', 'string'],
+            'Arrivee' => ['required', 'string', 'different:Depart'],
             'ligne_id' => ['required', 'exists:lignes,id'],
             'tarif_id' => ['required', 'exists:tarifs,id'],
         ];

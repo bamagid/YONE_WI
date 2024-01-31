@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Reseau;
+use App\Models\Historique;
 use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\Switch_;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
@@ -13,7 +15,6 @@ use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Validator;
-use PhpParser\Node\Stmt\Switch_;
 
 class UserController extends Controller
 {
@@ -117,7 +118,7 @@ class UserController extends Controller
             $image = $request->file('image');
             $user->image = $image->store('images', 'public');
         }
-        $user->save();
+        $user->saveOrFail();
         event(new Registered($user));
         return response()->json([
             "status" => true,
@@ -165,6 +166,7 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        $valeurAvant = $user->toArray();
         $id_reseau = $user->reseau_id;
         $user->fill($request->validated());
         if ($request->file('image')) {
@@ -178,6 +180,16 @@ class UserController extends Controller
         if ($request->user() && $request->user()->role_id === 1) {
             $user->reseau_id == $id_reseau;
         }
+        Historique::enregistrerHistorique(
+            'users',
+            $user->id,
+            auth()->user()->id,
+            'update',
+            auth()->user()->email,
+            auth()->user()->reseau->nom,
+            json_encode($valeurAvant),
+            json_encode($user->toArray())
+        );
         $user->update();
         return response()->json([
             "status" => true,

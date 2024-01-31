@@ -840,9 +840,6 @@
                                     "nom": {
                                         "type": "string"
                                     },
-                                    "type": {
-                                        "type": "string"
-                                    },
                                     "type_id": {
                                         "type": "integer"
                                     },
@@ -2255,7 +2252,7 @@
                                     "Arrivee": {
                                         "type": "string"
                                     },
-                                    "section_id": {
+                                    "ligne_id": {
                                         "type": "integer"
                                     },
                                     "tarif_id": {
@@ -2449,7 +2446,7 @@
                                     "Arrivee": {
                                         "type": "string"
                                     },
-                                    "section_id": {
+                                    "ligne_id": {
                                         "type": "integer"
                                     },
                                     "tarif_id": {
@@ -3090,14 +3087,6 @@
                 "description": "",
                 "operationId": "5ae5a6ccb7da5e1410da3b56b6fde09f",
                 "parameters": [
-                    {
-                        "name": "",
-                        "in": "path",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     {
                         "name": "User-Agent",
                         "in": "header",
