@@ -249,6 +249,7 @@ class UserController extends Controller
                 "token" => $token
             ], 200);
         } elseif (!empty($user->etat) &&  $user->etat == "bloqué") {
+            auth('api')->logout();
             return response()->json([
                 "status" => false,
                 "message" => "Votre compte a été bloqué par l'administrateur",

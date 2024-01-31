@@ -60,7 +60,7 @@ class AdminSystemController extends Controller
             $image = $request->file('image');
             $adminSystem->image = $image->store('images', 'public');;
         }
-        $adminSystem->save();
+        $adminSystem->update();
         return response()->json([
             "message" => "information mis a jour avec succés",
             'adminreseau' => $adminSystem
