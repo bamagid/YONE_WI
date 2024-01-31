@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Type;
+use App\Models\Historique;
 use App\Http\Requests\TypeRequest;
 
 class TypeController extends Controller
@@ -11,7 +12,6 @@ class TypeController extends Controller
     {
         $this->middleware('auth:api')->except('index', 'show');
     }
-
     /**
      * @OA\GET(
      *     path="/api/types",
@@ -23,8 +23,6 @@ class TypeController extends Controller
      * @OA\Response(response="200", description="OK"),
      * @OA\Response(response="404", description="Not Found"),
      * @OA\Response(response="500", description="Internal Server Error"),
-     *     @OA\Parameter(in="path", name="", required=false, @OA\Schema(type="string")
-     * ),
      *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
      * ),
      *     tags={"Gestion des types"},
@@ -105,6 +103,16 @@ class TypeController extends Controller
         $type->reseau_id = $request->user()->reseau_id;
         $type->created_at = now();
         $type->saveOrFail();
+        Historique::enregistrerHistorique(
+            'types',
+            $type->id,
+            auth()->user()->id,
+            'create',
+            auth()->user()->email,
+            auth()->user()->reseau->nom,
+            null,
+            json_encode($type->toArray()),
+        );
         return response()->json([
             "message" => "Le type a bien été enregistré",
             "type" => $type
@@ -131,7 +139,7 @@ class TypeController extends Controller
      */
     public function show(Type $type)
     {
-        if ($type->etat == "supprimé") {
+        if ($type->etat == "supprimé" ||  $type->reseau_id !== auth()->user()->reseau_id) {
             return response()->json([
                 "message" => "No query results for model [App\\Models\\Type] $type->id"
             ], 404);
@@ -177,10 +185,21 @@ class TypeController extends Controller
 
     public function update(TypeRequest $request, Type $type)
     {
+        $valeurAvant = $type->toArray();
         $this->authorize("update", $type);
         $type->fill($request->validated());
         $type->updated_by = $request->user()->email;
         $type->updated_at = now();
+        Historique::enregistrerHistorique(
+            'types',
+            $type->id,
+            auth()->user()->id,
+            'update',
+            auth()->user()->email,
+            auth()->user()->reseau->nom,
+            json_encode($valeurAvant),
+            json_encode($type)
+        );
         $type->update();
         return response()->json([
             "message" => "Le type a bien été mis à jour",
@@ -209,8 +228,19 @@ class TypeController extends Controller
      */
     public function destroy(Type $type)
     {
+        $valeurAvant = $type->toArray();
         $this->authorize("delete", $type);
         if ($type->etat === "actif") {
+            Historique::enregistrerHistorique(
+                'types',
+                $type->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($type->toArray())
+            );
             $type->update(['etat' => 'corbeille']);
             return response()->json([
                 "message" => "Le type a bien été mis dans la corbeille",
@@ -243,8 +273,19 @@ class TypeController extends Controller
      */
     public function delete(Type $type)
     {
+        $valeurAvant = $type->toArray();
         $this->authorize("delete", $type);
         if ($type->etat === "corbeille") {
+            Historique::enregistrerHistorique(
+                'types',
+                $type->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($type->toArray())
+            );
             $type->update(['etat' => 'supprimé']);
             return response()->json([
                 "message" => "Le type a bien été supprimé",
@@ -277,8 +318,19 @@ class TypeController extends Controller
      */
     public function restore(Type $type)
     {
+        $valeurAvant = $type->toArray();
         $this->authorize("restore", $type);
         if ($type->etat === "corbeille") {
+            Historique::enregistrerHistorique(
+                'types',
+                $type->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($type->toArray())
+            );
             $type->update(['etat' => 'actif']);
             return response()->json([
                 "message" => "Le type a bien été restauré",
@@ -309,8 +361,10 @@ class TypeController extends Controller
      */
     public function deleted()
     {
-        $typesSupprimes = Type::where('etat', 'corbeille')->get();
-        if (empty($typesSupprimes)) {
+        $typesSupprimes = Type::where('etat', 'corbeille')
+            ->where('reseau_id', auth()->user()->reseau_id)
+            ->get();
+        if ($typesSupprimes->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de types supprimés"
             ], 404);
@@ -343,12 +397,23 @@ class TypeController extends Controller
         $typesSupprimes = Type::where('etat', 'corbeille')
             ->where('reseau_id', auth()->user()->reseau_id)
             ->get();
-        if (empty($typesSupprimes)) {
+        if ($typesSupprimes->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de types supprimés"
             ], 404);
         }
         foreach ($typesSupprimes as $type) {
+            $valeurAvant = $type->toArray();
+            Historique::enregistrerHistorique(
+                'types',
+                $type->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($type->toArray())
+            );
             $type->update(["etat" => "supprimé"]);
         }
         return response()->json([

@@ -84,7 +84,7 @@ class AbonnementController extends Controller
      */
     public function show(Abonnement $abonnement)
     {
-        if ($abonnement->etat === "supprimé") {
+        if ($abonnement->etat === "supprimé" ||  $abonnement->reseau_id !== auth()->user()->reseau_id) {
             return response()->json([
                 "message" => "No query results for model [App\\Models\\Abonnement] $abonnement->id"
             ], 404);
@@ -144,7 +144,7 @@ class AbonnementController extends Controller
             'create',
             $request->user()->email,
             $request->user()->reseau->nom,
-            [],
+            null,
             json_encode($abonnement->toArray())
         );
         return response()->json([
@@ -202,7 +202,6 @@ class AbonnementController extends Controller
      *                     @OA\Property(property="prix", type="integer"),
      *                     @OA\Property(property="type", type="string"),
      *                     @OA\Property(property="duree", type="string"),
-     *                     @OA\Property(property="etat", type="string"),
      *                     @OA\Property(property="description", type="string"),
      *                 },
      *             ),
@@ -214,11 +213,11 @@ class AbonnementController extends Controller
 
     public function update(AbonnementRequest $request, Abonnement $abonnement)
     {
+        $valeurAvant = $abonnement->toArray();
         $this->authorize('update', $abonnement);
         $abonnement->fill($request->validated());
         $abonnement->updated_by = $request->user()->email;
         $abonnement->updated_at = now();
-        $abonnement->update();
         Historique::enregistrerHistorique(
             'abonnements',
             $abonnement->id,
@@ -226,9 +225,10 @@ class AbonnementController extends Controller
             'update',
             auth()->user()->email,
             auth()->user()->reseau->nom,
-            [json_encode($abonnement->getOriginal())],
-            [json_encode($abonnement->toArray())]
+            json_encode($valeurAvant),
+            json_encode($abonnement->toArray())
         );
+        $abonnement->update();
         return response()->json([
             "message" => "L'abonnement a bien été mis à jour",
             "abonnement" => $abonnement
@@ -256,9 +256,9 @@ class AbonnementController extends Controller
      */
     public function destroy(Abonnement $abonnement)
     {
+        $valeurAvant = $abonnement->toArray();
         $this->authorize('delete', $abonnement);
         if ($abonnement->etat === "actif") {
-            $abonnement->update(['etat' => 'corbeille']);
             Historique::enregistrerHistorique(
                 'abonnements',
                 $abonnement->id,
@@ -266,9 +266,10 @@ class AbonnementController extends Controller
                 'update',
                 auth()->user()->email,
                 auth()->user()->reseau->nom,
-                [json_encode($abonnement->getOriginal())],
-                [json_encode($abonnement->toArray())]
+                json_encode($valeurAvant),
+                json_encode($abonnement->toArray())
             );
+            $abonnement->update(['etat' => 'corbeille']);
             return response()->json([
                 "message" => "L'abonnement a bien été mis dans la corbeille",
                 "abonnement" => $abonnement
@@ -298,9 +299,9 @@ class AbonnementController extends Controller
      */
     public function delete(Abonnement $abonnement)
     {
+        $valeurAvant = $abonnement->toArray();
         $this->authorize('delete', $abonnement);
         if ($abonnement->etat === "corbeille") {
-            $abonnement->update(['etat' => 'supprimé']);
             Historique::enregistrerHistorique(
                 'abonnements',
                 $abonnement->id,
@@ -308,9 +309,10 @@ class AbonnementController extends Controller
                 'update',
                 auth()->user()->email,
                 auth()->user()->reseau->nom,
-                [json_encode($abonnement->getOriginal())],
-                [json_encode($abonnement->toArray())]
+                json_encode($valeurAvant),
+                json_encode($abonnement->toArray())
             );
+            $abonnement->update(['etat' => 'supprimé']);
             return response()->json([
                 "message" => "L'abonnement a bien été supprimé",
                 "abonnement" => $abonnement
@@ -342,6 +344,7 @@ class AbonnementController extends Controller
      */
     public function restore(Abonnement $abonnement)
     {
+        $valeurAvant = $abonnement->toArray();
         $this->authorize('restore', $abonnement);
         if ($abonnement->etat === "corbeille") {
             Historique::enregistrerHistorique(
@@ -351,8 +354,8 @@ class AbonnementController extends Controller
                 'update',
                 auth()->user()->email,
                 auth()->user()->reseau->nom,
-                [json_encode($abonnement->getOriginal())],
-                [json_encode($abonnement->toArray())]
+                json_encode($valeurAvant),
+                json_encode($abonnement->toArray())
             );
             $abonnement->update(['etat' => 'actif']);
             return response()->json([
@@ -384,8 +387,10 @@ class AbonnementController extends Controller
      */
     public function deleted()
     {
-        $abonnementsSupprimes = Abonnement::where('etat', 'corbeille')->get();
-        if (empty($abonnementsSupprimes)) {
+        $abonnementsSupprimes = Abonnement::where('etat', 'corbeille')
+            ->where('reseau_id', auth()->user()->reseau_id)
+            ->get();
+        if ($abonnementsSupprimes->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de abonnements supprimés"
             ], 404);
@@ -419,12 +424,14 @@ class AbonnementController extends Controller
             ->where('reseau_id', auth()->user()->reseau_id)
             ->get();
 
-        if (empty($abonnementsSupprimes)) {
+        if ($abonnementsSupprimes->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de abonnements supprimés"
             ], 404);
         }
         foreach ($abonnementsSupprimes as $abonnement) {
+            $valeurAvant = $abonnement->toArray();
+            $this->authorize('delete', $abonnement);
             Historique::enregistrerHistorique(
                 'abonnements',
                 $abonnement->id,
@@ -432,10 +439,9 @@ class AbonnementController extends Controller
                 'update',
                 auth()->user()->email,
                 auth()->user()->reseau->nom,
-                [json_encode($abonnement->getOriginal())],
-                [json_encode($abonnement->toArray())]
+                json_encode($valeurAvant),
+                json_encode($abonnement->toArray())
             );
-            $this->authorize('delete', $abonnement);
             $abonnement->update(["etat" => "supprimé"]);
         }
         return response()->json([

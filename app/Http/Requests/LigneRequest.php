@@ -19,7 +19,7 @@ class LigneRequest extends FormRequest
             'nom' => ['required', 'string'],
             'type_id' => ['required', 'exists:types,id'],
             'lieuDepart' => ['required', 'string'],
-            'lieuArrivee' => ['required', 'string'],
+            'lieuArrivee' => ['required', 'string', 'different:lieuDepart'],
         ];
     }
 

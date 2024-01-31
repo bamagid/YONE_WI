@@ -14,4 +14,12 @@ class Ligne extends Model
     {
         return $this->belongsTo(Type::class);
     }
+    public function sections()
+    {
+        return $this->hasMany(Section::class);
+    }
+    public function reseau()
+    {
+        return $this->hasMany(Reseau::class);
+    }
 }

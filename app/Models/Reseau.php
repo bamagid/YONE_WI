@@ -21,4 +21,9 @@ class Reseau extends Model
     {
         return $this->hasMany(Type::class);
     }
+
+    public function lignes()
+    {
+        return $this->hasMany(Ligne::class);
+    }
 }

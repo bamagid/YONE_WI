@@ -23,7 +23,7 @@ class SectionPolicy
      */
     public function update(User $user, Section $section)
     {
-        return $user->reseau_id === $section->reseau_id
+        return $user->reseau_id === $section->ligne->reseau_id
             ? Response::allow()
             : Response::deny('Vous n\'êtes pas autorisé à modifier cette section.');
     }
@@ -33,7 +33,7 @@ class SectionPolicy
      */
     public function delete(User $user, Section $section)
     {
-        return $user->reseau_id === $section->reseau_id
+        return $user->reseau_id === $section->ligne->reseau_id
             ? Response::allow()
             : Response::deny('Vous n\'êtes pas autorisé à supprimer cette section.');
     }
@@ -43,7 +43,7 @@ class SectionPolicy
      */
     public function restore(User $user, Section $section)
     {
-        return $user->reseau_id === $section->reseau_id
+        return $user->reseau_id === $section->ligne->reseau_id
             ? Response::allow()
             : Response::deny('Vous n\'êtes pas autorisé à supprimer cette section.');
     }

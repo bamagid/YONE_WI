@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tarif;
+use App\Models\Historique;
 use App\Http\Requests\TarifRequest;
 
 class TarifController extends Controller
@@ -85,7 +86,7 @@ class TarifController extends Controller
      */
     public function show(Tarif $tarif)
     {
-        if ($tarif->etat == "supprimé") {
+        if ($tarif->etat == "supprimé" ||  $tarif->reseau_id !== auth()->user()->reseau_id) {
             return response()->json([
                 "message" => "No query results for model [App\\Models\\Tarif] $tarif->id"
             ], 404);
@@ -136,6 +137,16 @@ class TarifController extends Controller
         $tarif->created_by = $request->user()->email;
         $tarif->created_at = now();
         $tarif->saveOrFail();
+        Historique::enregistrerHistorique(
+            'tarifs',
+            $tarif->id,
+            auth()->user()->id,
+            'create',
+            auth()->user()->email,
+            auth()->user()->reseau->nom,
+            null,
+            json_encode($tarif->toArray())
+        );
         return response()->json([
             "message" => "Le tarif a bien été enregistré",
             "tarif" => $tarif
@@ -176,10 +187,21 @@ class TarifController extends Controller
 
     public function update(TarifRequest $request, Tarif $tarif)
     {
+        $valeurAvant = $tarif->toArray();
         $this->authorize("update", $tarif);
         $tarif->fill($request->validated());
         $tarif->updated_by = $request->user()->email;
         $tarif->updated_at = now();
+        Historique::enregistrerHistorique(
+            'tarifs',
+            $tarif->id,
+            auth()->user()->id,
+            'update',
+            auth()->user()->email,
+            auth()->user()->reseau->nom,
+            json_encode($valeurAvant),
+            json_encode($tarif->toArray())
+        );
         $tarif->update();
         return response()->json([
             "message" => "Le tarif a bien été mis à jour",
@@ -208,8 +230,19 @@ class TarifController extends Controller
      */
     public function destroy(Tarif $tarif)
     {
+        $valeurAvant = $tarif->toArray();
         $this->authorize("delete", $tarif);
         if ($tarif->etat === "actif") {
+            Historique::enregistrerHistorique(
+                'tarifs',
+                $tarif->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($tarif->toArray())
+            );
             $tarif->update(['etat' => 'corbeille']);
             return response()->json([
                 "message" => "Le tarif a bien été mis dans la corbeille",
@@ -218,7 +251,7 @@ class TarifController extends Controller
         }
         return response()->json([
             "status" => false,
-            "message" => "Desole vous ne pouvais mettre dans la corbeille que les tarifs actif",
+            "message" => "Desole vous ne pouvez mettre dans la corbeille que les tarifs actif",
         ], 422);
     }
     /**
@@ -275,9 +308,20 @@ class TarifController extends Controller
      */
     public function delete(Tarif $tarif)
     {
+        $valeurAvant = $tarif->toArray();
         $this->authorize("delete", $tarif);
         if ($tarif->etat === "corbeille") {
             $tarif->update(['etat' => 'supprimé']);
+            Historique::enregistrerHistorique(
+                'tarifs',
+                $tarif->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($tarif->toArray())
+            );
             return response()->json([
                 "message" => "Le tarif a bien été supprimé",
                 "tarif" => $tarif
@@ -307,8 +351,10 @@ class TarifController extends Controller
      */
     public function deleted()
     {
-        $tarifsSupprimes = Tarif::where('etat', 'corbeille')->get();
-        if (empty($tarifsSupprimes)) {
+        $tarifsSupprimes = Tarif::where('etat', 'corbeille')
+            ->where('reseau_id', auth()->user()->reseau_id)
+            ->get();
+        if ($tarifsSupprimes->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de tarifs supprimés"
             ], 404);
@@ -341,13 +387,23 @@ class TarifController extends Controller
         $tarifsSupprimes = Tarif::where('etat', 'corbeille')
             ->where('reseau_id', auth()->user()->reseau_id)
             ->get();
-        if (!$tarifsSupprimes) {
+        if ($tarifsSupprimes->all() == null) {
             return response()->json([
                 "error" => "Il n'y a pas de tarifs supprimés"
             ], 404);
         }
-        dd($tarifsSupprimes);
         foreach ($tarifsSupprimes as $tarif) {
+            $valeurAvant = $tarif->toArray();
+            Historique::enregistrerHistorique(
+                'tarifs',
+                $tarif->id,
+                auth()->user()->id,
+                'update',
+                auth()->user()->email,
+                auth()->user()->reseau->nom,
+                json_encode($valeurAvant),
+                json_encode($tarif->toArray())
+            );
             $tarif->update(["etat" => "supprimé"]);
         }
         return response()->json([
