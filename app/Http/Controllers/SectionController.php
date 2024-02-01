@@ -90,7 +90,7 @@ class SectionController extends Controller
      */
     public function show(Section $section)
     {
-        if ($section->etat == "supprimé"  ||  $section->ligne->reseau_id !== auth()->user()->reseau_id) {
+        if ($section->etat == "supprimé") {
             return response()->json([
                 "message" => "No query results for model [App\\Models\\Section] $section->id"
             ], 404);

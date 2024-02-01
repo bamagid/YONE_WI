@@ -19,8 +19,7 @@ class TarifFactory extends Factory
         return [
             'prix' => $this->faker->numberBetween(150, 50),
             'type' =>  $this->faker->randomElement(['normal', 'entre section',]),
-            'etat' => $this->faker->randomElement(['actif', 'corbeille', 'supprimé']),
-            'reseau_id' => $this->faker->randomElement([1, 2]),
+            'reseau_id' => 1,
             'created_at' => now(),
             'updated_at' => now(),
         ];

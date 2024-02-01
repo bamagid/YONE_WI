@@ -19,7 +19,6 @@ class SectionFactory extends Factory
         return [
             'Depart' => $this->faker->randomElement(["Keur Massar,Mbao,Ouakam,Median"]),
             'Arrivee' => $this->faker->randomElement(["mariste", "petersen", "pikine", "guediawaye"]),
-            'etat' => $this->faker->randomElement(['actif', 'corbeille', 'supprimé']),
             'ligne_id' => $this->faker->randomElement([1, 2]),
             'tarif_id' => $this->faker->randomElement([1, 2]),
             'created_at' => now(),

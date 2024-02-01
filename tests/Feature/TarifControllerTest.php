@@ -3,35 +3,34 @@
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Abonnement;
 use App\Models\Reseau;
-use App\Models\Type;
+use App\Models\Tarif;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class AbonnementControllerTest extends TestCase
+class TarifControllerTest extends TestCase
 {
     public function testIndex()
     {
         $this->artisan('migrate:fresh');
-        $response = $this->get('/api/abonnements');
+        $response = $this->get('/api/tarifs');
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "abonnements" => $response->json('abonnements')
+            "tarifs" => $response->json('tarifs')
         ]);
     }
-    public function testMesabonnements()
+    public function testMestarifs()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
         Role::factory()->create();
         $user = User::factory()->create();
-        Abonnement::factory(3)->create();
-        $response = $this->actingAs($user)->get('/api/mesabonnements');
+        Tarif::factory(3)->create();
+        $response = $this->actingAs($user)->get('/api/mestarifs');
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "abonnements" => $response->json('abonnements')
+            "tarifs" => $response->json('tarifs')
         ]);
     }
 
@@ -39,12 +38,12 @@ class AbonnementControllerTest extends TestCase
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
-        $abonnement = Abonnement::factory()->create();
-        $response = $this->get("/api/abonnements/$abonnement->id");
+        $tarif = Tarif::factory()->create();
+        $response = $this->get("/api/tarifs/$tarif->id");
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "abonnement" => $response->json('abonnement')
+            "tarif" => $response->json('tarif')
         ]);
     }
 
@@ -54,17 +53,15 @@ class AbonnementControllerTest extends TestCase
         Reseau::factory(2)->create();
         Role::factory()->create();
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->post('/api/abonnements', [
-            "prix" => 10000,
-            "type" => "luxe",
-            "duree" => "annuel",
-            "description" => "Descritption d'un abonnement annuel",
+        $response = $this->actingAs($user)->post('/api/tarifs', [
+            "prix" => 60,
+            "type" => "entre section",
         ]);
 
         $response->assertStatus(201);
         $response->assertJson([
             "message" => $response->json('message'),
-            "abonnement" => $response->json('abonnement')
+            "tarif" => $response->json('tarif')
         ]);
     }
 
@@ -72,20 +69,18 @@ class AbonnementControllerTest extends TestCase
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
-        $abonnement = Abonnement::factory()->create();
+        $tarif = Tarif::factory()->create();
         Role::factory()->create();
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->patch("/api/abonnements/$abonnement->id", [
-            "prix" => 10000,
-            "type" => "luxe modifier",
-            "duree" => "annuel modifié",
-            "description" => "Descritption d'un abonnement annuel modifié",
+        $response = $this->actingAs($user)->patch("/api/tarifs/$tarif->id", [
+            "prix" => 500,
+            "type" => "trajet",
         ]);
 
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "abonnement" => $response->json('abonnement')
+            "tarif" => $response->json('tarif')
         ]);
     }
 
@@ -95,13 +90,13 @@ class AbonnementControllerTest extends TestCase
         Reseau::factory(2)->create();
         Role::factory()->create();
         $user = User::factory()->create();
-        $abonnement = Abonnement::factory()->create(["etat" => "actif"]);
-        $response = $this->actingAs($user)->delete("/api/abonnements/$abonnement->id");
+        $tarif = Tarif::factory()->create(["etat" => "actif"]);
+        $response = $this->actingAs($user)->delete("/api/tarifs/$tarif->id");
 
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "abonnement" => $response->json('abonnement')
+            "tarif" => $response->json('tarif')
         ]);
     }
 
@@ -109,15 +104,15 @@ class AbonnementControllerTest extends TestCase
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
-        $abonnement = Abonnement::factory()->create(["etat" => "corbeille"]);
+        $tarif = Tarif::factory()->create(["etat" => "corbeille"]);
         Role::factory()->create();
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->patch("/api/abonnements/delete/{$abonnement->id}");
+        $response = $this->actingAs($user)->patch("/api/tarifs/delete/{$tarif->id}");
 
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "abonnement" => $response->json('abonnement')
+            "tarif" => $response->json('tarif')
         ]);
     }
 
@@ -127,13 +122,13 @@ class AbonnementControllerTest extends TestCase
         Reseau::factory(2)->create();
         Role::factory()->create();
         $user = User::factory()->create();
-        $abonnement = Abonnement::factory()->create(["etat" => "corbeille"]);
-        $response = $this->actingAs($user)->patch("/api/abonnements/restaurer/$abonnement->id");
+        $tarif = Tarif::factory()->create(["etat" => "corbeille"]);
+        $response = $this->actingAs($user)->patch("/api/tarifs/restaurer/$tarif->id");
 
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "abonnement" => $response->json('abonnement')
+            "tarif" => $response->json('tarif')
         ]);
     }
 
@@ -141,15 +136,15 @@ class AbonnementControllerTest extends TestCase
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
-        Abonnement::factory(3)->create(["etat" => "corbeille"]);
+        Tarif::factory(3)->create(["etat" => "corbeille"]);
         Role::factory()->create();
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->get('/api/abonnements/deleted/all');
+        $response = $this->actingAs($user)->get('/api/tarifs/deleted/all');
 
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "abonnements" => $response->json('abonnements')
+            "tarifs" => $response->json('tarifs')
         ]);
     }
 
@@ -157,10 +152,10 @@ class AbonnementControllerTest extends TestCase
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
-        Abonnement::factory(3)->create(["etat" => "corbeille"]);
+        Tarif::factory(3)->create(["etat" => "corbeille"]);
         Role::factory()->create();
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->post('/api/abonnements/empty-trash');
+        $response = $this->actingAs($user)->post('/api/tarifs/empty-trash');
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message')

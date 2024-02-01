@@ -46,12 +46,12 @@ class ForgotPasswordController extends Controller
      */
     public function submitForgetPasswordForm(Request $request)
     {
-        // $validator = Validator::make($request->all(), [
-        //     'email' => 'required|email|exists:users',
-        // ]);
-        // if ($validator->fails()) {
-        //     return response()->json(['errors' => $validator->errors()], 422);
-        // }
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
         $token = Str::random(64);
 

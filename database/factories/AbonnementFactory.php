@@ -28,9 +28,8 @@ class AbonnementFactory extends Factory
             'prix' => $this->faker->numberBetween(5000, 50000),
             'type' => $this->faker->randomElement($types),
             'duree' => $this->faker->randomElement($durees),
-            'etat' => $this->faker->randomElement(['actif', 'corbeille', 'supprimé']),
             'description' => $this->faker->randomElement($descriptions),
-            'reseau_id' => $this->faker->randomElement([1, 2]),
+            'reseau_id' => 1,
             'created_at' => now(),
             'updated_at' => now(),
         ];
