@@ -17,10 +17,10 @@ class SectionFactory extends Factory
     public function definition(): array
     {
         return [
-            'Depart' => $this->faker->randomElement(["Keur Massar,Mbao,Ouakam,Median"]),
-            'Arrivee' => $this->faker->randomElement(["mariste", "petersen", "pikine", "guediawaye"]),
-            'ligne_id' => $this->faker->randomElement([1, 2]),
-            'tarif_id' => $this->faker->randomElement([1, 2]),
+            'Depart' => fake()->randomElement(["Keur Massar,Mbao,Ouakam,Median"]),
+            'Arrivee' => fake()->randomElement(["mariste", "petersen", "pikine", "guediawaye"]),
+            'ligne_id' => fake()->randomElement([1, 2]),
+            'tarif_id' => fake()->randomElement([1, 2]),
             'created_at' => now(),
             'updated_at' => now(),
         ];

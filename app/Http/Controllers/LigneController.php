@@ -133,6 +133,12 @@ class LigneController extends Controller
     public function store(LigneRequest $request)
     {
         $this->authorize('create', Ligne::class);
+        $lignes_reseau = Ligne::where('reseau_id', $request->user()->reseau_id)->get();
+        if ($lignes_reseau->contains('nom', $request->validated()['nom'])) {
+            return response()->json([
+                'message' => 'Desolé cette ligne existe déjà dans votre reseau '
+            ], 422);
+        }
         $ligne = new Ligne();
         $ligne->fill($request->validated());
         $ligne->reseau_id = $request->user()->reseau_id;
@@ -193,6 +199,15 @@ class LigneController extends Controller
     {
         $valeurAvant = $ligne->toArray();
         $this->authorize("update", $ligne);
+        $lignes_reseau = Ligne::where('reseau_id', $request->user()->reseau_id)->get();
+        if (
+            $request->validated()['nom'] !== $ligne->nom &&
+            $lignes_reseau->contains('nom', $request->validated()['nom'])
+        ) {
+            return response()->json([
+                'message' => 'Desolé cette ligne existe déjà dans votre reseau '
+            ], 422);
+        }
         $ligne->fill($request->validated());
         $ligne->updated_by = $request->user()->email;
         $ligne->updated_at = now();

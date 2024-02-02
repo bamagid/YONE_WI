@@ -11,7 +11,7 @@ use App\Models\Type;
 
 class SectionControllerTest extends TestCase
 {
-    public function testIndex()
+    public function testSectionIndex()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -26,7 +26,7 @@ class SectionControllerTest extends TestCase
                 "sections" => $response->json('sections')
             ]);
     }
-    public function testMessections()
+    public function testMesSections()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -44,7 +44,7 @@ class SectionControllerTest extends TestCase
             ]);
     }
 
-    public function testShow()
+    public function testSectionShow()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -60,7 +60,7 @@ class SectionControllerTest extends TestCase
             ]);
     }
 
-    public function testStore()
+    public function testSectionStore()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -83,7 +83,7 @@ class SectionControllerTest extends TestCase
             ]);
     }
 
-    public function testUpdate()
+    public function testSectionUpdate()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -107,7 +107,7 @@ class SectionControllerTest extends TestCase
             ]);
     }
 
-    public function testDestroy()
+    public function testSectionDestroy()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -126,7 +126,7 @@ class SectionControllerTest extends TestCase
             ]);
     }
 
-    public function testDelete()
+    public function testSectionDelete()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -146,7 +146,7 @@ class SectionControllerTest extends TestCase
             ]);
     }
 
-    public function testRestore()
+    public function testSectionRestore()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -166,7 +166,7 @@ class SectionControllerTest extends TestCase
             ]);
     }
 
-    public function testDeleted()
+    public function testSectionDeleted()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -186,7 +186,7 @@ class SectionControllerTest extends TestCase
             ]);
     }
 
-    public function testEmptyTrash()
+    public function testSectionEmptyTrash()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();

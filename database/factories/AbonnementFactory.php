@@ -25,10 +25,10 @@ class AbonnementFactory extends Factory
         ];
 
         return [
-            'prix' => $this->faker->numberBetween(5000, 50000),
-            'type' => $this->faker->randomElement($types),
-            'duree' => $this->faker->randomElement($durees),
-            'description' => $this->faker->randomElement($descriptions),
+            'prix' => fake()->numberBetween(5000, 50000),
+            'type' => fake()->randomElement($types),
+            'duree' => fake()->randomElement($durees),
+            'description' => fake()->randomElement($descriptions),
             'reseau_id' => 1,
             'created_at' => now(),
             'updated_at' => now(),

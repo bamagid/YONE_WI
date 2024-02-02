@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AbonnementControllerTest extends TestCase
 {
-    public function testIndex()
+    public function testAbonnementIndex()
     {
         $this->artisan('migrate:fresh');
         $response = $this->get('/api/abonnements');
@@ -20,7 +20,17 @@ class AbonnementControllerTest extends TestCase
             "abonnements" => $response->json('abonnements')
         ]);
     }
-    public function testMesabonnements()
+
+    public function testAbonnementSubscribe()
+    {
+        $this->artisan('migrate:fresh');
+        Reseau::factory()->create();
+        $abonnement = Abonnement::factory()->create();
+        $response = $this->get('/api/abonnements/subscribe/1');
+        $numeroWhatsApp = $abonnement->reseau->telephone;
+        $response->assertRedirect("https://api.whatsapp.com/send?phone=$numeroWhatsApp");
+    }
+    public function testMesAbonnements()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -35,7 +45,7 @@ class AbonnementControllerTest extends TestCase
         ]);
     }
 
-    public function testShow()
+    public function testAbonnementShow()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -48,7 +58,7 @@ class AbonnementControllerTest extends TestCase
         ]);
     }
 
-    public function testStore()
+    public function testAbonnementStore()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -68,7 +78,7 @@ class AbonnementControllerTest extends TestCase
         ]);
     }
 
-    public function testUpdate()
+    public function testAbonnementUpdate()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -89,7 +99,7 @@ class AbonnementControllerTest extends TestCase
         ]);
     }
 
-    public function testDestroy()
+    public function testAbonnementDestroy()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -105,7 +115,7 @@ class AbonnementControllerTest extends TestCase
         ]);
     }
 
-    public function testDelete()
+    public function testAbonnementDelete()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -121,7 +131,7 @@ class AbonnementControllerTest extends TestCase
         ]);
     }
 
-    public function testRestore()
+    public function testAbonnementRestore()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -137,7 +147,7 @@ class AbonnementControllerTest extends TestCase
         ]);
     }
 
-    public function testDeleted()
+    public function testAbonnementDeleted()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -153,7 +163,7 @@ class AbonnementControllerTest extends TestCase
         ]);
     }
 
-    public function testEmptyTrash()
+    public function testAbonnementEmptyTrash()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();

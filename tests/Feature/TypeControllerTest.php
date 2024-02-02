@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TypeControllerTest extends TestCase
 {
-    public function testIndex()
+    public function testTypeIndex()
     {
         $this->artisan('migrate:fresh');
         $response = $this->get('/api/types');
@@ -19,7 +19,7 @@ class TypeControllerTest extends TestCase
             "types" => $response->json('types')
         ]);
     }
-    public function testMestypes()
+    public function testTypeMestypes()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -34,7 +34,7 @@ class TypeControllerTest extends TestCase
         ]);
     }
 
-    public function testShow()
+    public function testTypeShow()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -47,7 +47,7 @@ class TypeControllerTest extends TestCase
         ]);
     }
 
-    public function testStore()
+    public function testTypeStore()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -65,7 +65,7 @@ class TypeControllerTest extends TestCase
         ]);
     }
 
-    public function testUpdate()
+    public function testTypeUpdate()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -84,7 +84,7 @@ class TypeControllerTest extends TestCase
         ]);
     }
 
-    public function testDestroy()
+    public function testTypeDestroy()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -100,7 +100,7 @@ class TypeControllerTest extends TestCase
         ]);
     }
 
-    public function testDelete()
+    public function testTypeDelete()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -116,7 +116,7 @@ class TypeControllerTest extends TestCase
         ]);
     }
 
-    public function testRestore()
+    public function testTypeRestore()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -132,7 +132,7 @@ class TypeControllerTest extends TestCase
         ]);
     }
 
-    public function testDeleted()
+    public function testTypeDeleted()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -148,7 +148,7 @@ class TypeControllerTest extends TestCase
         ]);
     }
 
-    public function testEmptyTrash()
+    public function testTypeEmptyTrash()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();

@@ -7,11 +7,10 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Reseau;
 use App\Models\AdminSystem;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserControllerTest extends TestCase
 {
-    public function testRegister()
+    public function testUserRegister()
     {
         $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
@@ -40,7 +39,7 @@ class UserControllerTest extends TestCase
             ]);
     }
 
-    public function testUpdate()
+    public function testUserUpdate()
     {
         $this->artisan('migrate:fresh');
         Role::factory()->create();
@@ -68,7 +67,7 @@ class UserControllerTest extends TestCase
                 "user" => $response->json('user')
             ]);
     }
-    public function testusersblocked()
+    public function testUsersBlocked()
     {
         $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
@@ -81,7 +80,7 @@ class UserControllerTest extends TestCase
                 "users" => $response->json('users')
             ]);
     }
-    public function testindex()
+    public function testUserIndex()
     {
         $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
@@ -161,7 +160,7 @@ class UserControllerTest extends TestCase
                 "message" => $response->json('message')
             ]);
     }
-    public function testdestroyuser()
+    public function testDestroyUser()
     {
         $this->artisan('migrate:fresh');
         Role::factory()->create();
@@ -173,7 +172,7 @@ class UserControllerTest extends TestCase
             ->assertJson(["message" => $response->json('message')]);
     }
 
-    public function testchangerEtat()
+    public function testChangerEtat()
     {
         $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();

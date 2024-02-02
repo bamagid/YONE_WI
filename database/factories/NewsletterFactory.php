@@ -17,7 +17,7 @@ class NewsletterFactory extends Factory
     public function definition(): array
     {
         return [
-            'email' => $this->faker->safeEmail,
+            'email' => fake()->safeEmail,
             'created_at' => now(),
             'updated_at' => now(),
         ];

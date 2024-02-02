@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TarifControllerTest extends TestCase
 {
-    public function testIndex()
+    public function testTarifIndex()
     {
         $this->artisan('migrate:fresh');
         $response = $this->get('/api/tarifs');
@@ -19,7 +19,7 @@ class TarifControllerTest extends TestCase
             "tarifs" => $response->json('tarifs')
         ]);
     }
-    public function testMestarifs()
+    public function testTarifMestarifs()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -34,7 +34,7 @@ class TarifControllerTest extends TestCase
         ]);
     }
 
-    public function testShow()
+    public function testTarifShow()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -47,7 +47,7 @@ class TarifControllerTest extends TestCase
         ]);
     }
 
-    public function testStore()
+    public function testTarifStore()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -65,7 +65,7 @@ class TarifControllerTest extends TestCase
         ]);
     }
 
-    public function testUpdate()
+    public function testTarifUpdate()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -84,7 +84,7 @@ class TarifControllerTest extends TestCase
         ]);
     }
 
-    public function testDestroy()
+    public function testTarifDestroy()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -100,7 +100,7 @@ class TarifControllerTest extends TestCase
         ]);
     }
 
-    public function testDelete()
+    public function testTarifDelete()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -116,7 +116,7 @@ class TarifControllerTest extends TestCase
         ]);
     }
 
-    public function testRestore()
+    public function testTarifRestore()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -132,7 +132,7 @@ class TarifControllerTest extends TestCase
         ]);
     }
 
-    public function testDeleted()
+    public function testTarifDeleted()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -148,7 +148,7 @@ class TarifControllerTest extends TestCase
         ]);
     }
 
-    public function testEmptyTrash()
+    public function testTarifEmptyTrash()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();

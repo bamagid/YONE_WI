@@ -6,11 +6,10 @@ use App\Models\User;
 use App\Models\Ligne;
 use App\Models\Reseau;
 use App\Models\Type;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class LigneControllerTest extends TestCase
 {
-    public function testIndex()
+    public function testLigneIndex()
     {
         $this->artisan('migrate:fresh');
         $response = $this->get('/api/lignes');
@@ -20,7 +19,7 @@ class LigneControllerTest extends TestCase
             "lignes" => $response->json('lignes')
         ]);
     }
-    public function testMeslignes()
+    public function testMesLignes()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -34,7 +33,7 @@ class LigneControllerTest extends TestCase
         ]);
     }
 
-    public function testShow()
+    public function testLigneShow()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -48,7 +47,7 @@ class LigneControllerTest extends TestCase
         ]);
     }
 
-    public function testStore()
+    public function testLigneStore()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -69,7 +68,7 @@ class LigneControllerTest extends TestCase
         ]);
     }
 
-    public function testUpdate()
+    public function testLigneUpdate()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -91,7 +90,7 @@ class LigneControllerTest extends TestCase
         ]);
     }
 
-    public function testDestroy()
+    public function testLigneDestroy()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -108,7 +107,7 @@ class LigneControllerTest extends TestCase
         ]);
     }
 
-    public function testDelete()
+    public function testLigneDelete()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -125,7 +124,7 @@ class LigneControllerTest extends TestCase
         ]);
     }
 
-    public function testRestore()
+    public function testLigneRestore()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -142,7 +141,7 @@ class LigneControllerTest extends TestCase
         ]);
     }
 
-    public function testDeleted()
+    public function testLigneDeleted()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
@@ -159,7 +158,7 @@ class LigneControllerTest extends TestCase
         ]);
     }
 
-    public function testEmptyTrash()
+    public function testLigneEmptyTrash()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();

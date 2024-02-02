@@ -6,7 +6,7 @@ use App\Models\role;
 
 class RoleControllerTest extends TestCase
 {
-    public function testIndex()
+    public function testRoleIndex()
     {
         $this->artisan('migrate:fresh');
         Role::factory(3)->create();
@@ -19,7 +19,7 @@ class RoleControllerTest extends TestCase
             ]);
     }
 
-    public function testStore()
+    public function testRoleStore()
     {
         $this->artisan('migrate:fresh');
         Role::factory()->create();
@@ -35,7 +35,7 @@ class RoleControllerTest extends TestCase
             ]);
     }
 
-    public function testUpdate()
+    public function testRoleUpdate()
     {
         $this->artisan('migrate:fresh');
         $role = Role::factory()->create();
@@ -51,7 +51,7 @@ class RoleControllerTest extends TestCase
             ]);
     }
 
-    public function testDestroy()
+    public function testRoleDestroy()
     {
         $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
@@ -65,7 +65,7 @@ class RoleControllerTest extends TestCase
             ]);
     }
 
-    public function testDelete()
+    public function testRoleDelete()
     {
         $this->artisan('migrate:fresh');
         $role = Role::factory()->create(["etat" => "corbeille"]);
@@ -78,7 +78,7 @@ class RoleControllerTest extends TestCase
             ]);
     }
 
-    public function testRestore()
+    public function testRoleRestore()
     {
         $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
@@ -92,7 +92,7 @@ class RoleControllerTest extends TestCase
             ]);
     }
 
-    public function testDeleted()
+    public function testRoleDeleted()
     {
         $this->artisan('migrate:fresh');
         Role::factory(3)->create(["etat" => "corbeille"]);
@@ -106,7 +106,7 @@ class RoleControllerTest extends TestCase
             ]);
     }
 
-    public function testEmptyTrash()
+    public function testRoleEmptyTrash()
     {
         $this->artisan('migrate:fresh');
         Role::factory(3)->create(["etat" => "corbeille"]);

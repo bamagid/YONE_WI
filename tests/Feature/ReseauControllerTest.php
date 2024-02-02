@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ReseauControllerTest extends TestCase
 {
-    public function testIndex()
+    public function testReseauIndex()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(3)->create();
@@ -21,7 +21,7 @@ class ReseauControllerTest extends TestCase
             ]);
     }
 
-    public function testShow()
+    public function testReseauShow()
     {
         $this->artisan('migrate:fresh');
         $reseau = Reseau::factory()->create();
@@ -33,7 +33,7 @@ class ReseauControllerTest extends TestCase
             ]);
     }
 
-    public function testStore()
+    public function testReseauStore()
     {
         $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
@@ -48,7 +48,7 @@ class ReseauControllerTest extends TestCase
             ]);
     }
 
-    public function testUpdate()
+    public function testReseauUpdate()
     {
         $this->artisan('migrate:fresh');
         $reseau = Reseau::factory()->create();
@@ -82,7 +82,7 @@ class ReseauControllerTest extends TestCase
             ]);
     }
 
-    public function testDestroy()
+    public function testReseauDestroy()
     {
         $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
@@ -95,7 +95,7 @@ class ReseauControllerTest extends TestCase
             ]);
     }
 
-    public function testDelete()
+    public function testReseauDelete()
     {
         $this->artisan('migrate:fresh');
         $reseau = Reseau::factory()->create(["etat" => "corbeille"]);
@@ -109,7 +109,7 @@ class ReseauControllerTest extends TestCase
             ]);
     }
 
-    public function testRestore()
+    public function testReseauRestore()
     {
         $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
@@ -123,7 +123,7 @@ class ReseauControllerTest extends TestCase
             ]);
     }
 
-    public function testDeleted()
+    public function testReseauDeleted()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(3)->create(["etat" => "corbeille"]);
@@ -137,7 +137,7 @@ class ReseauControllerTest extends TestCase
             ]);
     }
 
-    public function testEmptyTrash()
+    public function testReseauEmptyTrash()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(3)->create(["etat" => "corbeille"]);
