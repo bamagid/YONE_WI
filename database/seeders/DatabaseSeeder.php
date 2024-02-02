@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
     {
         AdminSystem::factory()->create();
         Role::factory()->create();
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         User::factory()->create();
         Type::factory(3)->create();
         Ligne::factory(2)->create();

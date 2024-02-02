@@ -14,7 +14,7 @@ class SectionControllerTest extends TestCase
     public function testSectionIndex()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         Ligne::factory(2)->create();
         Tarif::factory(2)->create();
@@ -29,7 +29,7 @@ class SectionControllerTest extends TestCase
     public function testMesSections()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         Ligne::factory(2)->create();
         Tarif::factory(2)->create();
@@ -47,7 +47,7 @@ class SectionControllerTest extends TestCase
     public function testSectionShow()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         Ligne::factory(2)->create();
         Tarif::factory(2)->create();
@@ -63,15 +63,15 @@ class SectionControllerTest extends TestCase
     public function testSectionStore()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         Ligne::factory(2)->create();
         Tarif::factory(2)->create();
         Role::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->post('/api/sections', [
-            "Depart" => "En ville",
-            "Arrivee" => "Banlieu",
+            "depart" => "En ville",
+            "arrivee" => "Banlieu",
             "ligne_id" => 1,
             "tarif_id" => 1
         ]);
@@ -86,7 +86,7 @@ class SectionControllerTest extends TestCase
     public function testSectionUpdate()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         Ligne::factory(2)->create();
         Tarif::factory(2)->create();
@@ -94,8 +94,8 @@ class SectionControllerTest extends TestCase
         Role::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->patch("/api/sections/$section->id", [
-            "Depart" => "En ville modifié",
-            "Arrivee" => "Banlieu modifié",
+            "depart" => "En ville modifié",
+            "arrivee" => "Banlieu modifié",
             "ligne_id" => 2,
             "tarif_id" => 1
         ]);
@@ -110,7 +110,7 @@ class SectionControllerTest extends TestCase
     public function testSectionDestroy()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         Ligne::factory(2)->create();
         Tarif::factory(2)->create();
@@ -129,7 +129,7 @@ class SectionControllerTest extends TestCase
     public function testSectionDelete()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         Ligne::factory(2)->create();
         Tarif::factory(2)->create();
@@ -149,7 +149,7 @@ class SectionControllerTest extends TestCase
     public function testSectionRestore()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         Ligne::factory(2)->create();
         Tarif::factory(2)->create();
@@ -169,7 +169,7 @@ class SectionControllerTest extends TestCase
     public function testSectionDeleted()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         Ligne::factory(2)->create();
         Tarif::factory(2)->create();
@@ -189,7 +189,7 @@ class SectionControllerTest extends TestCase
     public function testSectionEmptyTrash()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         Ligne::factory(2)->create();
         Tarif::factory(2)->create();

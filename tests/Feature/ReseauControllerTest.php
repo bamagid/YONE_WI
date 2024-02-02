@@ -12,7 +12,7 @@ class ReseauControllerTest extends TestCase
     public function testReseauIndex()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(3)->create();
+        Reseau::factory()->create();
         $response = $this->get('/api/reseaus');
         $response->assertStatus(200)
             ->assertJson([
@@ -126,7 +126,7 @@ class ReseauControllerTest extends TestCase
     public function testReseauDeleted()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(3)->create(["etat" => "corbeille"]);
+        Reseau::factory()->create(["etat" => "corbeille"]);
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->get('/api/reseaus/deleted/all');
 
@@ -140,7 +140,7 @@ class ReseauControllerTest extends TestCase
     public function testReseauEmptyTrash()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(3)->create(["etat" => "corbeille"]);
+        Reseau::factory()->create(["etat" => "corbeille"]);
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->post('/api/reseaus/empty-trash');
         $response->assertStatus(200)

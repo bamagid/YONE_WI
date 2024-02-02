@@ -18,6 +18,7 @@ class ReseauFactory extends Factory
     {
         return [
             "nom" => fake()->randomElement(['aftu', 'dakar dem dikk', 'brt']),
+            'telephone' => 777777777,
         ];
     }
 }
