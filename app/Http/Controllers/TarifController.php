@@ -86,7 +86,7 @@ class TarifController extends Controller
      */
     public function show(Tarif $tarif)
     {
-        if ($tarif->etat == "supprimé" ||  $tarif->reseau_id !== auth()->user()->reseau_id) {
+        if ($tarif->etat == "supprimé") {
             return response()->json([
                 "message" => "No query results for model [App\\Models\\Tarif] $tarif->id"
             ], 404);

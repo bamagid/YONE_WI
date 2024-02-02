@@ -17,9 +17,9 @@ class TypeFactory extends Factory
     public function definition(): array
     {
         return [
-            'nom' =>  $this->faker->randomElement(['urbain', 'banlieu', 'diamniadio']),
-            'description' => 'Ces lignes ne concernent que la  zone a la quelle elles sont assignées',
+            'nom' => fake()->randomElement(['urbain', 'banlieu', 'diamniadio']),
             'reseau_id' => 1,
+            'description' => 'Ces lignes ne concernent que la  zone a la quelle elles sont assignées',
             'created_at' => now(),
             'updated_at' => now(),
         ];

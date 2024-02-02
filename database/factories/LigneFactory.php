@@ -17,12 +17,11 @@ class LigneFactory extends Factory
     public function definition(): array
     {
         return [
-            'nom' => $this->faker->numberBetween(1, 100),
-            'etat' => $this->faker->randomElement(['actif', 'corbeille', 'supprimé']),
-            'type_id' => $this->faker->randomElement([1, 2]),
-            'reseau_id' => $this->faker->randomElement([1, 2]),
-            'lieuDepart' => $this->faker->randomElement(['Rufisque', 'Malika', "Diamaguene"]),
-            'lieuArrivee' => $this->faker->randomElement(['Sandaga', 'Sahm', "Palais2"]),
+            'nom' => fake()->numberBetween(1, 100),
+            'type_id' => fake()->randomElement([1, 2]),
+            'reseau_id' => 1,
+            'lieuDepart' => fake()->randomElement(['Rufisque', 'Malika', "Diamaguene"]),
+            'lieuArrivee' => fake()->randomElement(['Sandaga', 'Sahm', "Palais2"]),
             'created_at' => now(),
             'updated_at' => now(),
         ];

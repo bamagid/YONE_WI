@@ -35,7 +35,7 @@ class ContactController extends Controller
         return response()->json([
             'message' => 'voici la liste des messages',
             'contact' => $messages,
-        ], 201);
+        ], 200);
     }
 
     /**

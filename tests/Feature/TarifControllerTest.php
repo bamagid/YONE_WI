@@ -3,170 +3,159 @@
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Ligne;
 use App\Models\Reseau;
-use App\Models\Type;
+use App\Models\Tarif;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class LigneControllerTest extends TestCase
+class TarifControllerTest extends TestCase
 {
-    public function testLigneIndex()
+    public function testTarifIndex()
     {
         $this->artisan('migrate:fresh');
-        $response = $this->get('/api/lignes');
+        $response = $this->get('/api/tarifs');
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "lignes" => $response->json('lignes')
+            "tarifs" => $response->json('tarifs')
         ]);
     }
-    public function testMesLignes()
+    public function testTarifMestarifs()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
         Role::factory()->create();
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->get('/api/meslignes');
+        Tarif::factory(3)->create();
+        $response = $this->actingAs($user)->get('/api/mestarifs');
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "lignes" => $response->json('lignes')
+            "tarifs" => $response->json('tarifs')
         ]);
     }
 
-    public function testLigneShow()
+    public function testTarifShow()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
-        Type::factory(2)->create();
-        $ligne = Ligne::factory()->create();
-        $response = $this->get("/api/lignes/$ligne->id");
+        $tarif = Tarif::factory()->create();
+        $response = $this->get("/api/tarifs/$tarif->id");
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "ligne" => $response->json('ligne')
+            "tarif" => $response->json('tarif')
         ]);
     }
 
-    public function testLigneStore()
+    public function testTarifStore()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
         Role::factory()->create();
-        Type::factory(2)->create();
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->post('/api/lignes', [
-            "nom" => "Nouvelle Ligne",
-            "type_id" => 1,
-            'lieuDepart' => "dakar",
-            'lieuArrivee' => "mermoz"
+        $response = $this->actingAs($user)->post('/api/tarifs', [
+            "prix" => 60,
+            "type" => "entre section",
         ]);
 
         $response->assertStatus(201);
         $response->assertJson([
             "message" => $response->json('message'),
-            "ligne" => $response->json('ligne')
+            "tarif" => $response->json('tarif')
         ]);
     }
 
-    public function testLigneUpdate()
+    public function testTarifUpdate()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
-        Type::factory(2)->create();
-        $ligne = Ligne::factory()->create();
+        $tarif = Tarif::factory()->create();
         Role::factory()->create();
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->patch("/api/lignes/$ligne->id", [
-            "nom" => "Ligne Modifiée",
-            "type_id" => 1,
-            'lieuDepart' => "dakar",
-            'lieuArrivee' => "mermoz"
+        $response = $this->actingAs($user)->patch("/api/tarifs/$tarif->id", [
+            "prix" => 500,
+            "type" => "trajet",
         ]);
 
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "ligne" => $response->json('ligne')
+            "tarif" => $response->json('tarif')
         ]);
     }
 
-    public function testLigneDestroy()
+    public function testTarifDestroy()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
         Role::factory()->create();
         $user = User::factory()->create();
-        Type::factory(2)->create();
-        $ligne = Ligne::factory()->create(["etat" => "actif"]);
-        $response = $this->actingAs($user)->delete("/api/lignes/$ligne->id");
+        $tarif = Tarif::factory()->create(["etat" => "actif"]);
+        $response = $this->actingAs($user)->delete("/api/tarifs/$tarif->id");
 
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "ligne" => $response->json('ligne')
+            "tarif" => $response->json('tarif')
         ]);
     }
 
-    public function testLigneDelete()
+    public function testTarifDelete()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
-        Type::factory(2)->create();
-        $ligne = Ligne::factory()->create(["etat" => "corbeille"]);
+        $tarif = Tarif::factory()->create(["etat" => "corbeille"]);
         Role::factory()->create();
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->patch("/api/lignes/delete/{$ligne->id}");
+        $response = $this->actingAs($user)->patch("/api/tarifs/delete/{$tarif->id}");
 
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "ligne" => $response->json('ligne')
+            "tarif" => $response->json('tarif')
         ]);
     }
 
-    public function testLigneRestore()
+    public function testTarifRestore()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
-        Type::factory(2)->create();
         Role::factory()->create();
         $user = User::factory()->create();
-        $ligne = Ligne::factory()->create(["etat" => "corbeille"]);
-        $response = $this->actingAs($user)->patch("/api/lignes/restaurer/$ligne->id");
+        $tarif = Tarif::factory()->create(["etat" => "corbeille"]);
+        $response = $this->actingAs($user)->patch("/api/tarifs/restaurer/$tarif->id");
 
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "ligne" => $response->json('ligne')
+            "tarif" => $response->json('tarif')
         ]);
     }
 
-    public function testLigneDeleted()
+    public function testTarifDeleted()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
-        Type::factory(2)->create();
-        Ligne::factory(3)->create(["etat" => "corbeille"]);
+        Tarif::factory(3)->create(["etat" => "corbeille"]);
         Role::factory()->create();
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->get('/api/lignes/deleted/all');
+        $response = $this->actingAs($user)->get('/api/tarifs/deleted/all');
 
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
-            "lignes" => $response->json('lignes')
+            "tarifs" => $response->json('tarifs')
         ]);
     }
 
-    public function testLigneEmptyTrash()
+    public function testTarifEmptyTrash()
     {
         $this->artisan('migrate:fresh');
         Reseau::factory(2)->create();
-        Type::factory(2)->create();
-        Ligne::factory(3)->create(["etat" => "corbeille"]);
+        Tarif::factory(3)->create(["etat" => "corbeille"]);
         Role::factory()->create();
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->post('/api/lignes/empty-trash');
+        $response = $this->actingAs($user)->post('/api/tarifs/empty-trash');
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message')

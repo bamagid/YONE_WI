@@ -84,7 +84,7 @@ class AbonnementController extends Controller
      */
     public function show(Abonnement $abonnement)
     {
-        if ($abonnement->etat === "supprimé" ||  $abonnement->reseau_id !== auth()->user()->reseau_id) {
+        if ($abonnement->etat === "supprimé") {
             return response()->json([
                 "message" => "No query results for model [App\\Models\\Abonnement] $abonnement->id"
             ], 404);

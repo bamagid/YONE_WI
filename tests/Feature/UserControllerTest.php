@@ -2,19 +2,17 @@
 
 namespace Tests\Feature;
 
-use App\Models\AdminSystem;
-use App\Models\Reseau;
-use App\Models\Role;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\Role;
 use App\Models\User;
+use App\Models\Reseau;
+use App\Models\AdminSystem;
 
 class UserControllerTest extends TestCase
 {
-    use RefreshDatabase;
-    public function testRegister()
+    public function testUserRegister()
     {
+        $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
         $this->actingAs($admin, 'admin');
         Role::factory()->create();
@@ -23,12 +21,12 @@ class UserControllerTest extends TestCase
             "nom" => "magid",
             "prenom" => "abdoul",
             "adresse" => "dakar",
-            "telephone" => "77855224",
+            "telephone" => "778552240",
             "email" => "email@gmail.com",
             "reseau_id" => 1,
             "role_id" => 1,
-            "password" => "password",
-            "password_confirmation" => "password"
+            "password" => "Password1@",
+            "password_confirmation" => "Password1@"
         ];
 
         $response = $this->post('/api/users', $userData);
@@ -41,8 +39,64 @@ class UserControllerTest extends TestCase
             ]);
     }
 
+    public function testUserUpdate()
+    {
+        $this->artisan('migrate:fresh');
+        Role::factory()->create();
+        Reseau::factory()->create();
+        $user = User::factory()->create();
+        $this->actingAs($user, 'api');
+        $userData = [
+            "nom" => "magid",
+            "prenom" => "abdoul",
+            "adresse" => "dakar",
+            "telephone" => "778552240",
+            "email" => "email@gmail.com",
+            "reseau_id" => 1,
+            "role_id" => 1,
+            "password" => "Password1@",
+            "password_confirmation" => "Password1@"
+        ];
+
+        $response = $this->post('/api/users/1', $userData);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                "status" => true,
+                "message" => $response->json('message'),
+                "user" => $response->json('user')
+            ]);
+    }
+    public function testUsersBlocked()
+    {
+        $this->artisan('migrate:fresh');
+        $admin = AdminSystem::factory()->create();
+        $this->actingAs($admin, 'admin');
+        $response = $this->get('/api/users/blocked');
+
+        $response->assertStatus(200)
+            ->assertJson([
+                "message" => $response->json('message'),
+                "users" => $response->json('users')
+            ]);
+    }
+    public function testUserIndex()
+    {
+        $this->artisan('migrate:fresh');
+        $admin = AdminSystem::factory()->create();
+        $this->actingAs($admin, 'admin');
+        $response = $this->get('/api/users');
+
+        $response->assertStatus(200)
+            ->assertJson([
+                "message" => $response->json('message'),
+                "users" => $response->json('users')
+            ]);
+    }
+
     public function testLogin()
     {
+        $this->artisan('migrate:fresh');
         Role::factory()->create();
         Reseau::factory()->create();
         $user = AdminSystem::factory()->create();
@@ -59,6 +113,7 @@ class UserControllerTest extends TestCase
 
     public function testProfile()
     {
+        $this->artisan('migrate:fresh');
         Role::factory()->create();
         Reseau::factory()->create();
         $user = User::factory()->create();
@@ -74,11 +129,13 @@ class UserControllerTest extends TestCase
 
     public function testRefreshToken()
     {
+        $this->artisan('migrate:fresh');
         Role::factory()->create();
         Reseau::factory()->create();
         $user = User::factory()->create();
-        $this->actingAs($user, "api");
-        $response = $this->get('/api/refresh');
+        $login =  $this->post('/api/login', ["email" => $user->email, "password" => "Password1@"]);
+        $token = $login->Json('token');
+        $response = $this->withHeaders(['Authorization' => "Bearer $token)"])->get('/api/refresh');
         $response->assertStatus(200)
             ->assertJson([
                 "status" => true,
@@ -89,10 +146,12 @@ class UserControllerTest extends TestCase
 
     public function testLogout()
     {
+        $this->artisan('migrate:fresh');
         Role::factory()->create();
         Reseau::factory()->create();
+
         $user = User::factory()->create();
-        $login =  $this->post('/api/login', ["email" => $user->email, "password" => "password"]);
+        $login =  $this->post('/api/login', ["email" => $user->email, "password" => "Password1@"]);
         $token = $login->Json('token');
         $response = $this->withHeaders(['Authorization' => "Bearer $token)"])->get('/api/logout');
         $response->assertStatus(200)
@@ -101,23 +160,28 @@ class UserControllerTest extends TestCase
                 "message" => $response->json('message')
             ]);
     }
-    public function testdestroy()
+    public function testDestroyUser()
     {
+        $this->artisan('migrate:fresh');
         Role::factory()->create();
         Reseau::factory()->create();
         $user = User::factory()->create();
         $this->actingAs($user, "api");
-        $response = $this->get('/api/users/' . $user->id);
+        $response = $this->patch('/api/users/' . $user->id, ['motif' => 'motif bidon']);
         $response->assertStatus(200)
-            ->assertJson(["Le user a bien été supprimé"]);
+            ->assertJson(["message" => $response->json('message')]);
     }
 
-    public function testchangerEtat()
+    public function testChangerEtat()
     {
-        $user = AdminSystem::factory()->create();
-        $this->actingAs($user, "api");
-        $response = $this->get('/api/users/' . $user->id);
+        $this->artisan('migrate:fresh');
+        $admin = AdminSystem::factory()->create();
+        $this->actingAs($admin, "admin");
+        Role::factory()->create();
+        Reseau::factory()->create();
+        $user = User::factory()->create();
+        $response = $this->patch('/api/users/' . $user->id, ['motif' => 'motif bidon']);
         $response->assertStatus(200)
-            ->assertJson(["Le user a bien été supprimé"]);
+            ->assertJson(["message" => $response->json('message')]);
     }
 }

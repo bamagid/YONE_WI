@@ -139,7 +139,7 @@ class TypeController extends Controller
      */
     public function show(Type $type)
     {
-        if ($type->etat == "supprimé" ||  $type->reseau_id !== auth()->user()->reseau_id) {
+        if ($type->etat == "supprimé") {
             return response()->json([
                 "message" => "No query results for model [App\\Models\\Type] $type->id"
             ], 404);

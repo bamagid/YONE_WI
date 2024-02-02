@@ -119,7 +119,6 @@ class UserController extends Controller
             $user->image = $image->store('images', 'public');
         }
         $user->saveOrFail();
-        event(new Registered($user));
         return response()->json([
             "status" => true,
             "message" => "Bienvenue dans la communauté ",
@@ -309,7 +308,7 @@ class UserController extends Controller
 
     public function refreshToken()
     {
-        $nouveauToken = auth()->refresh();
+        $nouveauToken = auth('api')->refresh();
         if ($nouveauToken === null) {
             $nouveauToken = auth('admin')->refresh();
         }

@@ -317,7 +317,7 @@ class ReseauController extends Controller
             ], 404);
         }
         return response()->json([
-            "message" => "La liste des reseaux quui son dans la corbeilles",
+            "message" => "La liste des reseaux qui son dans la corbeilles",
             "reseaux" => $reseauxSupprimes
         ], 200);
     }

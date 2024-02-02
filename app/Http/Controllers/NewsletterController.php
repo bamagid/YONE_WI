@@ -94,7 +94,7 @@ class NewsletterController extends Controller
             return response()->json([
                 "message" => "L'email a bien été desabonné à la newsletter.",
                 "subscriber" => $newsletter
-            ], 201);
+            ], 200);
         }
         return response()->json([
             "message" => "L'email est n'est pas abonné à la newsletter."

@@ -27,12 +27,12 @@ class UserFactory extends Factory
             "nom" => "Diouf",
             "prenom" => "Germaine",
             "adresse" => "dakar",
-            "telephone" => "785392600",
+            "telephone" => "775392600",
             "email" => "dioufgermainedaba@gmail.com",
             "role_id" => 1,
             "reseau_id" => 1,
             'email_verified_at' => now(),
-            'password' => Hash::make('password'),
+            'password' => Hash::make('Password1@'),
             'remember_token' => Str::random(10),
         ];
     }

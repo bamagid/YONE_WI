@@ -17,12 +17,11 @@ class LigneRequest extends FormRequest
     {
         return [
             'nom' => ['required', 'string'],
-            'type_id' => ['required', 'exists:types,id'],
+            'type_id' => ['nullable', 'exists:types,id'],
             'lieuDepart' => ['required', 'string'],
             'lieuArrivee' => ['required', 'string', 'different:lieuDepart'],
         ];
     }
-
 
     public function failedValidation(validator $validator)
     {
