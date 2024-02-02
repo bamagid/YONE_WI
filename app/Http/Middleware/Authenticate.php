@@ -20,7 +20,7 @@ class Authenticate
             return $next($request);
         }
         return response()->json([
-            'error' => 'Veuillez vous connecter d\'abord puis fournir un token pour accéder à cette route.'
+            'unauthorized' => 'Veuillez vous connecter d\'abord puis fournir un token pour accéder à cette route.'
         ], 401);
     }
 }

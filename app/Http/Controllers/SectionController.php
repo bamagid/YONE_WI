@@ -122,8 +122,8 @@ class SectionController extends Controller
      *             @OA\Schema(
      *                 type="object",
      *                 properties={
-     *                     @OA\Property(property="Depart", type="string"),
-     *                     @OA\Property(property="Arrivee", type="string"),
+     *                     @OA\Property(property="depart", type="string"),
+     *                     @OA\Property(property="arrivee", type="string"),
      *                     @OA\Property(property="ligne_id", type="integer"),
      *                     @OA\Property(property="tarif_id", type="integer"),
      *                 },
@@ -179,8 +179,8 @@ class SectionController extends Controller
      *             @OA\Schema(
      *                 type="object",
      *                 properties={
-     *                     @OA\Property(property="Depart", type="string"),
-     *                     @OA\Property(property="Arrivee", type="string"),
+     *                     @OA\Property(property="depart", type="string"),
+     *                     @OA\Property(property="arrivee", type="string"),
      *                     @OA\Property(property="ligne_id", type="integer"),
      *                     @OA\Property(property="tarif_id", type="integer"),
      *                 },

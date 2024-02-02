@@ -4,9 +4,9 @@ RUN apt-get update && apt-get install -y \
     libzip-dev default-mysql-client
 RUN docker-php-ext-install pdo pdo_mysql zip gd
 RUN a2enmod rewrite
-WORKDIR /var/www
-COPY . /var/www
-RUN chown -R www-data:www-data /var/www/storage
+WORKDIR /var/www/html
+COPY . /var/www/html
+RUN chown -R www-data:www-data /var/www/html/storage
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-interaction --optimize-autoloader
 EXPOSE 80

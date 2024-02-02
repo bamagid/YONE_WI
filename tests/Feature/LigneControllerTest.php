@@ -22,7 +22,7 @@ class LigneControllerTest extends TestCase
     public function testMesLignes()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Role::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->get('/api/meslignes');
@@ -36,7 +36,7 @@ class LigneControllerTest extends TestCase
     public function testLigneShow()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         $ligne = Ligne::factory()->create();
         $response = $this->get("/api/lignes/$ligne->id");
@@ -50,7 +50,7 @@ class LigneControllerTest extends TestCase
     public function testLigneStore()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Role::factory()->create();
         Type::factory(2)->create();
         $user = User::factory()->create();
@@ -71,7 +71,7 @@ class LigneControllerTest extends TestCase
     public function testLigneUpdate()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         $ligne = Ligne::factory()->create();
         Role::factory()->create();
@@ -93,7 +93,7 @@ class LigneControllerTest extends TestCase
     public function testLigneDestroy()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Role::factory()->create();
         $user = User::factory()->create();
         Type::factory(2)->create();
@@ -110,7 +110,7 @@ class LigneControllerTest extends TestCase
     public function testLigneDelete()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         $ligne = Ligne::factory()->create(["etat" => "corbeille"]);
         Role::factory()->create();
@@ -127,7 +127,7 @@ class LigneControllerTest extends TestCase
     public function testLigneRestore()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         Role::factory()->create();
         $user = User::factory()->create();
@@ -144,7 +144,7 @@ class LigneControllerTest extends TestCase
     public function testLigneDeleted()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         Ligne::factory(3)->create(["etat" => "corbeille"]);
         Role::factory()->create();
@@ -161,7 +161,7 @@ class LigneControllerTest extends TestCase
     public function testLigneEmptyTrash()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Type::factory(2)->create();
         Ligne::factory(3)->create(["etat" => "corbeille"]);
         Role::factory()->create();

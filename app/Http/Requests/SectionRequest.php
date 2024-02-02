@@ -16,8 +16,8 @@ class SectionRequest extends FormRequest
     public function rules()
     {
         return [
-            'Depart' => ['required', 'string'],
-            'Arrivee' => ['required', 'string', 'different:Depart'],
+            'depart' => ['required', 'string'],
+            'arrivee' => ['required', 'string', 'different:depart'],
             'ligne_id' => ['required', 'exists:lignes,id'],
             'tarif_id' => ['required', 'exists:tarifs,id'],
         ];

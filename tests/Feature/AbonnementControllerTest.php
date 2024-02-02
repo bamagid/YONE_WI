@@ -24,16 +24,16 @@ class AbonnementControllerTest extends TestCase
     public function testAbonnementSubscribe()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        $abonnement = Abonnement::factory()->create();
-        $response = $this->get('/api/abonnements/subscribe/1');
-        $numeroWhatsApp = $abonnement->reseau->telephone;
+        $reseau = Reseau::factory()->create();
+        $abonnement = Abonnement::factory(['reseau_id' => $reseau->id])->create();
+        $response = $this->get("/api/abonnements/subscribe/{$abonnement->id}");
+        $numeroWhatsApp = $reseau->telephone;
         $response->assertRedirect("https://api.whatsapp.com/send?phone=$numeroWhatsApp");
     }
     public function testMesAbonnements()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Role::factory()->create();
         $user = User::factory()->create();
         Abonnement::factory(3)->create();
@@ -48,7 +48,7 @@ class AbonnementControllerTest extends TestCase
     public function testAbonnementShow()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         $abonnement = Abonnement::factory()->create();
         $response = $this->get("/api/abonnements/$abonnement->id");
         $response->assertStatus(200);
@@ -61,7 +61,7 @@ class AbonnementControllerTest extends TestCase
     public function testAbonnementStore()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Role::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->post('/api/abonnements', [
@@ -81,7 +81,7 @@ class AbonnementControllerTest extends TestCase
     public function testAbonnementUpdate()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         $abonnement = Abonnement::factory()->create();
         Role::factory()->create();
         $user = User::factory()->create();
@@ -102,7 +102,7 @@ class AbonnementControllerTest extends TestCase
     public function testAbonnementDestroy()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Role::factory()->create();
         $user = User::factory()->create();
         $abonnement = Abonnement::factory()->create(["etat" => "actif"]);
@@ -118,7 +118,7 @@ class AbonnementControllerTest extends TestCase
     public function testAbonnementDelete()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         $abonnement = Abonnement::factory()->create(["etat" => "corbeille"]);
         Role::factory()->create();
         $user = User::factory()->create();
@@ -134,7 +134,7 @@ class AbonnementControllerTest extends TestCase
     public function testAbonnementRestore()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Role::factory()->create();
         $user = User::factory()->create();
         $abonnement = Abonnement::factory()->create(["etat" => "corbeille"]);
@@ -150,7 +150,7 @@ class AbonnementControllerTest extends TestCase
     public function testAbonnementDeleted()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Abonnement::factory(3)->create(["etat" => "corbeille"]);
         Role::factory()->create();
         $user = User::factory()->create();
@@ -166,7 +166,7 @@ class AbonnementControllerTest extends TestCase
     public function testAbonnementEmptyTrash()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory(2)->create();
+        Reseau::factory()->create();
         Abonnement::factory(3)->create(["etat" => "corbeille"]);
         Role::factory()->create();
         $user = User::factory()->create();
