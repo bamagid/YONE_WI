@@ -398,7 +398,6 @@ class UserController extends Controller
                 "etat" => "supprimé",
                 "motif" => $request->motif
             ]);
-            $user->logout();
             return response()->json(["message" => "Le user a bien été supprimé"]);
         }
         return response()->json([
@@ -456,7 +455,6 @@ class UserController extends Controller
                     "etat" => "bloqué",
                     "motif" => $request->motif,
                 ]);
-                $user->logout();
                 return response()->json(["message" => "Le user a bien été bloqué "]);
                 break;
             case 'bloqué':

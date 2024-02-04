@@ -16,8 +16,8 @@ return new class extends Migration
     {
         Schema::create('sections', function (Blueprint $table) {
             $table->id();
-            $table->string('Depart');
-            $table->string('Arrivee');
+            $table->string('depart');
+            $table->string('arrivee');
             $table->enum('etat', ['actif', 'corbeille', 'supprimé'])->default('actif');
             $table->foreignIdFor(Ligne::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Tarif::class)->constrained()->onDelete('cascade');
