@@ -242,7 +242,7 @@ class RoleController extends Controller
         $rolesSupprimes = Role::where('etat', 'corbeille')->get();
         if ($rolesSupprimes->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de lignes supprimés"
+                "error" => "Il n'y a pas de roles supprimés"
             ], 404);
         }
         return response()->json([

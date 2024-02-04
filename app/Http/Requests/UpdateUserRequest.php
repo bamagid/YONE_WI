@@ -23,7 +23,7 @@ class UpdateUserRequest extends FormRequest
             'adresse' => ['required', 'string', 'max:100'],
             'telephone' => ['nullable', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
             'image' => ['sometimes'],
-            'email' => ['nullable', 'email', 'unique:users'],
+            'email' => ['nullable', 'email', 'unique:users,email','admin_systems,email'],
             'password' => ['nullable', PasswordRule::default(), 'confirmed'],
         ];
     }

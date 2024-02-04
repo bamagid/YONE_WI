@@ -3,15 +3,15 @@ version: '3.9'
 services:
 
   yone_wi:
-    build:
-      context: .
-      dockerfile: docker/dockerfile
-    container_name: yone_wi
+    build: docker/php
+    container_name: yone-wi
+    image: magidba/yone_wi:1.0
     restart: always
     ports:
-      - 8010:80
+      - 8015:80
     volumes:
-      - .:/var/www/html
+      - ./docker/php/vhosts:/etc/apache2/sites-enabled
+      - ./:/var/www/html
     depends_on:
       - phpmyadmin
     networks:
@@ -19,22 +19,22 @@ services:
 
   database:
     image: mysql:8.2
-    container_name: mysql__yone_wi
+    container_name: mysql_yone_wi
     volumes:
       - volume_db:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: magidba
       MYSQL_DATABASE: yone_wi
     ports:
-      - 8001:3306
+      - 8002:3306
     networks:
       - reseau_yone_wi
 
   phpmyadmin:
     image: phpmyadmin
-    container_name: phpmyadmin_yone_wi
+    container_name: phpmyadmin-yone_wi
     ports:
-      - 8080:80
+      - 8081:80
     environment:
       MYSQL_ROOT_PASSWORD: magidba
       PMA_HOST: database
@@ -42,17 +42,6 @@ services:
       - reseau_yone_wi
     depends_on:
       - database
-  maildev:
-    image: maildev/maildev
-    container_name: mailing_yone_wi
-    command: bin/maildev --web 80 --smtp 25 --hide-extensions STARTTLS
-    ports:
-      - "8081:80"
-    restart: always
-    depends_on:
-      - yone_wi
-    networks:
-      - reseau_yone_wi
 
 volumes:
   volume_db:

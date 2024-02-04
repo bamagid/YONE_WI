@@ -24,7 +24,7 @@ class StoreUserRequest extends FormRequest
             "image" => "sometimes",
             "role_id" => "required|integer",
             "reseau_id" => "required|integer",
-            "email" => "required|email|unique:users",
+            "email" => "required|email|unique:users,email|admin_systems,email",
             'password' => [PasswordRule::default(), 'confirmed'],
         ];
     }
