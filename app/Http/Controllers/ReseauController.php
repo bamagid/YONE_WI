@@ -138,6 +138,11 @@ class ReseauController extends Controller
      */
     public function update(ReseauRequest $request, Reseau $reseau)
     {
+        if ($reseau->etat !== "actif") {
+            return response()->json([
+                "message" => "No query results for model [App\\Models\\Reseau] $reseau->id"
+            ], 404);
+        }
         $reseau->update($request->validated());
         return response()->json([
             "message" => "Le reseau a bien été mise à jour",
@@ -313,7 +318,7 @@ class ReseauController extends Controller
         $reseauxSupprimes = Reseau::where('etat', 'corbeille')->get();
         if ($reseauxSupprimes->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de réseaux supprimés"
+                "message" => "Il n'y a pas de réseaux dans la corbeille"
             ], 404);
         }
         return response()->json([
@@ -344,7 +349,7 @@ class ReseauController extends Controller
         $reseausSupprimes = Reseau::where('etat', 'corbeille')->get();
         if ($reseausSupprimes->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de réseaux supprimés"
+                "message" => "Il n'y a pas de réseaux dans la corbeille"
             ], 404);
         }
         foreach ($reseausSupprimes as $reseau) {

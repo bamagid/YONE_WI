@@ -197,6 +197,11 @@ class LigneController extends Controller
      */
     public function update(LigneRequest $request, Ligne $ligne)
     {
+        if ($ligne->etat !== "actif") {
+            return response()->json([
+                "message" => "No query results for model [App\\Models\\Ligne] $ligne->id"
+            ], 404);
+        }
         $valeurAvant = $ligne->toArray();
         $this->authorize("update", $ligne);
         $lignes_reseau = Ligne::where('reseau_id', $request->user()->reseau_id)->get();
@@ -386,7 +391,7 @@ class LigneController extends Controller
             ->get();
         if ($lignesSupprimees->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de lignes supprimées"
+                "message" => "Il n'y a pas de lignes dans la corbeille"
             ], 404);
         }
         return response()->json([
@@ -419,7 +424,7 @@ class LigneController extends Controller
             ->get();
         if ($lignesSupprimees->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de lignes supprimées"
+                "message" => "Il n'y a pas de lignes dans la corbeille"
             ], 404);
         }
         foreach ($lignesSupprimees as $ligne) {

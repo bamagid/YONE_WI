@@ -11,7 +11,7 @@ class ContactControllerTest extends TestCase
 {
     public function testContactIndex()
     {
-        $this->artisan('migrate:fresh');
+       $this->artisan('migrate:fresh');
         Contact::factory(3)->create();
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->get('/api/contacts');
@@ -23,7 +23,7 @@ class ContactControllerTest extends TestCase
     }
     public function testContactStore()
     {
-        $this->artisan('migrate:fresh');
+       $this->artisan('migrate:fresh');
         $response = $this->post('/api/contacts', [
             'email' => 'test@exemple.com',
             'sujet' => 'Test sujet du message de contact',

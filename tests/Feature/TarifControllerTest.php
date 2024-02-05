@@ -3,8 +3,9 @@
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Reseau;
 use App\Models\Tarif;
+use App\Models\Reseau;
+use Tests\Feature\UserControllerTest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TarifControllerTest extends TestCase
@@ -22,8 +23,7 @@ class TarifControllerTest extends TestCase
     public function testTarifMestarifs()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        Role::factory()->create();
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         Tarif::factory(3)->create();
         $response = $this->actingAs($user)->get('/api/mestarifs');
@@ -37,7 +37,7 @@ class TarifControllerTest extends TestCase
     public function testTarifShow()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
+        UserControllerTest::createUser();
         $tarif = Tarif::factory()->create();
         $response = $this->get("/api/tarifs/$tarif->id");
         $response->assertStatus(200);
@@ -50,8 +50,7 @@ class TarifControllerTest extends TestCase
     public function testTarifStore()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        Role::factory()->create();
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->post('/api/tarifs', [
             "prix" => 60,
@@ -68,9 +67,8 @@ class TarifControllerTest extends TestCase
     public function testTarifUpdate()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
+        UserControllerTest::createUser();
         $tarif = Tarif::factory()->create();
-        Role::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->patch("/api/tarifs/$tarif->id", [
             "prix" => 500,
@@ -87,8 +85,7 @@ class TarifControllerTest extends TestCase
     public function testTarifDestroy()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        Role::factory()->create();
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         $tarif = Tarif::factory()->create(["etat" => "actif"]);
         $response = $this->actingAs($user)->delete("/api/tarifs/$tarif->id");
@@ -103,12 +100,10 @@ class TarifControllerTest extends TestCase
     public function testTarifDelete()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
+        UserControllerTest::createUser();
         $tarif = Tarif::factory()->create(["etat" => "corbeille"]);
-        Role::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->patch("/api/tarifs/delete/{$tarif->id}");
-
         $response->assertStatus(200);
         $response->assertJson([
             "message" => $response->json('message'),
@@ -119,8 +114,7 @@ class TarifControllerTest extends TestCase
     public function testTarifRestore()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        Role::factory()->create();
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         $tarif = Tarif::factory()->create(["etat" => "corbeille"]);
         $response = $this->actingAs($user)->patch("/api/tarifs/restaurer/$tarif->id");
@@ -135,9 +129,8 @@ class TarifControllerTest extends TestCase
     public function testTarifDeleted()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
+        UserControllerTest::createUser();
         Tarif::factory(3)->create(["etat" => "corbeille"]);
-        Role::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->get('/api/tarifs/deleted/all');
 
@@ -151,9 +144,8 @@ class TarifControllerTest extends TestCase
     public function testTarifEmptyTrash()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
+        UserControllerTest::createUser();
         Tarif::factory(3)->create(["etat" => "corbeille"]);
-        Role::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->post('/api/tarifs/empty-trash');
         $response->assertStatus(200);

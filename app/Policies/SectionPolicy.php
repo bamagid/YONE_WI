@@ -15,7 +15,7 @@ class SectionPolicy
     {
         return $user->role_id === 1
             ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à modifier cette section.');
+            : Response::deny('Vous n\'êtes pas autorisé à creer de section.');
     }
 
     /**
@@ -45,6 +45,6 @@ class SectionPolicy
     {
         return $user->reseau_id === $section->ligne->reseau_id
             ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à supprimer cette section.');
+            : Response::deny('Vous n\'êtes pas autorisé à restaurer cette section.');
     }
 }

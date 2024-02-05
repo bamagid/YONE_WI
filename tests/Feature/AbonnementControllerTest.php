@@ -2,10 +2,11 @@
 
 use Tests\TestCase;
 use App\Models\Role;
-use App\Models\User;
-use App\Models\Abonnement;
-use App\Models\Reseau;
 use App\Models\Type;
+use App\Models\User;
+use App\Models\Reseau;
+use App\Models\Abonnement;
+use Tests\Feature\UserControllerTest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AbonnementControllerTest extends TestCase
@@ -23,7 +24,7 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementSubscribe()
     {
-        $this->artisan('migrate:fresh');
+         $this->artisan('migrate:fresh');
         $reseau = Reseau::factory()->create();
         $abonnement = Abonnement::factory(['reseau_id' => $reseau->id])->create();
         $response = $this->get("/api/abonnements/subscribe/{$abonnement->id}");
@@ -32,9 +33,8 @@ class AbonnementControllerTest extends TestCase
     }
     public function testMesAbonnements()
     {
-        $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        Role::factory()->create();
+         $this->artisan('migrate:fresh');
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         Abonnement::factory(3)->create();
         $response = $this->actingAs($user)->get('/api/mesabonnements');
@@ -47,8 +47,8 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementShow()
     {
-        $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
+         $this->artisan('migrate:fresh');
+        UserControllerTest::createUser();
         $abonnement = Abonnement::factory()->create();
         $response = $this->get("/api/abonnements/$abonnement->id");
         $response->assertStatus(200);
@@ -60,9 +60,8 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementStore()
     {
-        $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        Role::factory()->create();
+         $this->artisan('migrate:fresh');
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->post('/api/abonnements', [
             "prix" => 10000,
@@ -80,10 +79,9 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementUpdate()
     {
-        $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
+         $this->artisan('migrate:fresh');
+        UserControllerTest::createUser();
         $abonnement = Abonnement::factory()->create();
-        Role::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->patch("/api/abonnements/$abonnement->id", [
             "prix" => 10000,
@@ -101,9 +99,8 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementDestroy()
     {
-        $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        Role::factory()->create();
+         $this->artisan('migrate:fresh');
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         $abonnement = Abonnement::factory()->create(["etat" => "actif"]);
         $response = $this->actingAs($user)->delete("/api/abonnements/$abonnement->id");
@@ -117,10 +114,9 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementDelete()
     {
-        $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
+         $this->artisan('migrate:fresh');
+        UserControllerTest::createUser();
         $abonnement = Abonnement::factory()->create(["etat" => "corbeille"]);
-        Role::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->patch("/api/abonnements/delete/{$abonnement->id}");
 
@@ -133,9 +129,8 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementRestore()
     {
-        $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        Role::factory()->create();
+         $this->artisan('migrate:fresh');
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         $abonnement = Abonnement::factory()->create(["etat" => "corbeille"]);
         $response = $this->actingAs($user)->patch("/api/abonnements/restaurer/$abonnement->id");
@@ -149,10 +144,9 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementDeleted()
     {
-        $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
+         $this->artisan('migrate:fresh');
+        UserControllerTest::createUser();
         Abonnement::factory(3)->create(["etat" => "corbeille"]);
-        Role::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->get('/api/abonnements/deleted/all');
 
@@ -165,10 +159,9 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementEmptyTrash()
     {
-        $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
+         $this->artisan('migrate:fresh');
+        UserControllerTest::createUser();
         Abonnement::factory(3)->create(["etat" => "corbeille"]);
-        Role::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->post('/api/abonnements/empty-trash');
         $response->assertStatus(200);

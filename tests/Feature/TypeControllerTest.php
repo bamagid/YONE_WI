@@ -1,11 +1,10 @@
 <?php
-
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Reseau;
 use App\Models\Type;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Feature\UserControllerTest;
 
 class TypeControllerTest extends TestCase
 {
@@ -22,8 +21,7 @@ class TypeControllerTest extends TestCase
     public function testTypeMestypes()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        Role::factory()->create();
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         Type::factory(3)->create();
         $response = $this->actingAs($user)->get('/api/mestypes');
@@ -50,8 +48,7 @@ class TypeControllerTest extends TestCase
     public function testTypeStore()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        Role::factory()->create();
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->post('/api/types', [
             "nom" => "urbain",
@@ -68,9 +65,8 @@ class TypeControllerTest extends TestCase
     public function testTypeUpdate()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
+        UserControllerTest::createUser();
         $type = Type::factory()->create();
-        Role::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->patch("/api/types/$type->id", [
             "nom" => "Ligne Banlieu ",
@@ -87,8 +83,7 @@ class TypeControllerTest extends TestCase
     public function testTypeDestroy()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        Role::factory()->create();
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         $type = Type::factory()->create(["etat" => "actif"]);
         $response = $this->actingAs($user)->delete("/api/types/$type->id");

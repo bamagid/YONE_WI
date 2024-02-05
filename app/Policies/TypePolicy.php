@@ -16,7 +16,7 @@ class TypePolicy
     {
         return $user->role_id === 1
             ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à modifier ce type.');
+            : Response::deny('Vous n\'êtes pas autorisé à creer de type.');
     }
 
     /**
@@ -46,6 +46,6 @@ class TypePolicy
     {
         return $user->reseau_id === $type->reseau_id
             ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à supprimer ce type.');
+            : Response::deny('Vous n\'êtes pas autorisé à restaurer ce type.');
     }
 }

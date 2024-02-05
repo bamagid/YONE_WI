@@ -16,7 +16,7 @@ class AbonnementPolicy
     {
         return $user->role_id === 1
             ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à modifier cet abonnement.');
+            : Response::deny('Vous n\'êtes pas autorisé à creer d\'abonnement.');
     }
 
     /**
@@ -46,6 +46,6 @@ class AbonnementPolicy
     {
         return $user->reseau_id === $abonnement->reseau_id
             ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à supprimer cet abonnement.');
+            : Response::deny('Vous n\'êtes pas autorisé à restaurer cet abonnement.');
     }
 }

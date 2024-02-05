@@ -6,22 +6,20 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class TypeRequest extends FormRequest
+class MotifRequest extends FormRequest
 {
-    public function authorize()
-    {
-        return true;
-    }
-
-    public function rules()
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
     {
         return [
-            'nom' => ['required', 'string'],
-            'description' => ['nullable', 'string'],
+          "motif"=>['required', 'string'],
         ];
     }
-
-    public function failedValidation(Validator $validator)
+    public function failedValidation(validator $validator)
     {
         throw new HttpResponseException(response()->json([
             'success' => false,

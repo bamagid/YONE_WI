@@ -15,6 +15,6 @@ class ReseauPolicy
     {
         return $user->reseau_id === $reseau->id
             ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à modifier la description de ce reseau.');
+            : Response::deny('Vous n\'êtes pas autorisé à modifier les details de ce reseau.');
     }
 }

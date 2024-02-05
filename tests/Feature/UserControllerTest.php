@@ -10,16 +10,18 @@ use App\Models\AdminSystem;
 
 class UserControllerTest extends TestCase
 {
+    public static function createUser(){
+        Role::factory()->create();
+        Reseau::factory()->create();
+    }
     public function testUserRegister()
     {
         $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
-        $this->actingAs($admin, 'admin');
-        Role::factory()->create();
-        Reseau::factory()->create();
+        UserControllerTest::createUser();
         $userData = [
-            "nom" => "magid",
-            "prenom" => "abdoul",
+            "nom" => "Ba",
+            "prenom" => "Abdoul Magid",
             "adresse" => "dakar",
             "telephone" => "778552240",
             "email" => "email@gmail.com",
@@ -28,9 +30,7 @@ class UserControllerTest extends TestCase
             "password" => "Password1@",
             "password_confirmation" => "Password1@"
         ];
-
-        $response = $this->post('/api/users', $userData);
-
+        $response = $this->actingAs($admin, 'admin')->post('/api/users', $userData);
         $response->assertStatus(201)
             ->assertJson([
                 "status" => true,
@@ -42,10 +42,9 @@ class UserControllerTest extends TestCase
     public function testUserUpdate()
     {
         $this->artisan('migrate:fresh');
-        Role::factory()->create();
-        Reseau::factory()->create();
+        UserControllerTest::createUser();
         $user = User::factory()->create();
-        $this->actingAs($user, 'api');
+        
         $userData = [
             "nom" => "magid",
             "prenom" => "abdoul",
@@ -58,7 +57,7 @@ class UserControllerTest extends TestCase
             "password_confirmation" => "Password1@"
         ];
 
-        $response = $this->post('/api/users/1', $userData);
+        $response = $this->actingAs($user, 'api')->post('/api/users/1', $userData);
 
         $response->assertStatus(200)
             ->assertJson([
@@ -71,9 +70,7 @@ class UserControllerTest extends TestCase
     {
         $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
-        $this->actingAs($admin, 'admin');
-        $response = $this->get('/api/users/blocked');
-
+        $response = $this->actingAs($admin, 'admin')->get('/api/users/blocked');
         $response->assertStatus(200)
             ->assertJson([
                 "message" => $response->json('message'),
@@ -84,8 +81,7 @@ class UserControllerTest extends TestCase
     {
         $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
-        $this->actingAs($admin, 'admin');
-        $response = $this->get('/api/users');
+        $response = $this->actingAs($admin, 'admin')->get('/api/users');
 
         $response->assertStatus(200)
             ->assertJson([
@@ -97,8 +93,7 @@ class UserControllerTest extends TestCase
     public function testLogin()
     {
         $this->artisan('migrate:fresh');
-        Role::factory()->create();
-        Reseau::factory()->create();
+        UserControllerTest::createUser();
         $user = AdminSystem::factory()->create();
         $response =  $this->post('/api/login', ["email" => $user->email, "password" => "password"]);
         $response->assertStatus(200)
@@ -114,11 +109,9 @@ class UserControllerTest extends TestCase
     public function testProfile()
     {
         $this->artisan('migrate:fresh');
-        Role::factory()->create();
-        Reseau::factory()->create();
+        UserControllerTest::createUser();
         $user = User::factory()->create();
-        $this->actingAs($user, "api");
-        $response = $this->get('/api/profile');
+        $response = $this->actingAs($user, "api")->get('/api/profile');
         $response->assertStatus(200)
             ->assertJson([
                 "status" => true,
@@ -130,8 +123,7 @@ class UserControllerTest extends TestCase
     public function testRefreshToken()
     {
         $this->artisan('migrate:fresh');
-        Role::factory()->create();
-        Reseau::factory()->create();
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         $login =  $this->post('/api/login', ["email" => $user->email, "password" => "Password1@"]);
         $token = $login->Json('token');
@@ -147,9 +139,7 @@ class UserControllerTest extends TestCase
     public function testLogout()
     {
         $this->artisan('migrate:fresh');
-        Role::factory()->create();
-        Reseau::factory()->create();
-
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         $login =  $this->post('/api/login', ["email" => $user->email, "password" => "Password1@"]);
         $token = $login->Json('token');
@@ -163,11 +153,10 @@ class UserControllerTest extends TestCase
     public function testDestroyUser()
     {
         $this->artisan('migrate:fresh');
-        Role::factory()->create();
-        Reseau::factory()->create();
+        UserControllerTest::createUser();
         $user = User::factory()->create();
-        $this->actingAs($user, "api");
-        $response = $this->patch('/api/users/' . $user->id, ['motif' => 'motif bidon']);
+        $admin = AdminSystem::factory()->create();
+        $response = $this->actingAs($admin, "admin")->patch('/api/users/' . $user->id, ['motif' => 'motif bidon']);
         $response->assertStatus(200)
             ->assertJson(["message" => $response->json('message')]);
     }
@@ -176,11 +165,9 @@ class UserControllerTest extends TestCase
     {
         $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
-        $this->actingAs($admin, "admin");
-        Role::factory()->create();
-        Reseau::factory()->create();
+        UserControllerTest::createUser();
         $user = User::factory()->create();
-        $response = $this->patch('/api/users/' . $user->id, ['motif' => 'motif bidon']);
+        $response = $this->actingAs($admin, "admin")->patch('/api/users/' . $user->id, ['motif' => 'motif bidon']);
         $response->assertStatus(200)
             ->assertJson(["message" => $response->json('message')]);
     }

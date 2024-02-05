@@ -25,8 +25,7 @@ class TarifRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success' => false,
-            'status_code' => 422,
             'errors' => $validator->errors()
-        ]));
+        ],422));
     }
 }

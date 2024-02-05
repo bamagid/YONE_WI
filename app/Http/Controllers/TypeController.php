@@ -185,6 +185,11 @@ class TypeController extends Controller
 
     public function update(TypeRequest $request, Type $type)
     {
+        if ($type->etat !== "actif") {
+            return response()->json([
+                "message" => "No query results for model [App\\Models\\Type] $type->id"
+            ], 404);
+        }
         $valeurAvant = $type->toArray();
         $this->authorize("update", $type);
         $type->fill($request->validated());
@@ -366,7 +371,7 @@ class TypeController extends Controller
             ->get();
         if ($typesSupprimes->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de types supprimés"
+                "message" => "Il n'y a pas de types dans la corbeille"
             ], 404);
         }
         return response()->json([
@@ -399,7 +404,7 @@ class TypeController extends Controller
             ->get();
         if ($typesSupprimes->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de types supprimés"
+                "message" => "Il n'y a pas de types dans la corbeille"
             ], 404);
         }
         foreach ($typesSupprimes as $type) {

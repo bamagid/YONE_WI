@@ -1,17 +1,17 @@
 <?php
 
 use Tests\TestCase;
-use App\Models\Role;
 use App\Models\User;
-use App\Models\AdminSystem;
 use App\Models\Reseau;
+use App\Models\AdminSystem;
+use Tests\Feature\UserControllerTest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ReseauControllerTest extends TestCase
 {
     public function testReseauIndex()
     {
-        $this->artisan('migrate:fresh');
+    $this->artisan('migrate:fresh');
         Reseau::factory()->create();
         $response = $this->get('/api/reseaus');
         $response->assertStatus(200)
@@ -66,15 +66,13 @@ class ReseauControllerTest extends TestCase
     public function Details()
     {
         $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        Role::factory()->create();
+        UserControllerTest::createUser();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->patch("/api/reseaus/details", [
             'description' => "La description de mon reseau",
             "telephone" => 778552211,
             "email" => null,
         ]);
-
         $response->assertStatus(200)
             ->assertJson([
                 "message" => $response->json('message'),
