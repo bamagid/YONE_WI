@@ -161,7 +161,7 @@ class LigneController extends Controller
         foreach ($users as $user) {
             Mail::send('newsletterligne', ['user' =>$user ,'ligne'=>$ligne], function ($message) use ($user) {
                 $message->to($user->email);
-                $message->subject('Notification dd\'ajout d\'une nouvelle ligne sur le site');
+                $message->subject('Notification d\'ajout d\'une nouvelle ligne sur le site');
             });
         }
        

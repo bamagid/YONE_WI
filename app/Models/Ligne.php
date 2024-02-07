@@ -20,6 +20,6 @@ class Ligne extends Model
     }
     public function reseau()
     {
-        return $this->hasMany(Reseau::class);
+        return $this->belongsTo(Reseau::class);
     }
 }

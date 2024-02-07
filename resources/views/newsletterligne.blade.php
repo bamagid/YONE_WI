@@ -37,6 +37,10 @@
         .content p {
             margin-bottom: 10px;
         }
+        .logo {
+            max-width: 100px;
+            margin-bottom: 20px;
+        }
 
         .footer {
             text-align: center;
@@ -63,19 +67,18 @@
         <div class="header">
             <h1>Nouvelle ligne de bus ajoutée!</h1>
         </div>
+        <div class="text-center">
+            <img src="https://i.ibb.co/dJg1jcj/logo.png" alt="Logo Yone_Wi" class="logo">
+        </div>
         <div class="content">
-            <p>Bonjour {{$user->prenom}} {{ $user->nom}},</p>
-            <p>Nous sommes heureux de vous annoncer qu'une nouvelle ligne de bus avec le numero {{$ligne->nom}} a été ajoutée au reseau {{$user->reseau->nom}}</p>
+            <p>Bonjour,</p>
+            <p>Nous sommes heureux de vous annoncer qu'une nouvelle ligne de bus avec le numero {{$ligne->nom}} a été ajoutée au reseau {{$ligne->reseau->nom}}</p>
             <p>Cette nouvelle ligne offrira plus d'options pour vos déplacements et contribuera à améliorer l'accessibilité de notre réseau.</p>
             <p>Nous vous encourageons à consulter notre site pour plus de détails sur cette nouvelle ligne et les horaires disponibles.</p>
-            <a href="http://localhost:4200/lignes">Réinitialiser le
+            <a href="http://localhost:4200/lignes" style="color: #fff">Réinitialiser le
                 Voir les lignes</a>
             <p>Merci de votre confiance et de votre fidélité à notre service.</p>
-            <p>Cordialement,</p>
-            <p>Votre équipe de transport en commun</p>
-        </div>
-        <div class="footer">
-            <p>Cet email vous a été envoyé à l'adresse {{$user->email}}.</p>
+            <p>Cordialement,<br>L'équipe de support de Yone_Wi</p>
         </div>
     </div>
 </body>
