@@ -5,101 +5,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <style>
-        body {
-            background-color: white;
-            font-family: 'Arial', sans-serif;
+        .colAuth {
+            background-color: #222222ce;
+            color: white;
+            padding: 3vh;
         }
 
-        .container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+        .colAuth h3 {
+            color: #F2743B;
+            font-weight: bold;
         }
 
         .card {
-            width: 400px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin: 0 auto;
-        }
-
-        .card-header {
-            background-color: #F2743B;
-            color: #fff;
-            font-size: 24px;
-            padding: 15px;
-            text-align: center;
-            border-radius: 8px 8px 0 0;
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-size: 16px;
-            color: #333;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            outline: none;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-
-        button {
-            background-color: #2CCED2;
-            color: #fff;
-            padding: 10px 15px;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
+            border-radius: 2vh;
         }
 
-        button:hover {
-            background-color: #2ccfd296;
+        .card img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .logo {
+            max-width: 25vh !important;
+            height: 8vh;
+            margin: 5vh 0;
+        }
+
+        .card .btnAuth {
+            background-color: #F2743B;
+            color: white;
+            margin-top: 5vh;
+        }
+
+        .require {
+            color: #2CCED2;
+        }
+
+        .containerReinitialiser {
+            min-height: 80vh;
+        }
+
+        .containerReinitialiser .card img {
+            max-height: 60vh;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="card">
-            <div class="card-header">Reset Password</div>
-            <div class="card-body">
-                <form action="{{ route('reset.password.post') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="token" value="{{ $token }}">
+    <div class="containerConnexion  py-5">
+        <div class="card mb-3" style="max-width: 840px;">
+            <div class="row g-0">
+                <div class="col-md-6">
+                    <img src="{{asset('auth1.png')}}" class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-6 colAuth rounded-end">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">REINITIALISER</h3>
+                        <div class="text-center">
+                            <img src="{{ asset('yonewilogo.png')}}" alt="Logo yone_wi" class="logo">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" class="form-control" name="password" required autofocus>
-                    </div>
+                        <form action="{{ route('reset.password.post') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="token" value="{{ $token }}">
+                            <div class="mb-4">
+                                <label for="password" class="form-label fw-bold fs-5">Nouveau mot de passe: <span
+                                        class="require">*</span></label>
+                                <input type="password" class="form-control" id="password" name="password"
+                                    placeholder="Votre nouveau mot de passe...">
+                            </div>
+                            <div class="mb-5">
+                                <label for="passwordconfirm" class="form-label fw-bold fs-5">Confirmation mot de passe:
+                                    <span class="require">*</span></label>
+                                <input type="password" class="form-control" id="passwordconfirm"
+                                    name="password_confirmation" placeholder="Votre mot de passe à nouveau ...">
+                            </div>
 
-                    <div class="form-group">
-                        <label for="password-confirm">Confirm Password</label>
-                        <input type="password" id="password-confirm" class="form-control" name="password_confirmation"
-                            required autofocus>
-                    </div>
+                            <button class="btn btnAuth col-12 fw-bold fs-5 d-block"
+                                type="submit">Réinitialiser</button>
 
-                    <div class="form-group">
-                        <button type="submit">Reset Password</button>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

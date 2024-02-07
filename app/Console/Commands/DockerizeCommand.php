@@ -25,6 +25,6 @@ class DockerizeCommand extends Command
      */
     public function handle()
     {
-        //
+        passthru('sh dockerize.sh');
     }
 }

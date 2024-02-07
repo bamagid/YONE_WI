@@ -11,7 +11,7 @@ class TestsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'tests';
+    protected $signature = 'tests {filter?}';
 
     /**
      * The console command description.
@@ -25,6 +25,7 @@ class TestsCommand extends Command
      */
     public function handle()
     {
-    
+        $filter = $this->argument('filter');
+        $filter ? passthru('sh test.sh '. $filter)  : passthru('sh test.sh');
     }
 }

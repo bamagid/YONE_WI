@@ -152,7 +152,7 @@ class SectionControllerTest extends TestCase
         SectionControllerTest::createSection();
         Section::factory(3)->create(["etat" => "corbeille"]);
         $user = User::factory()->create();
-        $response = $this->actingAs($user)->get('/api/sections/deleted/all');
+        $response = $this->actingAs($user,'api')->get('/api/sections/deleted/all');
 
         $response->assertStatus(200)
             ->assertJson([

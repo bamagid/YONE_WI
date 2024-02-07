@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Reseau;
-use App\Http\Requests\ReseauRequest;
 use Illuminate\Http\Request;
+use App\Http\Requests\ReseauRequest;
 use Illuminate\Support\Facades\Validator;
 
 class ReseauController extends Controller
@@ -186,10 +187,12 @@ class ReseauController extends Controller
         $validator = Validator::make($request->all(), [
             'description' => ['nullable', 'string'],
             "telephone" => ['nullable', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
-            "email" => ['nullable', 'email', 'unique:users,email'],
+            "email" => ['nullable','email','unique:admin_systems,email'],
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
+        }elseif (auth()->user()->email !== $request->email && User::where('email', $request->email)->exists()) {
+            
         }
         $reseau->update($validator->validated());
         return response()->json([
