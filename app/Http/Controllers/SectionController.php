@@ -58,10 +58,14 @@ class SectionController extends Controller
     public function messections()
     {
         $lignes = auth()->user()->reseau->lignes;
-        $sections = Section::whereHas('ligne', function ($query) use ($lignes) {
-            $query->where('id', $lignes->pluck('id'));
-        })->where('etat', 'actif')
-        ->get();
+        $sections=[];
+            for ($i=0; $i < count($lignes); $i++) {
+                for ($j=0; $j <count($lignes[$i]->sections) ; $j++) {
+                    if ($lignes[$i]->sections[$j]['etat']==="actif") {
+                        $sections[]=$lignes[$i]->sections[$j];
+                    }
+                }
+            }
 
         return response()->json([
             "message" => "La liste de mes sections actifs",
@@ -376,12 +380,15 @@ class SectionController extends Controller
     public function deleted()
     {
         $lignes = auth()->user()->reseau->lignes;
-        $sectionsSupprimees = Section::whereHas('ligne', function ($query) use ($lignes) {
-            $query->whereIn('id', $lignes->pluck('id'));
-        })
-            ->where('etat', 'corbeille')
-            ->get();
-        if ($sectionsSupprimees->all() == null) {
+        $sectionsSupprimees=[];
+            for ($i=0; $i < count($lignes); $i++) {
+                for ($j=0; $j <count($lignes[$i]->sections) ; $j++) {
+                    if ($lignes[$i]->sections[$j]['etat']==="corbeille") {
+                        $sections[]=$lignes[$i]->sections[$j];
+                    }
+                }
+            }
+        if (empty($sectionsSupprimees)) {
             return response()->json([
                 "message" => "Il n'y a pas de sections dans la corbeille"
             ], 404);

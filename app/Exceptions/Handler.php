@@ -27,7 +27,7 @@ class Handler extends ExceptionHandler
       
             return response()->json([
                 'error' => $exception->getMessage(),
-            ]);
+            ],$exception->getStatusCode() ?: 500);
     }
     /**
      * Register the exception handling callbacks for the application.
@@ -37,7 +37,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (Throwable $e) {
             return response()->json([
                 'error' => $e->getMessage(),
-            ]);
+            ],$e->getStatusCode() ? : 500);
         });
     }
     

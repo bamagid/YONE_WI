@@ -160,9 +160,7 @@ class ReseauController extends Controller
      * @OA\Response(response="200", description="OK"),
      * @OA\Response(response="404", description="Not Found"),
      * @OA\Response(response="500", description="Internal Server Error"),
-     *     @OA\Parameter(in="path", name="reseau", required=false, @OA\Schema(type="string")
-     * ),
-     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     *  @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
      * ),
      *     @OA\RequestBody(
      *         required=true,

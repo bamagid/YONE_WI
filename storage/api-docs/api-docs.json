@@ -1756,14 +1756,6 @@
                 "operationId": "55888b5ecbc92ead581617e5aff75078",
                 "parameters": [
                     {
-                        "name": "reseau",
-                        "in": "path",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
                         "name": "User-Agent",
                         "in": "header",
                         "required": false,
