@@ -53,7 +53,7 @@
 
 <body>
     <div class="container">
-        <img src="https://i.ibb.co/dJg1jcj/logo.png" alt="Logo de l'entreprise">
+        <img src="https://i.ibb.co/dJg1jcj/logo.png" alt="Logo de yone_wi">
         <h2>Réinitialisation du Mot de Passe</h2>
         <p>Vous avez demandé une réinitialisation du mot de passe. Cliquez sur
             le lien ci-dessous pour procéder :</p><br>

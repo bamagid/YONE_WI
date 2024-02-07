@@ -122,6 +122,6 @@ class ForgotPasswordController extends Controller
         User::where('email', $user->email)->update(['password' => Hash::make($request->password)]);
         DB::table('password_reset_tokens')->where(['token' => $request->token])->delete();
 
-        return response()->json(['message' => 'Votre mot de passe a bien été réinitialisé !']);
+        return redirect()->to('http://localhost:4200/auth');
     }
 }

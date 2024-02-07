@@ -25,6 +25,6 @@ class NormalCommand extends Command
      */
     public function handle()
     {
-        //
+        passthru('sh laravel.sh');
     }
 }

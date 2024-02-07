@@ -384,7 +384,7 @@ class SectionController extends Controller
             for ($i=0; $i < count($lignes); $i++) {
                 for ($j=0; $j <count($lignes[$i]->sections) ; $j++) {
                     if ($lignes[$i]->sections[$j]['etat']==="corbeille") {
-                        $sections[]=$lignes[$i]->sections[$j];
+                        $sectionsSupprimees[]=$lignes[$i]->sections[$j];
                     }
                 }
             }

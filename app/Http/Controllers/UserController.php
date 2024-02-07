@@ -7,9 +7,10 @@ use App\Models\User;
 use App\Models\Reseau;
 use App\Models\Historique;
 use App\Http\Requests\LoginRequest;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\MotifRequest;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 
@@ -445,6 +446,10 @@ class UserController extends Controller
                     "etat" => "bloqué",
                     "motif" => $request->motif,
                 ]);
+                Mail::send('blockuser', ['user' => $user], function ($message) use ($user) {
+                    $message->to($user->email);
+                    $message->subject('Notification de blockage  d\'un compte sur le site');
+                });
                 Historique::enregistrerHistorique(
                     'users',
                     $user->id,
@@ -459,6 +464,10 @@ class UserController extends Controller
                 return response()->json(["message" => "Le user a bien été bloqué "]);
             case 'bloqué':
                 $user->update(['etat' => 'actif']);
+                Mail::send('unblockuser', ['user' => $user], function ($message) use ($user) {
+                    $message->to($user->email);
+                    $message->subject('Notification de déblockage  d\'un compte sur le site');
+                });
                 return response()->json(["message" => "Le user a bien été debloqué"]);
             default:
                 return response()->json([
