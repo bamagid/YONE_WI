@@ -15,7 +15,7 @@ class TarifPolicy
     {
         return $user->role_id === 1
             ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à modifier ce tarif.');
+            : Response::deny('Vous n\'êtes pas autorisé à creer de tarif.');
     }
 
     /**
@@ -45,6 +45,6 @@ class TarifPolicy
     {
         return $user->reseau_id === $tarif->reseau_id
             ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à supprimer ce tarif.');
+            : Response::deny('Vous n\'êtes pas autorisé à restaurer ce tarif.');
     }
 }

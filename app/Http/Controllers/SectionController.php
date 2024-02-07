@@ -58,11 +58,14 @@ class SectionController extends Controller
     public function messections()
     {
         $lignes = auth()->user()->reseau->lignes;
-        $sections = Section::whereHas('ligne', function ($query) use ($lignes) {
-            $query->whereIn('id', $lignes->pluck('id'));
-        })
-            ->where('etat', 'actif')
-            ->get();
+        $sections=[];
+            for ($i=0; $i < count($lignes); $i++) {
+                for ($j=0; $j <count($lignes[$i]->sections) ; $j++) {
+                    if ($lignes[$i]->sections[$j]['etat']==="actif") {
+                        $sections[]=$lignes[$i]->sections[$j];
+                    }
+                }
+            }
 
         return response()->json([
             "message" => "La liste de mes sections actifs",
@@ -193,6 +196,11 @@ class SectionController extends Controller
 
     public function update(SectionRequest $request, Section $section)
     {
+        if ($section->etat !== "actif") {
+            return response()->json([
+                "message" => "No query results for model [App\\Models\\Section] $section->id"
+            ], 404);
+        }
         $valeurAvant = $section->toArray();
         $this->authorize("update", $section);
         $section->fill($request->validated());
@@ -372,14 +380,17 @@ class SectionController extends Controller
     public function deleted()
     {
         $lignes = auth()->user()->reseau->lignes;
-        $sectionsSupprimees = Section::whereHas('ligne', function ($query) use ($lignes) {
-            $query->whereIn('id', $lignes->pluck('id'));
-        })
-            ->where('etat', 'corbeille')
-            ->get();
-        if ($sectionsSupprimees->all() == null) {
+        $sectionsSupprimees=[];
+            for ($i=0; $i < count($lignes); $i++) {
+                for ($j=0; $j <count($lignes[$i]->sections) ; $j++) {
+                    if ($lignes[$i]->sections[$j]['etat']==="corbeille") {
+                        $sections[]=$lignes[$i]->sections[$j];
+                    }
+                }
+            }
+        if (empty($sectionsSupprimees)) {
             return response()->json([
-                "error" => "Il n'y a pas de sections supprimées"
+                "message" => "Il n'y a pas de sections dans la corbeille"
             ], 404);
         }
         return response()->json([
@@ -415,7 +426,7 @@ class SectionController extends Controller
             ->get();
         if ($sectionsSupprimees->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de sections supprimées"
+                "message" => "Il n'y a pas de sections dans la corbeille"
             ], 404);
         }
         foreach ($sectionsSupprimees as $section) {

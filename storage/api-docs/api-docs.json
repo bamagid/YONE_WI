@@ -1756,14 +1756,6 @@
                 "operationId": "55888b5ecbc92ead581617e5aff75078",
                 "parameters": [
                     {
-                        "name": "reseau",
-                        "in": "path",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
                         "name": "User-Agent",
                         "in": "header",
                         "required": false,
@@ -2387,10 +2379,10 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
-                                    "Depart": {
+                                    "depart": {
                                         "type": "string"
                                     },
-                                    "Arrivee": {
+                                    "arrivee": {
                                         "type": "string"
                                     },
                                     "ligne_id": {
@@ -2581,10 +2573,10 @@
                         "application/x-www-form-urlencoded": {
                             "schema": {
                                 "properties": {
-                                    "Depart": {
+                                    "depart": {
                                         "type": "string"
                                     },
-                                    "Arrivee": {
+                                    "arrivee": {
                                         "type": "string"
                                     },
                                     "ligne_id": {
@@ -3764,7 +3756,7 @@
                         "description": "Bad Request"
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthorized"
                     },
                     "403": {
                         "description": "Unauthorize"
@@ -3884,7 +3876,7 @@
                         "description": "Bad Request"
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthorized"
                     },
                     "403": {
                         "description": "Unauthorize"
@@ -3941,7 +3933,7 @@
                         "description": "OK"
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthorized"
                     },
                     "403": {
                         "description": "Unauthorize"
@@ -4001,7 +3993,7 @@
                         "description": "Bad Request"
                     },
                     "401": {
-                        "description": "Unauthenticated"
+                        "description": "Unauthorized"
                     },
                     "403": {
                         "description": "Unauthorize"

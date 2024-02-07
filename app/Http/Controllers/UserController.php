@@ -6,21 +6,19 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Reseau;
 use App\Models\Historique;
-use Illuminate\Http\Request;
-use PhpParser\Node\Stmt\Switch_;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\MotifRequest;
 use Illuminate\Support\Facades\File;
-use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('multiauth')->except('store', 'login');
+        $this->middleware('multiauth')->only('update','profile', 'refreshtoken','logout');
+        $this->middleware('auth:admin')->only('store','destroy', 'changerEtat','index','usersblocked');
     }
     /**
      * @OA\GET(
@@ -80,7 +78,7 @@ class UserController extends Controller
      * } ,
      * @OA\Response(response="201", description="Created successfully"),
      * @OA\Response(response="400", description="Bad Request"),
-     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="401", description="Unauthorized"),
      * @OA\Response(response="403", description="Unauthorize"),
      *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
      * ),
@@ -135,7 +133,7 @@ class UserController extends Controller
      * } ,
      * @OA\Response(response="201", description="Created successfully"),
      * @OA\Response(response="400", description="Bad Request"),
-     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="401", description="Unauthorized"),
      * @OA\Response(response="403", description="Unauthorize"),
      *     @OA\Parameter(in="path", name="user", required=false, @OA\Schema(type="string"),
      * ),
@@ -165,6 +163,11 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        if ($user->etat !== "actif") {
+            return response()->json([
+                "message" => "No query results for model [App\\Models\\User] $user->id"
+            ], 404);
+        }
         $valeurAvant = $user->toArray();
         $id_reseau = $user->reseau_id;
         $user->fill($request->validated());
@@ -182,10 +185,10 @@ class UserController extends Controller
         Historique::enregistrerHistorique(
             'users',
             $user->id,
-            auth()->user()->id,
+            $user->id,
             'update',
-            auth()->user()->email,
-            auth()->user()->reseau->nom,
+            $user->email,
+            $user->reseau->nom,
             json_encode($valeurAvant),
             json_encode($user->toArray())
         );
@@ -207,7 +210,7 @@ class UserController extends Controller
      * } ,
      * @OA\Response(response="201", description="Created successfully"),
      * @OA\Response(response="400", description="Bad Request"),
-     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="401", description="Unauthorized"),
      * @OA\Response(response="403", description="Unauthorize"),
      *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
      * ),
@@ -238,7 +241,14 @@ class UserController extends Controller
             $user = auth('api')->user();
             $typeUser = "utilisateur";
         }
-        if (!empty($token) && (empty($user->etat) || $user->etat == "actif")) {
+        if (!empty($user->etat) &&  $user->etat !== "actif") {
+            auth('api')->logout();
+            return response()->json([
+                "status" => false,
+                "message" => "Votre compte a été $user->etat par l'administrateur",
+                "motif" => $user->motif
+            ]);
+        }elseif (!empty($token)) {
 
             return response()->json([
                 "status" => true,
@@ -247,13 +257,6 @@ class UserController extends Controller
                 "user" => $user,
                 "token" => $token
             ], 200);
-        } elseif (!empty($user->etat) &&  $user->etat == "bloqué") {
-            auth('api')->logout();
-            return response()->json([
-                "status" => false,
-                "message" => "Votre compte a été bloqué par l'administrateur",
-                "motif" => $user->motif
-            ]);
         }
         return response()->json([
             "status" => false,
@@ -357,7 +360,7 @@ class UserController extends Controller
      * {"BearerAuth":{} },
      * } ,
      * @OA\Response(response="200", description="OK"),
-     * @OA\Response(response="401", description="Unauthenticated"),
+     * @OA\Response(response="401", description="Unauthorized"),
      * @OA\Response(response="403", description="Unauthorize"),
      * @OA\Response(response="404", description="Not Found"),
      *     @OA\Parameter(in="path", name="user", required=false, @OA\Schema(type="string"),
@@ -379,25 +382,24 @@ class UserController extends Controller
      *     tags={"Gestion des utilisateurs"},
      * ),
      */
-    public function destroy(Request $request, User $user)
+    public function destroy(MotifRequest $request, User $user)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                "motif" => ["required", "string"],
-            ]
-        );
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
         if ($user->etat !== "suprimé") {
             $user->update([
                 "etat" => "supprimé",
                 "motif" => $request->motif
             ]);
+            Historique::enregistrerHistorique(
+                'users',
+                $user->id,
+                $user->id,
+                'update',
+                $user->email,
+                $user->reseau->nom,
+                null,
+                null,
+                $request->motif
+            );
             return response()->json(["message" => "Le user a bien été supprimé"]);
         }
         return response()->json([
@@ -435,37 +437,33 @@ class UserController extends Controller
      * ),
      */
 
-    public function changerEtat(Request $request, User $user)
+    public function changerEtat(MotifRequest  $request, User $user)
     {
         switch ($user->etat) {
             case 'actif':
-                $validator = Validator::make(
-                    $request->all(),
-                    [
-                        "motif" => ["required", "string"],
-                    ]
-                );
-                if ($validator->fails()) {
-                    return response()->json([
-                        'status' => false,
-                        'errors' => $validator->errors()
-                    ], 422);
-                }
                 $user->update([
                     "etat" => "bloqué",
                     "motif" => $request->motif,
                 ]);
+                Historique::enregistrerHistorique(
+                    'users',
+                    $user->id,
+                    $user->id,
+                    'update',
+                    $user->email,
+                    $user->reseau->nom,
+                    null,
+                    null,
+                    $request->motif
+                );
                 return response()->json(["message" => "Le user a bien été bloqué "]);
-                break;
             case 'bloqué':
                 $user->update(['etat' => 'actif']);
                 return response()->json(["message" => "Le user a bien été debloqué"]);
-                break;
             default:
                 return response()->json([
                     "message" => "No query results for model [App\\Models\\User] $user->id"
                 ], 404);
-                break;
         }
     }
 }

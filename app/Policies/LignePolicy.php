@@ -15,7 +15,7 @@ class LignePolicy
     {
         return $user->role_id === 1
             ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à modifier cette ligne.');
+            : Response::deny('Vous n\'êtes pas autorisé à creer de ligne.');
     }
 
     /**
@@ -45,6 +45,6 @@ class LignePolicy
     {
         return $user->reseau_id === $ligne->reseau_id
             ? Response::allow()
-            : Response::deny('Vous n\'êtes pas autorisé à supprimer cette ligne.');
+            : Response::deny('Vous n\'êtes pas autorisé à restaurer cette ligne.');
     }
 }

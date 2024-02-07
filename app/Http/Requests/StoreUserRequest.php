@@ -24,7 +24,7 @@ class StoreUserRequest extends FormRequest
             "image" => "sometimes",
             "role_id" => "required|integer",
             "reseau_id" => "required|integer",
-            "email" => "required|email|unique:users,email|admin_systems,email",
+            "email" => "required|email|unique:users,email|unique:admin_systems,email",
             'password' => [PasswordRule::default(), 'confirmed'],
         ];
     }
@@ -33,8 +33,7 @@ class StoreUserRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success' => false,
-            'status_code' => 422,
             'errors' => $validator->errors()
-        ]));
+        ],422));
     }
 }

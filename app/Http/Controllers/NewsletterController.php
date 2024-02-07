@@ -43,18 +43,27 @@ class NewsletterController extends Controller
     public function subscribe(NewsletterRequest $request)
     {
         $email = $request->validated()['email'];
-
-        if (Newsletter::where('email', $email)->exists()) {
-            return response()->json([
-                "message" => "L'email est déjà abonné à la newsletter."
-            ], 422);
+        $newsletter = Newsletter::where('email', $email)->first();
+        if (!$newsletter) {
+            $subscriber  = Newsletter::create([
+                'email'=> $email,
+                ]);
+                return response()->json([
+                    "message" => "L'email a bien été ajouté à la newsletter.",
+                    "subscriber" => $subscriber
+                ], 201);
+        }elseif($newsletter->etat=="desabonné") {
+            $newsletter->update(["etat"=>"abonné"]);
+                return response()->json([
+                    "message" => "L'email a bien été ajouté à la newsletter.",
+                    "subscriber" => $newsletter
+                ], 201);
         }
 
-        $subscriber = Newsletter::create($request->validated());
         return response()->json([
-            "message" => "L'email a bien été ajouté à la newsletter.",
-            "subscriber" => $subscriber
-        ], 201);
+            "message" => "L'email est déjà abonné à la newsletter."
+        ], 422);
+       
     }
     /**
      * @OA\PATCH(
@@ -87,9 +96,8 @@ class NewsletterController extends Controller
     public function unscribe(NewsletterRequest $request)
     {
         $email = $request->validated()['email'];
-
-        if (Newsletter::where('email', $email)->exists()) {
-            $newsletter = Newsletter::where('email', $email)->first();
+        $newsletter = Newsletter::where('email', $email)->first();
+        if ($newsletter && $newsletter->etat ==="abonné") {
             $newsletter->update(['etat' => 'desabonné']);
             return response()->json([
                 "message" => "L'email a bien été desabonné à la newsletter.",

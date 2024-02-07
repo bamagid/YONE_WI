@@ -1,21 +1,20 @@
 <?php
 
-use App\Models\Reseau;
-use App\Models\Role;
 use Tests\TestCase;
+use App\Models\Role;
 use App\Models\User;
+use App\Models\Reseau;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Tests\Feature\UserControllerTest;
 
 class ForgotPasswordControllerTest extends TestCase
 {
-
     public function testSubmitForgetPasswordForm()
     {
-        $this->artisan('migrate:fresh');
-        Reseau::factory()->create();
-        Role::factory()->create();
+         $this->artisan('migrate:fresh');
+        UserControllerTest::createUser();
         User::factory()->create();
         $response = $this->post('/api/forget-password', [
             'email' => "dioufgermainedaba@gmail.com",
@@ -28,7 +27,7 @@ class ForgotPasswordControllerTest extends TestCase
 
     public function testShowResetPasswordForm()
     {
-        $this->artisan('migrate:fresh');
+         $this->artisan('migrate:fresh');
         $token = Str::random(64);
         DB::table('password_reset_tokens')->insert([
             'email' => "bamagid60@gmail.com",
@@ -41,7 +40,7 @@ class ForgotPasswordControllerTest extends TestCase
 
     public function testSubmitResetPasswordForm()
     {
-        $this->artisan('migrate:fresh');
+         $this->artisan('migrate:fresh');
         $token = Str::random(64);
         DB::table('password_reset_tokens')->insert([
             'email' => 'bamagid60@gmail.com',

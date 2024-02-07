@@ -33,6 +33,7 @@ class HistoriqueController extends Controller
         $historiques = Historique::all();
         return response()->json([
             'status' => true,
+            "message"=>"voici  l'historique de la plateforme",
             "historiques" => $historiques
         ]);
     }
@@ -71,10 +72,13 @@ class HistoriqueController extends Controller
     {
         $historiques = Historique::where("Entite", $request->entite)->get();
         if ($historiques->all() == null) {
-            return response()->json(['status' => false, 'message' => 'Aucun historique trouvé pour cette entité'], 404);
+            return response()->json([
+                'status' => false,
+                'message' => 'Aucun historique trouvé pour cette classe'], 404);
         }
         return response()->json([
             'status' => true,
+            'message'=> 'voici l\'historiques des '. $request->entite,
             "historiques" => $historiques
         ]);
     }
@@ -112,10 +116,13 @@ class HistoriqueController extends Controller
     {
         $historiques = Historique::where("id_user", $request->id_user)->get();
         if ($historiques->all() == null) {
-            return response()->json(['status' => false, 'message' => 'Aucun historique trouvé pour cet utilisateur'], 404);
+         return response()->json([
+        'status' => false,
+        'message' => 'Aucun historique trouvé pour cet utilisateur'], 404);
         }
         return response()->json([
             'status' => true,
+            'message'=> 'Voici l\historique de l\'utilisateur avec l\'id '. $request->id_user,
             "historiques" => $historiques
         ]);
     }

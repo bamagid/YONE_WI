@@ -9,14 +9,6 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 class NewsletterRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -24,7 +16,7 @@ class NewsletterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "email" => ['required', 'email', 'required'],
+            "email" => ['required', 'email'],
         ];
     }
 
@@ -32,8 +24,7 @@ class NewsletterRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success' => false,
-            'status_code' => 422,
             'errors' => $validator->errors()
-        ]));
+        ],422));
     }
 }

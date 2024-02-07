@@ -187,6 +187,11 @@ class TarifController extends Controller
 
     public function update(TarifRequest $request, Tarif $tarif)
     {
+        if ($tarif->etat !== "actif") {
+            return response()->json([
+                "message" => "No query results for model [App\\Models\\Tarif] $tarif->id"
+            ], 404);
+        }
         $valeurAvant = $tarif->toArray();
         $this->authorize("update", $tarif);
         $tarif->fill($request->validated());
@@ -356,7 +361,7 @@ class TarifController extends Controller
             ->get();
         if ($tarifsSupprimes->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de tarifs supprimés"
+                "message" => "Il n'y a pas de tarifs dans la corbielle"
             ], 404);
         }
         return response()->json([
@@ -389,7 +394,7 @@ class TarifController extends Controller
             ->get();
         if ($tarifsSupprimes->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de tarifs supprimés"
+                "message" => "Il n'y a pas de tarifs dans la corbielle"
             ], 404);
         }
         foreach ($tarifsSupprimes as $tarif) {

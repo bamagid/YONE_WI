@@ -138,6 +138,11 @@ class ReseauController extends Controller
      */
     public function update(ReseauRequest $request, Reseau $reseau)
     {
+        if ($reseau->etat !== "actif") {
+            return response()->json([
+                "message" => "No query results for model [App\\Models\\Reseau] $reseau->id"
+            ], 404);
+        }
         $reseau->update($request->validated());
         return response()->json([
             "message" => "Le reseau a bien été mise à jour",
@@ -155,9 +160,7 @@ class ReseauController extends Controller
      * @OA\Response(response="200", description="OK"),
      * @OA\Response(response="404", description="Not Found"),
      * @OA\Response(response="500", description="Internal Server Error"),
-     *     @OA\Parameter(in="path", name="reseau", required=false, @OA\Schema(type="string")
-     * ),
-     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
+     *  @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string")
      * ),
      *     @OA\RequestBody(
      *         required=true,
@@ -313,7 +316,7 @@ class ReseauController extends Controller
         $reseauxSupprimes = Reseau::where('etat', 'corbeille')->get();
         if ($reseauxSupprimes->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de réseaux supprimés"
+                "message" => "Il n'y a pas de réseaux dans la corbeille"
             ], 404);
         }
         return response()->json([
@@ -344,7 +347,7 @@ class ReseauController extends Controller
         $reseausSupprimes = Reseau::where('etat', 'corbeille')->get();
         if ($reseausSupprimes->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de réseaux supprimés"
+                "message" => "Il n'y a pas de réseaux dans la corbeille"
             ], 404);
         }
         foreach ($reseausSupprimes as $reseau) {

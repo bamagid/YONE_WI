@@ -111,6 +111,11 @@ class RoleController extends Controller
 
     public function update(RoleRequest $request, Role $role)
     {
+        if ($role->etat !== "actif") {
+            return response()->json([
+                "message" => "No query results for model [App\\Models\\Role] $role->id"
+            ], 404);
+        }
         $role->update($request->validated());
         return response()->json([
             'message' => 'Role mise à jour avec succés !',
@@ -242,7 +247,7 @@ class RoleController extends Controller
         $rolesSupprimes = Role::where('etat', 'corbeille')->get();
         if ($rolesSupprimes->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de roles supprimés"
+                "message" => "Il n'y a pas de roles dans la corbeille"
             ], 404);
         }
         return response()->json([
@@ -273,7 +278,7 @@ class RoleController extends Controller
         $rolesSupprimes = Role::where('etat', 'corbeille')->get();
         if ($rolesSupprimes->all() == null) {
             return response()->json([
-                "error" => "Il n'y a pas de lignes supprimés"
+                "message" => "Il n'y a pas de roles dans la corbeille"
             ], 404);
         }
         foreach ($rolesSupprimes as $role) {

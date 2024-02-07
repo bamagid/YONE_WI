@@ -8,12 +8,9 @@ use App\Models\AdminSystem;
 class NewsletterControllerTest extends TestCase
 {
     use WithFaker;
-
     public function testSubscribe()
     {
-        $this->artisan('migrate:fresh');
-
-        // Appeler la méthode subscribe
+       $this->artisan('migrate:fresh');
         $response = $this->post('/api/newsletter/subscribe', [
             'email' => $this->faker->unique()->safeEmail,
         ]);
