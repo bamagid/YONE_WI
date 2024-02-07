@@ -37,6 +37,10 @@
         .content p {
             margin-bottom: 10px;
         }
+        .logo {
+            max-width: 100px;
+            margin-bottom: 20px;
+        }
 
         .footer {
             text-align: center;
@@ -62,6 +66,9 @@
     <div class="container">
         <div class="header">
             <h1>Nouvelle ligne de bus ajoutée!</h1>
+        </div>
+        <div class="text-center">
+            <img src="https://i.ibb.co/dJg1jcj/logo.png" alt="Logo Yone_Wi" class="logo">
         </div>
         <div class="content">
             <p>Bonjour,</p>
