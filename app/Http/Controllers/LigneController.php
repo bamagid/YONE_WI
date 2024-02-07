@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ligne;
 use App\Models\Historique;
 use App\Http\Requests\LigneRequest;
+use App\Models\Newsletter;
 use Illuminate\Support\Facades\Mail;
 
 class LigneController extends Controller
@@ -146,21 +147,24 @@ class LigneController extends Controller
         $ligne->created_by = $request->user()->email;
         $ligne->created_at = now();
         $ligne->saveOrFail();
-        $user=auth()->user();
         Historique::enregistrerHistorique(
             'lignes',
             $ligne->id,
-            $user->id,
+            auth()->user()->id,
             'create',
-            $user->email,
-            $user->reseau->nom,
+            auth()->user()->email,
+            auth()->user()->reseau->nom,
             null,
             json_encode($ligne->toArray())
         );
-        Mail::send('newsletterligne', ['user' =>$user ,'ligne'=>$ligne], function ($message) use ($user) {
-            $message->to($user->email);
-            $message->subject('Notification d\'ajout d\'une nouvelle ligne sur le site');
-        });
+        $users=Newsletter::where('etat','abonné')->get();
+        foreach ($users as $user) {
+            Mail::send('newsletterligne', ['user' =>$user ,'ligne'=>$ligne], function ($message) use ($user) {
+                $message->to($user->email);
+                $message->subject('Notification dd\'ajout d\'une nouvelle ligne sur le site');
+            });
+        }
+       
         return response()->json([
             "message" => "La ligne a bien été enregistrée",
             "ligne" => $ligne
