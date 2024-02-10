@@ -18,8 +18,8 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('multiauth')->only('update','profile', 'refreshtoken','logout');
-        $this->middleware('auth:admin')->only('store','destroy', 'changerEtat','index','usersblocked');
+        $this->middleware('multiauth')->only('update', 'profile', 'refreshtoken', 'logout');
+        $this->middleware('auth:admin')->only('store', 'destroy', 'changerEtat', 'index', 'usersblocked');
     }
     /**
      * @OA\GET(
@@ -188,7 +188,7 @@ class UserController extends Controller
             $user->id,
             $user->id,
             'update',
-            $user->email,
+            $user->email ? $user->exists :  $user->getOriginal('email'),
             $user->reseau->nom,
             json_encode($valeurAvant),
             json_encode($user->toArray())
@@ -249,7 +249,7 @@ class UserController extends Controller
                 "message" => "Votre compte a été $user->etat par l'administrateur",
                 "motif" => $user->motif
             ]);
-        }elseif (!empty($token)) {
+        } elseif (!empty($token)) {
 
             return response()->json([
                 "status" => true,

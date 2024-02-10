@@ -52,7 +52,7 @@ Route::post('lignes/empty-trash', [LigneController::class, 'emptyTrash']);
 Route::apiResource('reseaus', ReseauController::class);
 Route::patch('reseaus/restaurer/{reseau}', [ReseauController::class, "restore"]);
 Route::patch('reseaus/delete/{reseau}', [ReseauController::class, "delete"]);
-Route::patch('reseau/details', [ReseauController::class, "details"])->middleware('auth:api');
+Route::post('reseau/details', [ReseauController::class, "details"])->middleware('auth:api');
 Route::get('reseaus/deleted/all', [ReseauController::class, 'deleted']);
 Route::post('reseaus/empty-trash', [ReseauController::class, 'emptyTrash']);
 Route::apiResource('sections', SectionController::class);

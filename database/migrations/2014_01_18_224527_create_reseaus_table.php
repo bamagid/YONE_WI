@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nom');
             $table->string('description')->nullable();
             $table->enum('etat', ['actif', 'corbeille', 'supprimé'])->default('actif');
+            $table->string('image')->nullable();
             $table->integer('telephone')->unique()->nullable();
             $table->string('email')->unique()->nullable();
             $table->timestamps();

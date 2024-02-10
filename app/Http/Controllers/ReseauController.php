@@ -6,7 +6,9 @@ use App\Models\User;
 use App\Models\Reseau;
 use Illuminate\Http\Request;
 use App\Http\Requests\ReseauRequest;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\DetailsReseauRequest;
 
 class ReseauController extends Controller
 {
@@ -173,6 +175,7 @@ class ReseauController extends Controller
      *                     @OA\Property(property="description", type="string"),
      *                     @OA\Property(property="telephone", type="integer"),
      *                     @OA\Property(property="email", type="string"),
+     *                     @OA\Property(property="image", type="string", format="binary"),
      *                 },
      *             ),
      *         ),
@@ -180,23 +183,27 @@ class ReseauController extends Controller
      *     tags={"Gestion de reseaux"},
      * ),
      */
-    public function details(Request $request)
+    public function details(DetailsReseauRequest $request)
     {
         $reseau = Reseau::FindOrFail($request->user()->reseau_id);
         $this->authorize("update", $reseau);
-        $validator = Validator::make($request->all(), [
-            'description' => ['nullable', 'string'],
-            "telephone" => ['nullable', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
-            "email" => ['nullable','email','unique:admin_systems,email'],
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }elseif (auth()->user()->email !== $request->email && User::where('email', $request->email)->exists()) {
-            
+        if (auth()->user()->email !== $request->email && User::where('email', $request->email)->exists()) {
+            return response()->json([
+                'message' => "L'email que vous avez renseigné existe déjà, veuillez le modifier"
+            ], 422);
         }
-        $reseau->update($validator->validated());
+        $reseau->fill($request->validated());
+        if ($request->file('image')) {
+            
+            if (File::exists(storage_path($reseau->image))) {
+                File::delete(storage_path($reseau->image));
+            }
+            $image = $request->file('image');
+            $reseau->image = $image->store('images', 'public');
+        }
+        $reseau->update();
         return response()->json([
-            "message" => "Le reseau a bien été mise à jour",
+            "message" => "Le reseau a bien été mis à jour",
             "reseau" => $reseau
         ], 200);
     }
