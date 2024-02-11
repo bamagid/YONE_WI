@@ -33,7 +33,7 @@ class ContactController extends Controller
     public function index()
     {
         $messages = Cache::rememberForever('contacts', function () {
-            Contact::all();
+         return   Contact::all();
         });
         return response()->json([
             'message' => 'voici la liste des messages',
@@ -75,7 +75,7 @@ class ContactController extends Controller
     public function store(ContactRequest $request)
     {
         $contact = Contact::create($request->validated());
-
+        Cache::forget('contacts');
         return response()->json([
             'message' => 'Votre message a bien été envoyé. Nous vous contacterons bientôt.',
             'contact' => $contact,

@@ -2,10 +2,17 @@
 
 namespace App\Exceptions;
 
+use Exception;
 use Throwable;
-use Illuminate\Database\QueryException;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use PDOException;
+use BadMethodCallException;
+use Illuminate\Database\QueryException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -24,22 +31,32 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-  
-        return response()->json([
-            'error' => $exception->getMessage(),
-        ],$exception->getStatusCode() ?: 500);
+        $response = ['error' => $exception->getMessage()];
+        if ($exception instanceof HttpException) {
+            return response()->json(
+                app()->environment('local') ? $response : ['error' => "Httpexception"],
+                $exception->getStatusCode()
+            );
+        } elseif (
+            $exception instanceof QueryException ||
+            $exception instanceof PDOException
+        ) {
+            return response()->json(
+                app()->environment('local') ?
+                    $response : ["error" => "Query exception"],
+                500
+            );
+        } elseif ($exception instanceof BadMethodCallException) {
+            return response()->json( app()->environment('local') ?
+            $response : ["error" => "Bad method call"], 405);
+        } elseif ($exception instanceof ModelNotFoundException) {
+            return response()->json( app()->environment('local') ?
+            $response : ["error" => "Model Not Found"], 404);
+        } elseif (
+            $exception instanceof AuthorizationException
+        ) {
+            return response()->json($response, 403);
+        }
+        return parent::render($request, $exception);
     }
-    /**
-     * Register the exception handling callbacks for the application.
-     */
-    public function register(): void
-    {
-        $this->renderable(function (Throwable $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ],$e->getStatusCode() ? : 500);
-        });
-    }
-    
-   
 }

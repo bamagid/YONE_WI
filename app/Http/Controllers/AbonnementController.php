@@ -147,7 +147,7 @@ class AbonnementController extends Controller
         $abonnement->reseau_id = $request->user()->reseau_id;
         $abonnement->created_by = $request->user()->email;
         $abonnement->created_at = now();
-        $abonnement->saveOrFail();
+        $abonnement->save();
         Historique::enregistrerHistorique(
             'abonnements',
             $abonnement->id,

@@ -146,7 +146,7 @@ class TarifController extends Controller
         $tarif->reseau_id = $request->user()->reseau_id;
         $tarif->created_by = $request->user()->email;
         $tarif->created_at = now();
-        $tarif->saveOrFail();
+        $tarif->save();
         Historique::enregistrerHistorique(
             'tarifs',
             $tarif->id,

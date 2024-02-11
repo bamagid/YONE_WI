@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Historique;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class HistoriqueController extends Controller
 {
@@ -30,10 +31,12 @@ class HistoriqueController extends Controller
      */
     public  function index()
     {
-        $historiques = Historique::all();
+        $historiques = Cache::rememberForever('historiques', function () {
+            return Historique::all();
+        });
         return response()->json([
             'status' => true,
-            "message"=>"voici  l'historique de la plateforme",
+            "message" => "voici  l'historique de la plateforme",
             "historiques" => $historiques
         ]);
     }
@@ -70,17 +73,20 @@ class HistoriqueController extends Controller
 
     public  function historiquesentite(Request $request)
     {
-        $historiques = Historique::where("Entite", $request->entite)->get();
-        if ($historiques->all() == null) {
-            return response()->json([
+        $historiques = Cache::rememberForever('historiques_classe', function () use ($request) {
+            return Historique::where("Entite", $request->entite)->get();
+        });
+        return $historiques->isEmpty() ?
+            response()->json([
                 'status' => false,
-                'message' => 'Aucun historique trouvé pour cette classe'], 404);
-        }
-        return response()->json([
-            'status' => true,
-            'message'=> 'voici l\'historiques des '. $request->entite,
-            "historiques" => $historiques
-        ]);
+                'message' => 'Aucun historique trouvé pour cette classe'
+            ], 404)
+            :
+            response()->json([
+                'status' => true,
+                'message' => 'voici l\'historiques des ' . $request->entite,
+                "historiques" => $historiques
+            ]);
     }
 
     /**
@@ -114,16 +120,19 @@ class HistoriqueController extends Controller
      */
     public  function historiquesuser(Request $request)
     {
-        $historiques = Historique::where("id_user", $request->id_user)->get();
-        if ($historiques->all() == null) {
-         return response()->json([
-        'status' => false,
-        'message' => 'Aucun historique trouvé pour cet utilisateur'], 404);
-        }
-        return response()->json([
-            'status' => true,
-            'message'=> 'Voici l\historique de l\'utilisateur avec l\'id '. $request->id_user,
-            "historiques" => $historiques
-        ]);
+        $historiques = Cache::rememberForever('historiques_user', function () use ($request) {
+            return Historique::where("id_user", $request->id_user)->get();
+        });
+        return $historiques->isEmpty() ?
+            response()->json([
+                'status' => false,
+                'message' => 'Aucun historique trouvé pour cet utilisateur'
+            ], 404)
+            :
+            response()->json([
+                'status' => true,
+                'message' => 'Voici l\historique de l\'utilisateur avec l\'id ' . $request->id_user,
+                "historiques" => $historiques
+            ]);
     }
 }

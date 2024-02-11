@@ -1426,13 +1426,13 @@
             }
         },
         "/api/newsletter/unscribe": {
-            "patch": {
+            "post": {
                 "tags": [
                     "Gestion des newsletters"
                 ],
                 "summary": "Se desabonner  a la newsletter",
                 "description": "",
-                "operationId": "900eabdf06d5db03d2443af34eee00ac",
+                "operationId": "a3b7a3b9579081885761f58947bbe725",
                 "parameters": [
                     {
                         "name": "User-Agent",
@@ -3851,7 +3851,7 @@
                                         "type": "string"
                                     },
                                     "telephone": {
-                                        "type": "string"
+                                        "type": "integer"
                                     },
                                     "reseau_id": {
                                         "type": "string"
@@ -3859,6 +3859,9 @@
                                     "image": {
                                         "type": "string",
                                         "format": "binary"
+                                    },
+                                    "email": {
+                                        "type": "string"
                                     },
                                     "password": {
                                         "type": "string"

@@ -39,7 +39,7 @@ class ReseauController extends Controller
         $reseaux = Cache::rememberForever('reseaux_actifs', function () {
             return Reseau::where('etat', 'actif')->get();
         });
-        
+
         return response()->json([
             "message" => "La liste des reseaux actifs",
             "reseaux" => $reseaux
@@ -78,7 +78,8 @@ class ReseauController extends Controller
     public function store(ReseauRequest $request)
     {
         $reseau = Reseau::create($request->validated());
-         Artisan::call('optimize:clear');
+        Cache::forget('reseaux_actifs');
+        Cache::forget('reseaux_supprimes');
         return response()->json([
             "message" => "Le reseau a bien été enregistré",
             "reseau" => $reseau
@@ -153,7 +154,8 @@ class ReseauController extends Controller
             ], 404);
         }
         $reseau->update($request->validated());
-        Artisan::call('optimize:clear');
+        Cache::forget('reseaux_actifs');
+        Cache::forget('reseaux_supprimes');
         return response()->json([
             "message" => "Le reseau a bien été mise à jour",
             "reseau" => $reseau
@@ -201,7 +203,7 @@ class ReseauController extends Controller
         }
         $reseau->fill($request->validated());
         if ($request->file('image')) {
-            
+
             if (File::exists(storage_path($reseau->image))) {
                 File::delete(storage_path($reseau->image));
             }
@@ -209,7 +211,7 @@ class ReseauController extends Controller
             $reseau->image = $image->store('images', 'public');
         }
         $reseau->update();
-        Artisan::call('optimize:clear');
+        Cache::forget('reseaux_actifs');
         return response()->json([
             "message" => "Le reseau a bien été mis à jour",
             "reseau" => $reseau
@@ -239,7 +241,8 @@ class ReseauController extends Controller
     {
         if ($reseau->etat === "actif") {
             $reseau->update(['etat' => 'corbeille']);
-            Artisan::call('optimize:clear');
+            Cache::forget('reseaux_actifs');
+            Cache::forget('reseaux_supprimes');
             return response()->json([
                 "message" => "Le reseau a bien été mis dans la corbeille",
                 "reseau" => $reseau
@@ -272,12 +275,13 @@ class ReseauController extends Controller
     {
         if ($reseau->etat === "corbeille") {
             $reseau->update(['etat' => 'supprimé']);
+            Cache::forget('reseaux_actifs');
+            Cache::forget('reseaux_supprimes');
             return response()->json([
                 "message" => "Le reseau a bien été supprimé",
                 "reseau" => $reseau
             ], 200);
         }
-        Artisan::call('optimize:clear');
         return response()->json([
             "status" => false,
             "message" => "Vous ne pouvez pas supprimé un element qui n'est pas dans la corbeille",
@@ -305,12 +309,13 @@ class ReseauController extends Controller
     {
         if ($reseau->etat === "corbeille") {
             $reseau->update(['etat' => 'actif']);
+            Cache::forget('reseaux_actifs');
+            Cache::forget('reseaux_supprimes');
             return response()->json([
                 "message" => "Le reseau a bien été restauré",
                 "reseau" => $reseau
             ]);
         }
-        Artisan::call('optimize:clear');
         return response()->json([
             "status" => false,
             "message" => "Vous ne pouvais restaurer que les reseaux de la corbeille",
@@ -334,10 +339,10 @@ class ReseauController extends Controller
      */
     public function deleted()
     {
-        $reseauxSupprimes = Cache::rememberforever('reseaux_supprimés', function () {
+        $reseauxSupprimes = Cache::rememberforever('reseaux_supprimes', function () {
             return Reseau::where('etat', 'corbeille')->get();
         });
-    
+
         return $reseauxSupprimes->isEmpty()
             ? response()->json([
                 "message" => "Il n'y a pas de réseaux dans la corbeille"

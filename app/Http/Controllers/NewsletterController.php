@@ -49,12 +49,14 @@ class NewsletterController extends Controller
             $subscriber  = Newsletter::create([
                 'email' => $email,
             ]);
+            Cache::forget('subscribers');
             return response()->json([
                 "message" => "L'email a bien été ajouté à la newsletter.",
                 "subscriber" => $subscriber
             ], 201);
         } elseif ($newsletter->etat == "desabonné") {
             $newsletter->update(["etat" => "abonné"]);
+            Cache::forget('subscribers');
             return response()->json([
                 "message" => "L'email a bien été ajouté à la newsletter.",
                 "subscriber" => $newsletter
@@ -66,7 +68,7 @@ class NewsletterController extends Controller
         ], 422);
     }
     /**
-     * @OA\PATCH(
+     * @OA\POST(
      *     path="/api/newsletter/unscribe",
      *     summary="Se desabonner  a la newsletter",
      *     description="",
@@ -99,6 +101,7 @@ class NewsletterController extends Controller
         $newsletter = Newsletter::where('email', $email)->first();
         if ($newsletter && $newsletter->etat === "abonné") {
             $newsletter->update(['etat' => 'desabonné']);
+            Cache::forget('subscribers');
             return response()->json([
                 "message" => "L'email a bien été desabonné à la newsletter.",
                 "subscriber" => $newsletter

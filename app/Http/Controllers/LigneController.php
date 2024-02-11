@@ -34,7 +34,9 @@ class LigneController extends Controller
 
     public function index()
     {
-        $lignes = Ligne::where('etat', 'actif')->get();
+        $lignes = Cache::rememberForever('lignes_actifs', function () {
+            return  Ligne::where('etat', 'actif')->get();
+        });
         return response()->json([
             "message" => "La liste des lignes actives",
             "lignes" => $lignes
@@ -155,7 +157,7 @@ class LigneController extends Controller
         $ligne->reseau_id = $request->user()->reseau_id;
         $ligne->created_by = $request->user()->email;
         $ligne->created_at = now();
-        $ligne->saveOrFail();
+        $ligne->save();
         Historique::enregistrerHistorique(
             'lignes',
             $ligne->id,

@@ -112,7 +112,7 @@ class TypeController extends Controller
         $type->created_by = $request->user()->email;
         $type->reseau_id = $request->user()->reseau_id;
         $type->created_at = now();
-        $type->saveOrFail();
+        $type->save();
         Historique::enregistrerHistorique(
             'types',
             $type->id,
