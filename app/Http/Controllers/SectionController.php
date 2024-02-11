@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Section;
 use App\Models\Historique;
 use App\Http\Requests\SectionRequest;
+use Illuminate\Support\Facades\Cache;
 
 class SectionController extends Controller
 {
@@ -32,7 +33,9 @@ class SectionController extends Controller
      */
     public function index()
     {
-        $sections = Section::where('etat', 'actif')->get();
+        $sections = Cache::rememberForever('sections_actifs', function () {
+            return Section::where('etat', 'actif')->get();
+        });
         return response()->json([
             "message" => "La liste des sections actives",
             "sections" => $sections
@@ -57,20 +60,21 @@ class SectionController extends Controller
      */
     public function messections()
     {
-        $lignes = auth()->user()->reseau->lignes;
-        $sections=[];
-            for ($i=0; $i < count($lignes); $i++) {
-                for ($j=0; $j <count($lignes[$i]->sections) ; $j++) {
-                    if ($lignes[$i]->sections[$j]['etat']==="actif") {
-                        $sections[]=$lignes[$i]->sections[$j];
-                    }
-                }
-            }
 
-        return response()->json([
-            "message" => "La liste de mes sections actifs",
-            "sections" => $sections
-        ], 200);
+        $sections = Cache::rememberForever("mes_sections_actifs", function (){
+            return auth()->user()->reseau->lignes->flatMap->sections->filter(function ($section) {
+                return $section['etat'] === "actif";
+            });
+        });
+        return $sections->isEmpty() ?
+            response()->json([
+                "message" => "Vos n'avez pas de sections actif"
+            ])
+            :
+            response()->json([
+                "message" => "La liste de mes sections actifs",
+                "sections" => $sections
+            ], 200);
     }
 
     /**
@@ -143,7 +147,7 @@ class SectionController extends Controller
         $section->fill($request->validated());
         $section->created_by = $request->user()->email;
         $section->created_at = now();
-        $section->saveOrFail();
+        $section->save();
         Historique::enregistrerHistorique(
             'sections',
             $section->id,
@@ -379,24 +383,22 @@ class SectionController extends Controller
 
     public function deleted()
     {
-        $lignes = auth()->user()->reseau->lignes;
-        $sectionsSupprimees=[];
-            for ($i=0; $i < count($lignes); $i++) {
-                for ($j=0; $j <count($lignes[$i]->sections) ; $j++) {
-                    if ($lignes[$i]->sections[$j]['etat']==="corbeille") {
-                        $sectionsSupprimees[]=$lignes[$i]->sections[$j];
-                    }
-                }
-            }
-        if (empty($sectionsSupprimees)) {
-            return response()->json([
+
+        $sectionsSupprimees = Cache::rememberForever("sections_supprimes", function () {
+            return auth()->user()->reseau->lignes->flatMap->sections->filter(function ($section) {
+                return $section->etat === "corbeille";
+            });
+        });
+
+        return $sectionsSupprimees->isEmpty() ?
+            response()->json([
                 "message" => "Il n'y a pas de sections dans la corbeille"
-            ], 404);
-        }
-        return response()->json([
-            "message" => "La liste des sections qui sont misent dans la corbeille",
-            "sections" => $sectionsSupprimees
-        ], 200);
+            ], 404)
+            :
+            response()->json([
+                "message" => "La liste des sections qui sont mises dans la corbeille",
+                "sections" => $sectionsSupprimees
+            ], 200);
     }
 
     /**
@@ -418,13 +420,12 @@ class SectionController extends Controller
      */
     public function emptyTrash()
     {
-        $lignes = auth()->user()->reseau->lignes;
-        $sectionsSupprimees = Section::whereHas('ligne', function ($query) use ($lignes) {
-            $query->whereIn('id', $lignes->pluck('id'));
-        })
-            ->where('etat', 'corbeille')
-            ->get();
-        if ($sectionsSupprimees->all() == null) {
+        $sectionsSupprimees= auth()->user()->reseau->lignes->flatMap->sections->filter(function ($section) {
+            return $section->etat === "corbeille";
+        });
+
+
+        if ($sectionsSupprimees->isEmpty()) {
             return response()->json([
                 "message" => "Il n'y a pas de sections dans la corbeille"
             ], 404);

@@ -12,7 +12,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\StoreUserRequest;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -39,7 +41,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::where('etat', 'actif')->get();
+        $users = Cache::rememberForever('users_actifs', function () {
+            return User::where('etat', 'actif')->get();
+        });
         return response()->json([
             "message" => "La liste des utilisateurs actifs",
             "users" => $users
@@ -63,8 +67,16 @@ class UserController extends Controller
      */
     public function usersblocked()
     {
-        $users = User::where('etat', 'bloqué')->get();
-        return response()->json([
+        $users = Cache::rememberForever('users_bloqués', function () {
+            return User::where('etat', 'bloqué')->get();
+        });
+        return $users->isEmpty() ?
+        
+         response()->json([
+            "message" => "Il n'y a pas d'utilisateurs bloqués",
+        ], 200)
+        :
+         response()->json([
             "message" => "La liste des utilisateurs bloqués",
             "users" => $users
         ], 200);
@@ -117,7 +129,14 @@ class UserController extends Controller
             $image = $request->file('image');
             $user->image = $image->store('images', 'public');
         }
-        $user->saveOrFail();
+        $user->save();
+        Mail::send('emaillogin', ['username' => $user->email,
+        'password'=>$request->password], function ($message) use ($user) {
+            $message->to($user->email);
+            $message->subject('Notification de blockage  d\'un compte sur le site');
+        });
+        Cache::forget('users_actifs');
+        Cache::forget('users_bloqués');
         return response()->json([
             "status" => true,
             "message" => "Bienvenue dans la communauté ",
@@ -150,9 +169,10 @@ class UserController extends Controller
      *                     @OA\Property(property="nom", type="string"),
      *                     @OA\Property(property="prenom", type="string"),
      *                     @OA\Property(property="adresse", type="string"),
-     *                     @OA\Property(property="telephone", type="string"),
+     *                     @OA\Property(property="telephone", type="integer"),
      *                     @OA\Property(property="reseau_id", type="string"),
      *                     @OA\Property(property="image", type="string", format="binary"),
+     *                     @OA\Property(property="email", type="string"),
      *                     @OA\Property(property="password", type="string"),
      *                     @OA\Property(property="password_confirmation", type="string"),
      *                 },
@@ -193,6 +213,7 @@ class UserController extends Controller
             json_encode($valeurAvant),
             json_encode($user->toArray())
         );
+        Cache::forget('users_bloqués');
         $user->update();
         return response()->json([
             "status" => true,
@@ -401,6 +422,7 @@ class UserController extends Controller
                 null,
                 $request->motif
             );
+            Cache::forget('users_bloqués');
             return response()->json(["message" => "Le user a bien été supprimé"]);
         }
         return response()->json([
@@ -461,6 +483,7 @@ class UserController extends Controller
                     null,
                     $request->motif
                 );
+                Cache::forget('users_bloqués');
                 return response()->json(["message" => "Le user a bien été bloqué "]);
             case 'bloqué':
                 $user->update(['etat' => 'actif']);
@@ -468,6 +491,18 @@ class UserController extends Controller
                     $message->to($user->email);
                     $message->subject('Notification de déblockage  d\'un compte sur le site');
                 });
+                Historique::enregistrerHistorique(
+                    'users',
+                    $user->id,
+                    $user->id,
+                    'update',
+                    $user->email,
+                    $user->reseau->nom,
+                    null,
+                    null,
+                    'deblocage du compte'
+                );
+                Cache::forget('users_bloqués');
                 return response()->json(["message" => "Le user a bien été debloqué"]);
             default:
                 return response()->json([

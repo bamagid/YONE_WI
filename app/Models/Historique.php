@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Cache;
 
 class Historique extends Model
 {
@@ -32,5 +34,13 @@ class Historique extends Model
         $historique->Valeur_Apres = $valeurApres;
         $historique->motif_blockage = $motifSuppression;
         $historique->save();
+        Cache::forget($classe . '_actifs');
+        Cache::forget('historiques');
+        Cache::forget('historiques_user');
+        Cache::forget('historiques_classe');
+        if ($classe !== "users") {
+            Cache::forget('mes_' . $classe . '_actifs');
+            Cache::forget($classe . '_supprimes');
+        }
     }
 }

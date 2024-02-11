@@ -75,8 +75,12 @@
             <p>Nous sommes heureux de vous annoncer qu'une nouvelle ligne de bus avec le numero {{$ligne->nom}} a été ajoutée au reseau {{$ligne->reseau->nom}}</p>
             <p>Cette nouvelle ligne offrira plus d'options pour vos déplacements et contribuera à améliorer l'accessibilité de notre réseau.</p>
             <p>Nous vous encourageons à consulter notre site pour plus de détails sur cette nouvelle ligne et les horaires disponibles.</p>
-            <a href="http://localhost:4200/lignes" style="color: #fff">Réinitialiser le
-                Voir les lignes</a>
+            <a href="http://localhost:4200/lignes" style="color: #fff">Voir les lignes</a>
+            <p>Si vous souhaitez vous désabonner de notre newsletter, veuillez cliquer sur le bouton ci-dessous :</p>
+            <form action="http://127.0.0.1:8000/api/newsletter/unscribe" method="POST">
+                <input type="hidden" name="email" value="{{ $user->email }}">
+                <button type="submit" class="btn-unsubscribe">Se désabonner</button>
+            </form>
             <p>Merci de votre confiance et de votre fidélité à notre service.</p>
             <p>Cordialement,<br>L'équipe de support de Yone_Wi</p>
         </div>

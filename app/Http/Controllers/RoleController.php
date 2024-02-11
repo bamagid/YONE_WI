@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Http\Requests\RoleRequest;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 
 class RoleController extends Controller
 {
@@ -31,7 +33,9 @@ class RoleController extends Controller
 
     public function index()
     {
-        $roles = Role::where('etat', 'actif')->get();
+        $roles = Cache::rememberForever('roles_actifs', function () {
+            return Role::where('etat', 'actif')->get();
+        });
         return response()->json([
             "message" => "La liste des roles disponible",
             "roles" => $roles
@@ -71,6 +75,8 @@ class RoleController extends Controller
     public function store(RoleRequest $request)
     {
         $role = Role::create($request->validated());
+        Cache::forget('roles_actifs');
+        Cache::forget('roles_supprimes');
         return response()->json([
             "message" => "Le role a bien été crée",
             "role" => $role
@@ -117,6 +123,8 @@ class RoleController extends Controller
             ], 404);
         }
         $role->update($request->validated());
+        Cache::forget('roles_actifs');
+        Cache::forget('roles_supprimes');
         return response()->json([
             'message' => 'Role mise à jour avec succés !',
             "role" => $role
@@ -145,6 +153,8 @@ class RoleController extends Controller
     {
         if ($role->etat === "actif") {
             $role->update(["etat" => "corbeille"]);
+            Cache::forget('roles_actifs');
+            Cache::forget('roles_supprimes');
             return response()->json([
                 "message" => "Le role a bien été mis dans la corbeille",
                 "role" => $role
@@ -179,6 +189,8 @@ class RoleController extends Controller
     {
         if ($role->etat === "corbeille") {
             $role->update(['etat' => 'supprimé']);
+            Cache::forget('roles_actifs');
+            Cache::forget('roles_supprimes');
             return response()->json([
                 "message" => "Le role a bien été supprimé",
                 "role" => $role
@@ -213,6 +225,8 @@ class RoleController extends Controller
     {
         if ($role->etat === "corbeille") {
             $role->update(["etat" => "actif"]);
+            Cache::forget('roles_actifs');
+            Cache::forget('roles_supprimes');
             return response()->json([
                 "message" => "Le role a bien été restauré",
                 "role" => $role
@@ -244,16 +258,19 @@ class RoleController extends Controller
      */
     public function deleted()
     {
-        $rolesSupprimes = Role::where('etat', 'corbeille')->get();
-        if ($rolesSupprimes->all() == null) {
-            return response()->json([
+        $rolesSupprimes = Cache::rememberForever('roles_supprimes', function () {
+            return Role::where('etat', 'corbeille')->get();
+        });
+
+        return  $rolesSupprimes->isEmpty() ?
+            response()->json([
                 "message" => "Il n'y a pas de roles dans la corbeille"
-            ], 404);
-        }
-        return response()->json([
-            "message" => "La liste des roles qui sont dans la corbeille ",
-            "roles" => $rolesSupprimes
-        ], 200);
+            ], 404)
+            :
+            response()->json([
+                "message" => "La liste des roles qui sont dans la corbeille ",
+                "roles" => $rolesSupprimes
+            ], 200);
     }
     /**
      * @OA\POST(
@@ -284,6 +301,8 @@ class RoleController extends Controller
         foreach ($rolesSupprimes as $role) {
             $role->update(["etat" => "supprimé"]);
         }
+        Cache::forget('roles_actifs');
+        Cache::forget('roles_supprimes');
         return response()->json([
             "message" => "La corbeille des roles a été vidée avec succès"
         ], 200);

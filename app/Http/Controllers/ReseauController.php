@@ -7,6 +7,8 @@ use App\Models\Reseau;
 use Illuminate\Http\Request;
 use App\Http\Requests\ReseauRequest;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\DetailsReseauRequest;
 
@@ -34,7 +36,10 @@ class ReseauController extends Controller
      */
     public function index()
     {
-        $reseaux = Reseau::where('etat', 'actif')->get();
+        $reseaux = Cache::rememberForever('reseaux_actifs', function () {
+            return Reseau::where('etat', 'actif')->get();
+        });
+
         return response()->json([
             "message" => "La liste des reseaux actifs",
             "reseaux" => $reseaux
@@ -73,6 +78,8 @@ class ReseauController extends Controller
     public function store(ReseauRequest $request)
     {
         $reseau = Reseau::create($request->validated());
+        Cache::forget('reseaux_actifs');
+        Cache::forget('reseaux_supprimes');
         return response()->json([
             "message" => "Le reseau a bien été enregistré",
             "reseau" => $reseau
@@ -147,6 +154,8 @@ class ReseauController extends Controller
             ], 404);
         }
         $reseau->update($request->validated());
+        Cache::forget('reseaux_actifs');
+        Cache::forget('reseaux_supprimes');
         return response()->json([
             "message" => "Le reseau a bien été mise à jour",
             "reseau" => $reseau
@@ -194,7 +203,7 @@ class ReseauController extends Controller
         }
         $reseau->fill($request->validated());
         if ($request->file('image')) {
-            
+
             if (File::exists(storage_path($reseau->image))) {
                 File::delete(storage_path($reseau->image));
             }
@@ -202,6 +211,7 @@ class ReseauController extends Controller
             $reseau->image = $image->store('images', 'public');
         }
         $reseau->update();
+        Cache::forget('reseaux_actifs');
         return response()->json([
             "message" => "Le reseau a bien été mis à jour",
             "reseau" => $reseau
@@ -231,6 +241,8 @@ class ReseauController extends Controller
     {
         if ($reseau->etat === "actif") {
             $reseau->update(['etat' => 'corbeille']);
+            Cache::forget('reseaux_actifs');
+            Cache::forget('reseaux_supprimes');
             return response()->json([
                 "message" => "Le reseau a bien été mis dans la corbeille",
                 "reseau" => $reseau
@@ -263,6 +275,8 @@ class ReseauController extends Controller
     {
         if ($reseau->etat === "corbeille") {
             $reseau->update(['etat' => 'supprimé']);
+            Cache::forget('reseaux_actifs');
+            Cache::forget('reseaux_supprimes');
             return response()->json([
                 "message" => "Le reseau a bien été supprimé",
                 "reseau" => $reseau
@@ -295,6 +309,8 @@ class ReseauController extends Controller
     {
         if ($reseau->etat === "corbeille") {
             $reseau->update(['etat' => 'actif']);
+            Cache::forget('reseaux_actifs');
+            Cache::forget('reseaux_supprimes');
             return response()->json([
                 "message" => "Le reseau a bien été restauré",
                 "reseau" => $reseau
@@ -323,16 +339,18 @@ class ReseauController extends Controller
      */
     public function deleted()
     {
-        $reseauxSupprimes = Reseau::where('etat', 'corbeille')->get();
-        if ($reseauxSupprimes->all() == null) {
-            return response()->json([
+        $reseauxSupprimes = Cache::rememberforever('reseaux_supprimes', function () {
+            return Reseau::where('etat', 'corbeille')->get();
+        });
+
+        return $reseauxSupprimes->isEmpty()
+            ? response()->json([
                 "message" => "Il n'y a pas de réseaux dans la corbeille"
-            ], 404);
-        }
-        return response()->json([
-            "message" => "La liste des reseaux qui son dans la corbeilles",
-            "reseaux" => $reseauxSupprimes
-        ], 200);
+            ], 404)
+            : response()->json([
+                "message" => "La liste des reseaux qui son dans la corbeilles",
+                "reseaux" => $reseauxSupprimes
+            ], 200);
     }
     /**
      * @OA\POST(
@@ -363,6 +381,7 @@ class ReseauController extends Controller
         foreach ($reseausSupprimes as $reseau) {
             $reseau->update(["etat" => "supprimé"]);
         }
+        Artisan::call('optimize:clear');
         return response()->json([
             "message" => "La corbeille a été vidée avec succès"
         ], 200);

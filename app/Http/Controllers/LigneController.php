@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Ligne;
 use App\Models\Historique;
-use App\Http\Requests\LigneRequest;
 use App\Models\Newsletter;
+use App\Http\Requests\LigneRequest;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 
 class LigneController extends Controller
 {
@@ -33,7 +34,9 @@ class LigneController extends Controller
 
     public function index()
     {
-        $lignes = Ligne::where('etat', 'actif')->get();
+        $lignes = Cache::rememberForever('lignes_actifs', function () {
+            return  Ligne::where('etat', 'actif')->get();
+        });
         return response()->json([
             "message" => "La liste des lignes actives",
             "lignes" => $lignes
@@ -58,13 +61,21 @@ class LigneController extends Controller
      */
     public function meslignes()
     {
-        $lignes = Ligne::where('etat', 'actif')
-            ->where('reseau_id', auth()->user()->reseau_id)
-            ->get();
-        return response()->json([
-            "message" => "La liste de mes lignes actifs",
-            "lignes" => $lignes
-        ], 200);
+        $lignes = Cache::rememberForever('mes_lignes_actifs', function () {
+            return Ligne::where('etat', 'actif')
+                ->where('reseau_id', auth()->user()->reseau_id)
+                ->get();
+        });
+
+        return $lignes->isEmpty() ?
+            response()->json([
+                "message" => "Vous n'avez pas de lignes actifs"
+            ])
+            :
+            response()->json([
+                "message" => "La liste de mes lignes actifs",
+                "lignes" => $lignes
+            ], 200);
     }
 
 
@@ -146,7 +157,7 @@ class LigneController extends Controller
         $ligne->reseau_id = $request->user()->reseau_id;
         $ligne->created_by = $request->user()->email;
         $ligne->created_at = now();
-        $ligne->saveOrFail();
+        $ligne->save();
         Historique::enregistrerHistorique(
             'lignes',
             $ligne->id,
@@ -157,14 +168,14 @@ class LigneController extends Controller
             null,
             json_encode($ligne->toArray())
         );
-        $users=Newsletter::where('etat','abonné')->get();
+        $users = Newsletter::where('etat', 'abonné')->get();
         foreach ($users as $user) {
-            Mail::send('newsletterligne', ['user' =>$user ,'ligne'=>$ligne], function ($message) use ($user) {
+            Mail::send('newsletterligne', ['user' => $user, 'ligne' => $ligne], function ($message) use ($user) {
                 $message->to($user->email);
                 $message->subject('Notification d\'ajout d\'une nouvelle ligne sur le site');
             });
         }
-       
+
         return response()->json([
             "message" => "La ligne a bien été enregistrée",
             "ligne" => $ligne
@@ -396,18 +407,18 @@ class LigneController extends Controller
      */
     public function deleted()
     {
-        $lignesSupprimees = Ligne::where('etat', 'corbeille')
-            ->where('reseau_id', auth()->user()->reseau_id)
-            ->get();
-        if ($lignesSupprimees->all() == null) {
-            return response()->json([
+        $lignesSupprimees = Cache::rememberForever('lignes_supprimes', function () {
+            return Ligne::where('etat', 'corbeille')->get();
+        });
+        return $lignesSupprimees->isEmpty()
+            ? response()->json([
                 "message" => "Il n'y a pas de lignes dans la corbeille"
-            ], 404);
-        }
-        return response()->json([
-            "message" => "La liste des lignes qui se trouve dans la corbeille",
-            "lignes" => $lignesSupprimees
-        ], 200);
+            ], 404)
+            :
+            response()->json([
+                "message" => "La liste des lignes qui se trouve dans la corbeille",
+                "lignes" => $lignesSupprimees
+            ], 200);
     }
 
     /**

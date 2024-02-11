@@ -74,7 +74,7 @@ Route::patch('types/delete/{type}', [TypeController::class, "delete"]);
 Route::get('types/deleted/all', [TypeController::class, 'deleted']);
 Route::post('types/empty-trash', [TypeController::class, 'emptyTrash']);
 Route::post('newsletter/subscribe', [NewsletterController::class, 'subscribe']);
-Route::patch('newsletter/unscribe', [NewsletterController::class, 'unscribe']);
+Route::post('newsletter/unscribe', [NewsletterController::class, 'unscribe']);
 Route::get('newsletter/all', [NewsletterController::class, 'showSubscribers']);
 Route::get('contacts', [ContactController::class, 'index']);
 Route::post('contacts', [ContactController::class, 'store']);

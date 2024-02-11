@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Type;
 use App\Models\Historique;
 use App\Http\Requests\TypeRequest;
+use Illuminate\Support\Facades\Cache;
 
 class TypeController extends Controller
 {
@@ -30,7 +31,9 @@ class TypeController extends Controller
      */
     public function index()
     {
-        $types = Type::where('etat', 'actif')->get();
+        $types =  Cache::rememberForever('types_actifs', function () {
+            return Type::where('etat', 'actif')->get();
+        });
         return response()->json([
             "message" => "La liste des types actifs",
             "types" => $types
@@ -55,13 +58,20 @@ class TypeController extends Controller
      */
     public function mestypes()
     {
-        $types = Type::where('etat', 'actif')
-            ->where('reseau_id', auth()->user()->reseau_id)
-            ->get();
-        return response()->json([
-            "message" => "La liste de mes types actifs",
-            "types" => $types
-        ], 200);
+        $types = Cache::rememberForever('mes_types_actifs', function () {
+            return Type::where('etat', 'actif')
+                ->where('reseau_id', auth()->user()->reseau_id)
+                ->get();
+        });
+        return $types->isEmpty() ?
+            response()->json([
+                "message" => "Vous n'avez pas de types actifs"
+            ])
+            :
+            response()->json([
+                "message" => "La liste de mes types actifs",
+                "types" => $types
+            ], 200);
     }
 
     /**
@@ -102,7 +112,7 @@ class TypeController extends Controller
         $type->created_by = $request->user()->email;
         $type->reseau_id = $request->user()->reseau_id;
         $type->created_at = now();
-        $type->saveOrFail();
+        $type->save();
         Historique::enregistrerHistorique(
             'types',
             $type->id,
@@ -366,18 +376,19 @@ class TypeController extends Controller
      */
     public function deleted()
     {
-        $typesSupprimes = Type::where('etat', 'corbeille')
-            ->where('reseau_id', auth()->user()->reseau_id)
-            ->get();
-        if ($typesSupprimes->all() == null) {
-            return response()->json([
-                "message" => "Il n'y a pas de types dans la corbeille"
-            ], 404);
-        }
-        return response()->json([
-            "message" => "La liste des types qui sont dans la corbeille",
-            "types" => $typesSupprimes
-        ], 200);
+        $typesSupprimes = Cache::rememberForever('types_supprimes', function () {
+            return Type::where('etat', 'supprimé')
+                ->where('reseau_id', auth()->user()->reseau_id)
+                ->get();
+        });
+        return  $typesSupprimes->isEmpty() ? response()->json([
+            "message" => "Il n'y a pas de types dans la corbeille"
+        ], 404)
+            :
+            response()->json([
+                "message" => "La liste des types qui sont dans la corbeille",
+                "types" => $typesSupprimes
+            ], 200);
     }
 
     /**
