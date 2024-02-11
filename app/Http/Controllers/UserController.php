@@ -12,7 +12,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\StoreUserRequest;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -39,7 +41,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::where('etat', 'actif')->get();
+        $users = Cache::rememberForever('users_actifs', function () {
+            return User::where('etat', 'actif')->get();
+        });
         return response()->json([
             "message" => "La liste des utilisateurs actifs",
             "users" => $users
@@ -63,7 +67,9 @@ class UserController extends Controller
      */
     public function usersblocked()
     {
-        $users = User::where('etat', 'bloqué')->get();
+        $users = Cache::rememberForever('users_bloqués', function () {
+            return User::where('etat', 'bloqué')->get();
+        });
         return response()->json([
             "message" => "La liste des utilisateurs bloqués",
             "users" => $users
@@ -118,6 +124,7 @@ class UserController extends Controller
             $user->image = $image->store('images', 'public');
         }
         $user->saveOrFail();
+        Artisan::call('optimize:clear');
         return response()->json([
             "status" => true,
             "message" => "Bienvenue dans la communauté ",
@@ -150,7 +157,7 @@ class UserController extends Controller
      *                     @OA\Property(property="nom", type="string"),
      *                     @OA\Property(property="prenom", type="string"),
      *                     @OA\Property(property="adresse", type="string"),
-     *                     @OA\Property(property="telephone", type="string"),
+     *                     @OA\Property(property="telephone", type="integer"),
      *                     @OA\Property(property="reseau_id", type="string"),
      *                     @OA\Property(property="image", type="string", format="binary"),
      *                     @OA\Property(property="password", type="string"),
@@ -468,6 +475,18 @@ class UserController extends Controller
                     $message->to($user->email);
                     $message->subject('Notification de déblockage  d\'un compte sur le site');
                 });
+                Historique::enregistrerHistorique(
+                    'users',
+                    auth()->user()->id,
+                    $user->id,
+                    'update',
+                    $user->email,
+                    $user->reseau->nom,
+                    null,
+                    null,
+                    'deblocage du compte'
+                );
+                Artisan::call('optimize:clear');
                 return response()->json(["message" => "Le user a bien été debloqué"]);
             default:
                 return response()->json([

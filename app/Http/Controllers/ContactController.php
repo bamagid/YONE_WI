@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ContactRequest;
 use App\Models\Contact;
+use Illuminate\Support\Facades\Cache;
 
 class ContactController extends Controller
 {
@@ -31,7 +32,9 @@ class ContactController extends Controller
      */
     public function index()
     {
-        $messages = Contact::all();
+        $messages = Cache::rememberForever('contacts', function () {
+            Contact::all();
+        });
         return response()->json([
             'message' => 'voici la liste des messages',
             'contact' => $messages,

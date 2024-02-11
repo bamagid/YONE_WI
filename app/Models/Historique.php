@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Historique extends Model
 {
@@ -32,5 +33,6 @@ class Historique extends Model
         $historique->Valeur_Apres = $valeurApres;
         $historique->motif_blockage = $motifSuppression;
         $historique->save();
+        Artisan::call('cache:clear');
     }
 }

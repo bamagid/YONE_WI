@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Abonnement;
-use App\Http\Requests\AbonnementRequest;
 use App\Models\Historique;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\AbonnementRequest;
 
 class AbonnementController extends Controller
 {
@@ -31,7 +32,9 @@ class AbonnementController extends Controller
      */
     public function index()
     {
-        $abonnements = Abonnement::where('etat', 'actif')->get();
+        $abonnements = Cache::rememberForever('abonnements_actifs', function () {
+            return Abonnement::where('etat', 'actif')->get();
+        });
         return response()->json([
             "message" => "La liste des abonnements actifs",
             "abonnements" => $abonnements
@@ -55,13 +58,21 @@ class AbonnementController extends Controller
      */
     public function mesabonnements()
     {
-        $abonnements = Abonnement::where('etat', 'actif')
-            ->where('reseau_id', auth()->user()->reseau_id)
-            ->get();
-        return response()->json([
-            "message" => "La liste de mes abonnements actifs",
-            "abonnements" => $abonnements
-        ], 200);
+        $abonnements = Cache::rememberForever('mes_abonnements_actifs', function () {
+            return Abonnement::where('etat', 'actif')
+                ->where('reseau_id', auth()->user()->reseau_id)
+                ->get();
+        });
+
+        return $abonnements->isEmpty() ?
+            response()->json([
+                "message" => "Vous n'avez pas d'abonnements actifs"
+            ])
+            :
+            response()->json([
+                "message" => "La liste de mes abonnements actifs",
+                "abonnements" => $abonnements
+            ], 200);
     }
 
     /**
@@ -392,18 +403,18 @@ class AbonnementController extends Controller
      */
     public function deleted()
     {
-        $abonnementsSupprimes = Abonnement::where('etat', 'corbeille')
-            ->where('reseau_id', auth()->user()->reseau_id)
-            ->get();
-        if ($abonnementsSupprimes->all() == null) {
-            return response()->json([
+        $abonnementsSupprimes = Cache::rememberForever('abonnements_supprimes', function () {
+            return Abonnement::where('etat', 'corbeille')->get();
+        });
+
+        return $abonnementsSupprimes->isEmpty()
+            ? response()->json([
                 "message" => "Il n'y a pas d'abonnements dans la corbeille"
-            ], 404);
-        }
-        return response()->json([
-            "message" => "La liste des abonnements qui se trouvent dans la corbeille",
-            "abonnements" => $abonnementsSupprimes
-        ], 200);
+            ], 404)
+            : response()->json([
+                "message" => "La liste des abonnements dans la corbeille",
+                "abonnements" => $abonnementsSupprimes
+            ], 200);
     }
 
     /**

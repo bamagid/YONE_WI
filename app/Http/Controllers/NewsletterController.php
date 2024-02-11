@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Newsletter;
 use App\Http\Requests\NewsletterRequest;
+use Illuminate\Support\Facades\Cache;
 
 class NewsletterController extends Controller
 {
@@ -46,24 +47,23 @@ class NewsletterController extends Controller
         $newsletter = Newsletter::where('email', $email)->first();
         if (!$newsletter) {
             $subscriber  = Newsletter::create([
-                'email'=> $email,
-                ]);
-                return response()->json([
-                    "message" => "L'email a bien été ajouté à la newsletter.",
-                    "subscriber" => $subscriber
-                ], 201);
-        }elseif($newsletter->etat=="desabonné") {
-            $newsletter->update(["etat"=>"abonné"]);
-                return response()->json([
-                    "message" => "L'email a bien été ajouté à la newsletter.",
-                    "subscriber" => $newsletter
-                ], 201);
+                'email' => $email,
+            ]);
+            return response()->json([
+                "message" => "L'email a bien été ajouté à la newsletter.",
+                "subscriber" => $subscriber
+            ], 201);
+        } elseif ($newsletter->etat == "desabonné") {
+            $newsletter->update(["etat" => "abonné"]);
+            return response()->json([
+                "message" => "L'email a bien été ajouté à la newsletter.",
+                "subscriber" => $newsletter
+            ], 201);
         }
 
         return response()->json([
             "message" => "L'email est déjà abonné à la newsletter."
         ], 422);
-       
     }
     /**
      * @OA\PATCH(
@@ -97,7 +97,7 @@ class NewsletterController extends Controller
     {
         $email = $request->validated()['email'];
         $newsletter = Newsletter::where('email', $email)->first();
-        if ($newsletter && $newsletter->etat ==="abonné") {
+        if ($newsletter && $newsletter->etat === "abonné") {
             $newsletter->update(['etat' => 'desabonné']);
             return response()->json([
                 "message" => "L'email a bien été desabonné à la newsletter.",
@@ -127,7 +127,9 @@ class NewsletterController extends Controller
      */
     public function showSubscribers()
     {
-        $subscribers = Newsletter::all();
+        $subscribers = Cache::rememberForever('subscribers', function () {
+            return Newsletter::all();
+        });
 
         return response()->json([
             "message" => "Liste des abonnés à la newsletter",

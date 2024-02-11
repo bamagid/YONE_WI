@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tarif;
 use App\Models\Historique;
 use App\Http\Requests\TarifRequest;
+use Illuminate\Support\Facades\Cache;
 
 class TarifController extends Controller
 {
@@ -31,7 +32,9 @@ class TarifController extends Controller
      */
     public function index()
     {
-        $tarifs = Tarif::where('etat', 'actif')->get();
+        $tarifs = Cache::rememberForever('tarifs_actifs', function () {
+            return Tarif::where('etat', 'actif')->get();
+        });
         return response()->json([
             "message" => "La liste des tarifs actifs",
             "tarifs" => $tarifs
@@ -56,13 +59,20 @@ class TarifController extends Controller
      */
     public function mestarifs()
     {
-        $tarifs = Tarif::where('etat', 'actif')
-            ->where('reseau_id', auth()->user()->reseau_id)
-            ->get();
-        return response()->json([
-            "message" => "La liste de mes tarifs actifs",
-            "tarifs" => $tarifs
-        ], 200);
+        $tarifs = Cache::rememberForever('mes_tarifs_actifs', function () {
+            return Tarif::where('etat', 'actif')
+                ->where('reseau_id', auth()->user()->reseau_id)
+                ->get();
+        });
+        return $tarifs->isEmpty() ?
+            response()->json([
+                "message" => "Vous n'avez pas de tarifs actifs"
+            ])
+            :
+            response()->json([
+                "message" => "La liste de mes tarifs actifs",
+                "tarifs" => $tarifs
+            ], 200);
     }
 
 
@@ -356,18 +366,20 @@ class TarifController extends Controller
      */
     public function deleted()
     {
-        $tarifsSupprimes = Tarif::where('etat', 'corbeille')
-            ->where('reseau_id', auth()->user()->reseau_id)
-            ->get();
-        if ($tarifsSupprimes->all() == null) {
-            return response()->json([
+        $tarifsSupprimes = Cache::rememberForever('tarifs_supprimes', function () {
+            return Tarif::where('etat', 'supprimé')
+                ->where('reseau_id', auth()->user()->reseau_id)
+                ->get();
+        });
+        return  $tarifsSupprimes->isEmpty() ?
+            response()->json([
                 "message" => "Il n'y a pas de tarifs dans la corbielle"
-            ], 404);
-        }
-        return response()->json([
-            "message" => "La liste des tarifs qui sont dans la corbeille",
-            "tarifs" => $tarifsSupprimes
-        ], 200);
+            ], 404)
+            :
+            response()->json([
+                "message" => "La liste des tarifs qui sont dans la corbeille",
+                "tarifs" => $tarifsSupprimes
+            ], 200);
     }
 
     /**
