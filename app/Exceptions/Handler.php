@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Mailer\Exception\TransportException;
 
 class Handler extends ExceptionHandler
 {
@@ -49,6 +50,9 @@ class Handler extends ExceptionHandler
         } elseif ($exception instanceof BadMethodCallException) {
             return response()->json( app()->environment('local') ?
             $response : ["error" => "Bad method call"], 405);
+        } elseif ($exception instanceof TransportException) {
+            return response()->json( app()->environment('local') ?
+            $response : ["error" => "Transport Exception"], 500);
         } elseif ($exception instanceof ModelNotFoundException) {
             return response()->json( app()->environment('local') ?
             $response : ["error" => "Model Not Found"], 404);
