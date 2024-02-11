@@ -164,10 +164,10 @@ return [
 
     'custom' => [
         'telephone' => [
-            'telephone.regex' => 'Le numero de telephone doit etre un numero senegalais valide',
+            'regex' => 'Le numéro de téléphone doit être un numéro sénégalais valide.',
         ],
         'prenom' => [
-            'prenom.regex' => 'Le prenom doit comporté  uniquement des lettres ,des espaces ou de "-"',
+            'regex' => 'Le prénom doit contenir uniquement des lettres, des espaces ou des tirets.',
         ],
     ],
 

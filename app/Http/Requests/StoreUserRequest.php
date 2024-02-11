@@ -25,7 +25,7 @@ class StoreUserRequest extends FormRequest
             "role_id" => "required|integer",
             "reseau_id" => "required|integer",
             "email" => "required|email|unique:users,email|unique:admin_systems,email",
-            'password' => [PasswordRule::default(), 'confirmed'],
+            'password' => ['required',PasswordRule::min(8)->mixedCase()->numbers()->symbols()->uncompromised(), 'confirmed'],
         ];
     }
 

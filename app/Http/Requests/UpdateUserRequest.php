@@ -24,7 +24,7 @@ class UpdateUserRequest extends FormRequest
             'telephone' => ['nullable', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
             'image' => ['sometimes'],
             'email' => ['nullable', 'email', 'unique:users,email','unique:admin_systems,email'],
-            'password' => ['nullable', PasswordRule::default(), 'confirmed'],
+            'password' => ['sometimes',PasswordRule::min(8)->mixedCase()->numbers()->symbols()->uncompromised(),'confirmed'],
         ];
     }
 
