@@ -15,6 +15,7 @@ use App\Http\Requests\StoreUserRequest;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -71,15 +72,15 @@ class UserController extends Controller
             return User::where('etat', 'bloqué')->get();
         });
         return $users->isEmpty() ?
-        
-         response()->json([
-            "message" => "Il n'y a pas d'utilisateurs bloqués",
-        ], 200)
-        :
-         response()->json([
-            "message" => "La liste des utilisateurs bloqués",
-            "users" => $users
-        ], 200);
+
+            response()->json([
+                "message" => "Il n'y a pas d'utilisateurs bloqués",
+            ], 200)
+            :
+            response()->json([
+                "message" => "La liste des utilisateurs bloqués",
+                "users" => $users
+            ], 200);
     }
     /**
      * @OA\POST(
@@ -130,8 +131,10 @@ class UserController extends Controller
             $user->image = $image->store('images', 'public');
         }
         $user->save();
-        Mail::send('emaillogin', ['username' => $user->email,
-        'password'=>$request->password], function ($message) use ($user) {
+        Mail::send('emaillogin', [
+            'username' => $user->email,
+            'password' => $request->password
+        ], function ($message) use ($user) {
             $message->to($user->email);
             $message->subject('Notification de blockage  d\'un compte sur le site');
         });
@@ -173,6 +176,7 @@ class UserController extends Controller
      *                     @OA\Property(property="reseau_id", type="string"),
      *                     @OA\Property(property="image", type="string", format="binary"),
      *                     @OA\Property(property="email", type="string"),
+     *                     @OA\Property(property="old_password", type="string"),
      *                     @OA\Property(property="password", type="string"),
      *                     @OA\Property(property="password_confirmation", type="string"),
      *                 },
@@ -189,6 +193,12 @@ class UserController extends Controller
                 "message" => "No query results for model [App\\Models\\User] $user->id"
             ], 404);
         }
+        if ($request->old_password && Hash::check($request->old_password, $user->password) === false) {
+            return response()->json([
+                "error" => "Ancien mot de passe incorrect"
+            ], 422);
+        }
+
         $valeurAvant = $user->toArray();
         $id_reseau = $user->reseau_id;
         $user->fill($request->validated());

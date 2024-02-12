@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AdminSystem;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UpdateAdminSystemRequest;
 
 class AdminSystemController extends Controller
@@ -37,6 +38,7 @@ class AdminSystemController extends Controller
      *                     @OA\Property(property="nom", type="string"),
      *                     @OA\Property(property="prenom", type="string"),
      *                     @OA\Property(property="email", type="string"),
+     *                     @OA\Property(property="old_password", type="string"),
      *                     @OA\Property(property="password", type="string"),
      *                     @OA\Property(property="password_confirmation", type="string"),
      *                     @OA\Property(property="image", type="string", format="binary"),
@@ -51,19 +53,23 @@ class AdminSystemController extends Controller
     public function update(UpdateAdminSystemRequest $request)
     {
         $adminSystem = AdminSystem::FindOrFail(1);
-
-        $adminSystem->fill($request->validated());
-        if ($request->file('image')) {
-            if (File::exists(storage_path($adminSystem->image))) {
-                File::delete(storage_path($adminSystem->image));
-            }
-            $image = $request->file('image');
-            $adminSystem->image = $image->store('images', 'public');;
+        if ($request->old_password && Hash::check($request->old_password, $adminSystem->password) === false) {
+            return response()->json([
+                "error" => "Ancien mot de passe incorrect"
+            ], 422);
         }
-        $adminSystem->update();
-        return response()->json([
-            "message" => "information mis a jour avec succés",
-            'adminreseau' => $adminSystem
-        ], 200);
-    }
+            $adminSystem->fill($request->validated());
+            if ($request->file('image')) {
+                if (File::exists(storage_path($adminSystem->image))) {
+                    File::delete(storage_path($adminSystem->image));
+                }
+                $image = $request->file('image');
+                $adminSystem->image = $image->store('images', 'public');;
+            }
+            $adminSystem->update();
+            return response()->json([
+                "message" => "information mis a jour avec succés",
+                'adminreseau' => $adminSystem
+            ], 200);
+        }
 }
