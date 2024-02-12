@@ -17,8 +17,8 @@ class UpdateAdminSystemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['required', 'max:30', "alpha"],
-            'prenom' => ['required', 'regex:/^[a-zA-Z][a-zA-Z -]{2,100}$/'],
+            'nom' => ['nullable', 'max:30', "alpha"],
+            'prenom' => ['nullable', 'regex:/^[a-zA-Z][a-zA-Z -]{2,100}$/'],
             'email' => ['nullable', 'email', 'max:255', 'unique:admin_systems,email'],
             'image' => ['sometimes','image'],
             'password' => ['sometimes',PasswordRule::min(8)->mixedCase()->numbers()->symbols()->uncompromised(), 'confirmed'],
