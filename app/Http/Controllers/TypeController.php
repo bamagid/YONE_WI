@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Type;
 use App\Models\Historique;
+use App\Events\TypeUpdated;
 use App\Http\Requests\TypeRequest;
 use Illuminate\Support\Facades\Cache;
 
@@ -257,6 +258,7 @@ class TypeController extends Controller
                 json_encode($type->toArray())
             );
             $type->update(['etat' => 'corbeille']);
+            event(new TypeUpdated($type));
             return response()->json([
                 "message" => "Le type a bien été mis dans la corbeille",
                 "type" => $type
@@ -302,6 +304,7 @@ class TypeController extends Controller
                 json_encode($type->toArray())
             );
             $type->update(['etat' => 'supprimé']);
+            event(new TypeUpdated($type));
             return response()->json([
                 "message" => "Le type a bien été supprimé",
                 "type" => $type
@@ -381,9 +384,10 @@ class TypeController extends Controller
                 ->where('reseau_id', auth()->user()->reseau_id)
                 ->get();
         });
-        return  $typesSupprimes->isEmpty() ? response()->json([
-            "message" => "Il n'y a pas de types dans la corbeille"
-        ], 404)
+        return  $typesSupprimes->isEmpty()
+            ? response()->json([
+                "message" => "Il n'y a pas de types dans la corbeille"
+            ], 404)
             :
             response()->json([
                 "message" => "La liste des types qui sont dans la corbeille",
@@ -431,6 +435,7 @@ class TypeController extends Controller
                 json_encode($type->toArray())
             );
             $type->update(["etat" => "supprimé"]);
+            event(new TypeUpdated($type));
         }
         return response()->json([
             "message" => "La corbeille des types a été vidée avec succès"

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Events\RoleUpdated;
 use App\Http\Requests\RoleRequest;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Artisan;
 
 class RoleController extends Controller
 {
@@ -155,6 +156,7 @@ class RoleController extends Controller
             $role->update(["etat" => "corbeille"]);
             Cache::forget('roles_actifs');
             Cache::forget('roles_supprimes');
+            event(new RoleUpdated($role));
             return response()->json([
                 "message" => "Le role a bien été mis dans la corbeille",
                 "role" => $role
@@ -191,6 +193,7 @@ class RoleController extends Controller
             $role->update(['etat' => 'supprimé']);
             Cache::forget('roles_actifs');
             Cache::forget('roles_supprimes');
+            event(new RoleUpdated($role));
             return response()->json([
                 "message" => "Le role a bien été supprimé",
                 "role" => $role
@@ -300,6 +303,7 @@ class RoleController extends Controller
         }
         foreach ($rolesSupprimes as $role) {
             $role->update(["etat" => "supprimé"]);
+            event(new RoleUpdated($role));
         }
         Cache::forget('roles_actifs');
         Cache::forget('roles_supprimes');

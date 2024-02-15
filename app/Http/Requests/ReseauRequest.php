@@ -16,9 +16,9 @@ class ReseauRequest extends FormRequest
     public function rules()
     {
         return [
-            'nom' => ['required', 'string','unique:reseaus,nom'],
+            'nom' => ['required', 'string','min:2','unique:reseaus,nom'],
             "telephone" => ['nullable', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
-            'description' => ['nullable', 'string'],
+            'description' => ['nullable', 'string','min:10'],
         ];
     }
 

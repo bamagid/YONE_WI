@@ -17,7 +17,7 @@ class UpdateAdminSystemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['nullable', 'max:30', "alpha"],
+            'nom' => ['nullable', 'max:30', "alpha",'min:2'],
             'prenom' => ['nullable', 'regex:/^[a-zA-Z][a-zA-Z -]{2,100}$/'],
             'email' => ['nullable', 'email', 'max:255', 'unique:admin_systems,email'],
             'image' => ['sometimes','image'],

@@ -17,14 +17,14 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['required', 'max:30', "alpha"],
+            'nom' => ['required', 'max:30', "alpha",'min:2'],
             'prenom' => ['required', 'regex:/^[a-zA-Z][a-zA-Z -]{2,100}$/'],
-            "adresse" => ['required', 'max:100', "string"],
+            "adresse" => ['required', 'max:100', "string",'min:3'],
             'telephone' => ['required', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
-            "image" => "sometimes",
-            "role_id" => "required|integer",
-            "reseau_id" => "required|integer",
-            "email" => "required|email|unique:users,email|unique:admin_systems,email",
+            "image" => "sometimes,'image'",
+            "role_id" => "required|integer|exists:roles,id",
+            "reseau_id" => "required|integer|exists:reseaux,id",
+            "email" => "required|regex:/^[A-Za-z]+[A-Za-z0-9\._%+-]+@[A-Za-z0-9\.-]+\.[A-Za-z]{2,}$/|unique:users,email|unique:admin_systems,email",
             'password' => ['required',PasswordRule::min(8)->mixedCase()->numbers()->symbols()->uncompromised(), 'confirmed'],
         ];
     }

@@ -321,6 +321,9 @@
                     }
                 ],
                 "responses": {
+                    "302": {
+                        "description": "Redirect"
+                    },
                     "200": {
                         "description": "OK"
                     },

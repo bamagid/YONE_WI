@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tarif;
 use App\Models\Historique;
+use App\Events\TarifUpdated;
 use App\Http\Requests\TarifRequest;
 use Illuminate\Support\Facades\Cache;
 
@@ -259,6 +260,7 @@ class TarifController extends Controller
                 json_encode($tarif->toArray())
             );
             $tarif->update(['etat' => 'corbeille']);
+            event(new TarifUpdated($tarif));
             return response()->json([
                 "message" => "Le tarif a bien été mis dans la corbeille",
                 "tarif" => $tarif
@@ -337,6 +339,7 @@ class TarifController extends Controller
                 json_encode($valeurAvant),
                 json_encode($tarif->toArray())
             );
+            event(new TarifUpdated($tarif));
             return response()->json([
                 "message" => "Le tarif a bien été supprimé",
                 "tarif" => $tarif
@@ -422,6 +425,7 @@ class TarifController extends Controller
                 json_encode($tarif->toArray())
             );
             $tarif->update(["etat" => "supprimé"]);
+            event(new TarifUpdated($tarif));
         }
         return response()->json([
             "message" => "La corbeille des tarifs a été vidée avec succès"
