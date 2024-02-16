@@ -20,7 +20,7 @@ class DetailsReseauRequest extends FormRequest
             "telephone" => ['nullable', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
             "email" => [
                 'nullable',
-                'regex:/^[A-Za-z]+[A-Za-z0-9\._%+-]+@[A-Za-z0-9\.-]+\.[A-Za-z]{2,}$/', 'unique:admin_systems,email'
+                'regex:/^[A-Za-z]+[A-Za-z0-9\._%+-]+@+[A-Za-z][A-Za-z0-9\.-]+\.[A-Za-z]{2,}$/', 'unique:admin_systems,email'
             ],
             "image" => ['sometimes', 'image']
         ];

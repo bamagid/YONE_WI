@@ -26,4 +26,8 @@ class Reseau extends Model
     {
         return $this->hasMany(Ligne::class);
     }
+    public function tarifs()
+    {
+        return $this->hasMany(Tarif::class);
+    }
 }

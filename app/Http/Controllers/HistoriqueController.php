@@ -32,7 +32,7 @@ class HistoriqueController extends Controller
     public  function index()
     {
         $historiques = Cache::rememberForever('historiques', function () {
-            return Historique::all();
+            return Historique::all()->orderBy("id", "desc");
         });
         return response()->json([
             'status' => true,
@@ -74,7 +74,9 @@ class HistoriqueController extends Controller
     public  function historiquesentite(Request $request)
     {
         $historiques = Cache::rememberForever('historiques_classe', function () use ($request) {
-            return Historique::where("Entite", $request->entite)->get();
+            return Historique::where("Entite", $request->entite)
+                ->orderBy("id", "desc")
+                ->get();
         });
         return $historiques->isEmpty() ?
             response()->json([
@@ -121,7 +123,9 @@ class HistoriqueController extends Controller
     public  function historiquesuser(Request $request)
     {
         $historiques = Cache::rememberForever('historiques_user', function () use ($request) {
-            return Historique::where("id_user", $request->id_user)->get();
+            return Historique::where("id_user", $request->id_user)
+                ->orderBy("id", "desc")
+                ->get();
         });
         return $historiques->isEmpty() ?
             response()->json([

@@ -23,7 +23,7 @@ class UpdateUserRequest extends FormRequest
             'adresse' => ['nullable', 'string', 'max:100'],
             'telephone' => ['nullable', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
             'image' => ['sometimes'],
-            'email' => ['nullable', 'regex:/^[A-Za-z]+[A-Za-z0-9\._%+-]+@[A-Za-z0-9\.-]+\.[A-Za-z]{2,}$/','unique:users,email', 'unique:admin_systems,email'],
+            'email' => ['nullable','regex:/^[A-Za-z]+[A-Za-z0-9\._%+-]+@+[A-Za-z][A-Za-z0-9\.-]+\.[A-Za-z]{2,}$/','unique:users,email', 'unique:admin_systems,email'],
             'password' => [
                 'sometimes', PasswordRule::min(8)->mixedCase()->numbers()->symbols()->uncompromised(), 'confirmed'
             ],
