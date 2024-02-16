@@ -9,4 +9,8 @@ class Tarif extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    public function reseau()
+    {
+        return $this->belongsTo(Reseau::class);
+    }
 }

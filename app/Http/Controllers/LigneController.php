@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\LigneUpdated;
 use App\Models\Ligne;
 use App\Models\Historique;
 use App\Models\Newsletter;
@@ -289,6 +290,7 @@ class LigneController extends Controller
                 json_encode($ligne->toArray())
             );
             $ligne->update(['etat' => 'corbeille']);
+            event(new LigneUpdated($ligne));
             return response()->json([
                 "message" => "La ligne a bien été mise dans la  corbeillee",
                 "ligne" => $ligne
@@ -333,6 +335,7 @@ class LigneController extends Controller
                 json_encode($ligne->toArray())
             );
             $ligne->update(['etat' => 'supprimé']);
+            event(new LigneUpdated($ligne));
             return response()->json([
                 "message" => "La ligne a bien été supprimée",
                 "ligne" => $ligne
@@ -462,6 +465,7 @@ class LigneController extends Controller
                 json_encode($ligne->toArray())
             );
             $ligne->update(["etat" => "supprimé"]);
+            event(new LigneUpdated($ligne));
         }
         return response()->json([
             "message" => "La corbeille a été vidée avec succès"

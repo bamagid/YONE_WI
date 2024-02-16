@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Reseau;
 use Illuminate\Http\Request;
+use App\Events\ReseauUpdated;
 use App\Http\Requests\ReseauRequest;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Cache;
@@ -155,7 +156,6 @@ class ReseauController extends Controller
         }
         $reseau->update($request->validated());
         Cache::forget('reseaux_actifs');
-        Cache::forget('reseaux_supprimes');
         return response()->json([
             "message" => "Le reseau a bien été mise à jour",
             "reseau" => $reseau
@@ -243,6 +243,7 @@ class ReseauController extends Controller
             $reseau->update(['etat' => 'corbeille']);
             Cache::forget('reseaux_actifs');
             Cache::forget('reseaux_supprimes');
+            event(new ReseauUpdated($reseau));
             return response()->json([
                 "message" => "Le reseau a bien été mis dans la corbeille",
                 "reseau" => $reseau
@@ -277,6 +278,7 @@ class ReseauController extends Controller
             $reseau->update(['etat' => 'supprimé']);
             Cache::forget('reseaux_actifs');
             Cache::forget('reseaux_supprimes');
+            event(new ReseauUpdated($reseau));
             return response()->json([
                 "message" => "Le reseau a bien été supprimé",
                 "reseau" => $reseau
@@ -381,7 +383,9 @@ class ReseauController extends Controller
         foreach ($reseausSupprimes as $reseau) {
             $reseau->update(["etat" => "supprimé"]);
         }
-        Artisan::call('optimize:clear');
+        Cache::forget('reseaux_actifs');
+        Cache::forget('reseaux_supprimes');
+        event(new ReseauUpdated($reseau));
         return response()->json([
             "message" => "La corbeille a été vidée avec succès"
         ], 200);

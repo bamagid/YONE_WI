@@ -169,6 +169,12 @@ return [
         'prenom' => [
             'regex' => 'Le prénom doit contenir uniquement des lettres, des espaces ou des tirets.',
         ],
+        'email'=>[
+         'regex' => 'Le format de l\'email n\'est pas valide. assurez vous qu\'il a le format example@gmail.com',
+        ],
+        'ligne'=>[
+            'regex' => 'Le nom de la ligne doit commencer par un chiffre et ne contenir que des chiffres ou lettres.',
+        ]
     ],
 
     /*

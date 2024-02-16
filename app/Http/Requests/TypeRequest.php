@@ -16,8 +16,8 @@ class TypeRequest extends FormRequest
     public function rules()
     {
         return [
-            'nom' => ['required', 'string'],
-            'description' => ['nullable', 'string'],
+            'nom' => ['required', 'string','min:2'],
+            'description' => ['nullable', 'string','min:10'],
         ];
     }
 

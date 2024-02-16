@@ -16,7 +16,7 @@ class MotifRequest extends FormRequest
     public function rules(): array
     {
         return [
-          "motif"=>['required', 'string'],
+          "motif"=>['required', 'string','min:10'],
         ];
     }
     public function failedValidation(validator $validator)

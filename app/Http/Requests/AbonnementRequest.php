@@ -19,9 +19,9 @@ class AbonnementRequest extends FormRequest
     {
         return [
             'prix' => ['required', 'integer', 'min:1000'], // Prix doit être un entier positif
-            'type' => ['required', 'string'],
-            'duree' => ['required', 'string'],
-            'description' => ['nullable', 'string'],
+            'type' => ['required', 'string','min:3'],
+            'duree' => ['required', 'string' ,'min:3'],
+            'description' => ['nullable', 'string','min:3'],
         ];
     }
 

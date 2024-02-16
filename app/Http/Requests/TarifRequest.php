@@ -16,8 +16,8 @@ class TarifRequest extends FormRequest
     public function rules()
     {
         return [
-            'prix' => ['required', 'integer'],
-            'type' => ['required', 'string'],
+            'prix' => ['required', 'integer','min:50','max:1000'],
+            'type' => ['required', 'string', 'min:3'],
         ];
     }
 
