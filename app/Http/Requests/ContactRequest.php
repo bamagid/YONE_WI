@@ -16,9 +16,9 @@ class ContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|regex:/^[A-Za-z]+[A-Za-z0-9\._%+-]+@+[A-Za-z][A-Za-z0-9\.-]+\.[A-Za-z]{2,}$/',
-            'sujet' => 'required|string|min:10',
-            'contenu' => 'required|string|min:10',
+            'email' => ['required','regex:/^[A-Za-z]+[A-Za-z0-9\._%+-]+@+[A-Za-z][A-Za-z0-9\.-]+\.[A-Za-z]{2,}$/'],
+            'sujet' => ['required','string','min:10'],
+            'contenu' => ['required','string','min:10'],
         ];
     }
 
