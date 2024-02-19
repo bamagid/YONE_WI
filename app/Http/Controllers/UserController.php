@@ -125,6 +125,7 @@ class UserController extends Controller
         Role::FindOrFail($request->role_id);
         Reseau::FindOrFail($request->reseau_id);
         $user = new User();
+        $request->password ? $request->password :  $user->password = Hash::make('password');
         $user->fill($request->validated());
         if ($request->hasFile('image')) {
             $image = $request->file('image');
