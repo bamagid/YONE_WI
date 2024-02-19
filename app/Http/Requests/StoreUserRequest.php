@@ -21,10 +21,10 @@ class StoreUserRequest extends FormRequest
             'prenom' => ['required', 'regex:/^[a-zA-Z][a-zA-Z -]{2,100}$/'],
             "adresse" => ['required', 'max:100', "string",'min:3'],
             'telephone' => ['required', 'regex:/^(77|78|76|70|75|33)[0-9]{7}$/', 'unique:users,telephone'],
-            "image" => "sometimes|image",
-            "role_id" => "required|integer|exists:roles,id",
-            "reseau_id" => "required|integer|exists:reseaus,id",
-            "email" => "required|regex:/^[A-Za-z]+[A-Za-z0-9\._%+-]+@+[A-Za-z][A-Za-z0-9\.-]+\.[A-Za-z]{2,}$/|unique:users,email|unique:admin_systems,email",
+            "image" => ["sometimes","image"],
+            "role_id" =>[ "required","integer","exists:roles,id"],
+            "reseau_id" => ["required","integer","exists:reseaus,id"],
+            "email" => ["required","regex:/^[A-Za-z]+[A-Za-z0-9\._%+-]+@+[A-Za-z][A-Za-z0-9\.-]+\.[A-Za-z]{2,}$/","unique:users,email","unique:admin_systems,email"],
             'password' => ['sometimes',PasswordRule::min(8)->mixedCase()->numbers()->symbols(), 'confirmed'],
         ];
     }
@@ -33,7 +33,7 @@ class StoreUserRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success' => false,
-            'errors' => $validator->errors()
+             $validator->errors()
         ],422));
     }
 }
