@@ -7,14 +7,12 @@ use Throwable;
 use PDOException;
 use BadMethodCallException;
 use Illuminate\Database\QueryException;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Mailer\Exception\TransportException;
-
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use InvalidArgumentException;
 class Handler extends ExceptionHandler
 {
     /**
@@ -56,7 +54,10 @@ class Handler extends ExceptionHandler
         } elseif ($exception instanceof ModelNotFoundException) {
             return response()->json( app()->environment('local') ?
             $response : ["error" => "Model Not Found"], 404);
-        } elseif (
+        } else if ($exception instanceof InvalidArgumentException) {
+            return response()->json( app()->environment('local') ?
+            $response : ["error" => "Json Malformed exception"], 500);
+        }elseif (
             $exception instanceof AuthorizationException
         ) {
             return response()->json($response, 403);

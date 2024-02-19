@@ -7,13 +7,13 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\LigneController;
 use App\Http\Controllers\TarifController;
 use App\Http\Controllers\ReseauController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\AbonnementController;
-use App\Http\Controllers\AdminSystemController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\HistoriqueController;
 use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\AdminSystemController;
+use App\Http\Controllers\ForgotPasswordController;
 
 Route::post("login", [UserController::class, "login"]);
 Route::get("profile", [UserController::class, "profile"]);

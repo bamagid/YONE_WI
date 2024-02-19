@@ -21,7 +21,7 @@ class UpdateAdminSystemRequest extends FormRequest
             'prenom' => ['nullable', 'regex:/^[a-zA-Z][a-zA-Z -]{2,100}$/'],
             'email' => ['nullable', 'regex:/^[A-Za-z]+[A-Za-z0-9\._%+-]+@+[A-Za-z][A-Za-z0-9\.-]+\.[A-Za-z]{2,}$/', 'max:255', 'unique:admin_systems,email'],
             'image' => ['sometimes','image'],
-            'password' => ['sometimes',PasswordRule::min(8)->mixedCase()->numbers()->symbols()->uncompromised(), 'confirmed'],
+            'password' => ['sometimes',PasswordRule::min(8)->mixedCase()->numbers()->symbols(), 'confirmed'],
         ];
     }
 

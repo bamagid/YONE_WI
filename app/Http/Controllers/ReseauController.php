@@ -78,6 +78,12 @@ class ReseauController extends Controller
      */
     public function store(ReseauRequest $request)
     {
+        $reseaus = Reseau::all();
+        if ($reseaus->each->etat === "actif") {
+            return response()->json([
+                'error' => 'Desolé ce reseau existe déjà '
+            ], 422);
+        }
         $reseau = Reseau::create($request->validated());
         Cache::forget('reseaux_actifs');
         Cache::forget('reseaux_supprimes');

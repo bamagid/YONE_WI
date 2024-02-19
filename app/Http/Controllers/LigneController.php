@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\LigneUpdated;
 use App\Models\Ligne;
 use App\Models\Historique;
 use App\Models\Newsletter;
+use App\Events\LigneUpdated;
 use App\Http\Requests\LigneRequest;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Http\Controllers\LigneAnnotationController;
 
 class LigneController extends Controller
 {
@@ -27,12 +29,11 @@ class LigneController extends Controller
      * @OA\Response(response="200", description="OK"),
      * @OA\Response(response="404", description="Not Found"),
      * @OA\Response(response="500", description="Internal Server Error"),
-     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
      * ),
      *     tags={"Gestion des lignes"},
      * ),
      */
-
     public function index()
     {
         $lignes = Cache::rememberForever('lignes_actifs', function () {
@@ -148,7 +149,7 @@ class LigneController extends Controller
     {
         $this->authorize('create', Ligne::class);
         $lignes_reseau = Ligne::where('reseau_id', $request->user()->reseau_id)->get();
-        if ($lignes_reseau->contains('nom', $request->validated()['nom'])) {
+        if ($lignes_reseau->contains('nom', $request->validated()['nom']) && $lignes_reseau->each->etat !== "actif") {
             return response()->json([
                 'message' => 'Desolé cette ligne existe déjà dans votre reseau '
             ], 422);

@@ -8,15 +8,11 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class LigneRequest extends FormRequest
 {
-    public function authorize()
-    {
-        return true;
-    }
 
     public function rules()
     {
         return [
-            'nom' => ['required', 'regex:/^[0-9][0-9A-Za-z]$/'],
+            'nom' => ['required', 'regex:/^[1-9]/'],
             'type_id' => ['nullable', 'exists:types,id'],
             'lieuDepart' => ['required', 'string', 'min:2'],
             'lieuArrivee' => ['required', 'string', 'different:lieuDepart', 'min:2'],
