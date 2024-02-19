@@ -287,7 +287,8 @@ class UserController extends Controller
                 "type" => $typeUser,
                 "message" => "Bienvenue dans votre espace personnele, vous êtes connecté en tant qu'$typeUser ",
                 "user" => $user,
-                "token" => $token
+                "token" => $token,
+                "expires_in" => "3600 seconds"
             ], 200);
         }
         return response()->json([

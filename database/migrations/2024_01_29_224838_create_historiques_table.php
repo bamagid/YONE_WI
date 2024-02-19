@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('motif_blockage')->nullable();
             $table->json('Valeur_Avant')->nullable();
             $table->json('Valeur_Apres')->nullable();
-            $table->timestamps();
+            $table->timestamps('date');
         });
     }
 
