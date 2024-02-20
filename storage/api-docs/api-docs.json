@@ -534,6 +534,9 @@
                                     "email": {
                                         "type": "string"
                                     },
+                                    "telephone": {
+                                        "type": "integer"
+                                    },
                                     "old_password": {
                                         "type": "string"
                                     },
@@ -574,12 +577,48 @@
                 ]
             }
         },
+        "/api/contactsadmin": {
+            "get": {
+                "tags": [
+                    "Gestion des contacts"
+                ],
+                "summary": "Afficher les contacts de l'administrateur system",
+                "description": "",
+                "operationId": "17583cc8936ab7edbd01c6f4acfa8086",
+                "parameters": [
+                    {
+                        "name": "User-Agent",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/contacts": {
             "get": {
                 "tags": [
                     "Gestion des contacts"
                 ],
-                "summary": "Lister les contacts",
+                "summary": "Lister les messages de contacts",
                 "description": "",
                 "operationId": "0f9efb5609dbb039b35ecafb28e492a2",
                 "parameters": [
@@ -613,7 +652,7 @@
                 "tags": [
                     "Gestion des contacts"
                 ],
-                "summary": "Ajouter un contact",
+                "summary": "Ajouter un message de contact",
                 "description": "",
                 "operationId": "a3b0baf957a16c1ed505f2e8985c254c",
                 "parameters": [

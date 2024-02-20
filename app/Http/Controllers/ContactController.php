@@ -17,7 +17,7 @@ class ContactController extends Controller
     /**
      * @OA\GET(
      *     path="/api/contacts",
-     *     summary="Lister les contacts",
+     *     summary="Lister les messages de contacts",
      *     description="",
      *  security={
      *   {"BearerAuth": {}},
@@ -44,7 +44,7 @@ class ContactController extends Controller
     /**
      * @OA\POST(
      *     path="/api/contacts",
-     *     summary="Ajouter un contact",
+     *     summary="Ajouter un message de contact",
      *     description="",
      *  security={
      *   {"BearerAuth": {}},

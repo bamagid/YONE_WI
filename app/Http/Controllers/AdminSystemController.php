@@ -11,7 +11,7 @@ class AdminSystemController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:admin');
+        $this->middleware('auth:admin')->only('update');
     }
 
     /**
@@ -38,6 +38,7 @@ class AdminSystemController extends Controller
      *                     @OA\Property(property="nom", type="string"),
      *                     @OA\Property(property="prenom", type="string"),
      *                     @OA\Property(property="email", type="string"),
+     *                     @OA\Property(property="telephone", type="integer"),
      *                     @OA\Property(property="old_password", type="string"),
      *                     @OA\Property(property="password", type="string"),
      *                     @OA\Property(property="password_confirmation", type="string"),
@@ -58,18 +59,43 @@ class AdminSystemController extends Controller
                 "error" => "Ancien mot de passe incorrect"
             ], 422);
         }
-            $adminSystem->fill($request->validated());
-            if ($request->file('image')) {
-                if (File::exists(storage_path($adminSystem->image))) {
-                    File::delete(storage_path($adminSystem->image));
-                }
-                $image = $request->file('image');
-                $adminSystem->image = $image->store('images', 'public');;
+        $adminSystem->fill($request->validated());
+        if ($request->file('image')) {
+            if (File::exists(storage_path($adminSystem->image))) {
+                File::delete(storage_path($adminSystem->image));
             }
-            $adminSystem->update();
-            return response()->json([
-                "message" => "information mis a jour avec succés",
-                'adminreseau' => $adminSystem
-            ], 200);
+            $image = $request->file('image');
+            $adminSystem->image = $image->store('images', 'public');;
         }
+        $adminSystem->update();
+        return response()->json([
+            "message" => "information mis a jour avec succés",
+            'adminreseau' => $adminSystem
+        ], 200);
+    }
+
+      /**
+     * @OA\GET(
+     *     path="/api/contactsadmin",
+     *     summary="Afficher les contacts de l'administrateur system",
+     *     description="",
+     *  security={
+     *   {"BearerAuth": {}},
+     *},
+     * @OA\Response(response="200", description="OK"),
+     * @OA\Response(response="404", description="Not Found"),
+     * @OA\Response(response="500", description="Internal Server Error"),
+     *     @OA\Parameter(in="header", name="User-Agent", required=false, @OA\Schema(type="string"),
+     * ),
+     *     tags={"Gestion des contacts"},
+     * ),
+     */
+    public function showContact()
+    {
+        $adminSystem = AdminSystem::FindOrFail(1);
+        return response()->json([
+            'email' => $adminSystem->email,
+            'telephone' => $adminSystem->telephone,
+        ], 200);
+    }
 }

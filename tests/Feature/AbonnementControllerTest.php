@@ -11,9 +11,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AbonnementControllerTest extends TestCase
 {
+    public function __construct(){
+        $this->migrateFresh();
+    }
     public function testAbonnementIndex()
     {
-        $this->artisan('migrate:fresh');
         $response = $this->get('/api/abonnements');
         $response->assertStatus(200);
         $response->assertJson([
@@ -24,7 +26,6 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementSubscribe()
     {
-         $this->artisan('migrate:fresh');
         $reseau = Reseau::factory()->create();
         $abonnement = Abonnement::factory(['reseau_id' => $reseau->id])->create();
         $response = $this->get("/api/abonnements/subscribe/{$abonnement->id}");
@@ -33,7 +34,6 @@ class AbonnementControllerTest extends TestCase
     }
     public function testMesAbonnements()
     {
-         $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         Abonnement::factory(3)->create();
@@ -47,7 +47,6 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementShow()
     {
-         $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $abonnement = Abonnement::factory()->create();
         $response = $this->get("/api/abonnements/$abonnement->id");
@@ -60,7 +59,6 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementStore()
     {
-         $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->post('/api/abonnements', [
@@ -79,7 +77,6 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementUpdate()
     {
-         $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $abonnement = Abonnement::factory()->create();
         $user = User::factory()->create();
@@ -99,7 +96,6 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementDestroy()
     {
-         $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         $abonnement = Abonnement::factory()->create(["etat" => "actif"]);
@@ -114,7 +110,6 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementDelete()
     {
-         $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $abonnement = Abonnement::factory()->create(["etat" => "corbeille"]);
         $user = User::factory()->create();
@@ -129,7 +124,6 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementRestore()
     {
-         $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         $abonnement = Abonnement::factory()->create(["etat" => "corbeille"]);
@@ -144,7 +138,6 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementDeleted()
     {
-         $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         Abonnement::factory(3)->create(["etat" => "corbeille"]);
         $user = User::factory()->create();
@@ -159,7 +152,6 @@ class AbonnementControllerTest extends TestCase
 
     public function testAbonnementEmptyTrash()
     {
-         $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         Abonnement::factory(3)->create(["etat" => "corbeille"]);
         $user = User::factory()->create();
