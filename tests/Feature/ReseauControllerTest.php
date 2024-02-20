@@ -9,9 +9,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ReseauControllerTest extends TestCase
 {
+    public function __construct()
+    {
+        $this->migrateFresh();
+    }
     public function testReseauIndex()
     {
-    $this->artisan('migrate:fresh');
         Reseau::factory()->create();
         $response = $this->get('/api/reseaus');
         $response->assertStatus(200)
@@ -23,7 +26,7 @@ class ReseauControllerTest extends TestCase
 
     public function testReseauShow()
     {
-        $this->artisan('migrate:fresh');
+
         $reseau = Reseau::factory()->create();
         $response = $this->get("/api/reseaus/$reseau->id");
         $response->assertStatus(200)
@@ -35,7 +38,7 @@ class ReseauControllerTest extends TestCase
 
     public function testReseauStore()
     {
-        $this->artisan('migrate:fresh');
+
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->post('/api/reseaus', [
             "nom" => "dakar dem dikk",
@@ -50,7 +53,7 @@ class ReseauControllerTest extends TestCase
 
     public function testReseauUpdate()
     {
-        $this->artisan('migrate:fresh');
+
         $reseau = Reseau::factory()->create();
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->patch("/api/reseaus/$reseau->id", [
@@ -65,7 +68,7 @@ class ReseauControllerTest extends TestCase
     }
     public function Details()
     {
-        $this->artisan('migrate:fresh');
+
         UserControllerTest::createUser();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->patch("/api/reseaus/details", [
@@ -82,7 +85,7 @@ class ReseauControllerTest extends TestCase
 
     public function testReseauDestroy()
     {
-        $this->artisan('migrate:fresh');
+
         $admin = AdminSystem::factory()->create();
         $reseau = Reseau::factory()->create(["etat" => "actif"]);
         $response = $this->actingAs($admin, 'admin')->delete("/api/reseaus/$reseau->id");
@@ -95,7 +98,7 @@ class ReseauControllerTest extends TestCase
 
     public function testReseauDelete()
     {
-        $this->artisan('migrate:fresh');
+
         $reseau = Reseau::factory()->create(["etat" => "corbeille"]);
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->patch("/api/reseaus/delete/{$reseau->id}");
@@ -109,7 +112,7 @@ class ReseauControllerTest extends TestCase
 
     public function testReseauRestore()
     {
-        $this->artisan('migrate:fresh');
+
         $admin = AdminSystem::factory()->create();
         $reseau = Reseau::factory()->create(["etat" => "corbeille"]);
         $response = $this->actingAs($admin, 'admin')->patch("/api/reseaus/restaurer/$reseau->id");
@@ -123,7 +126,7 @@ class ReseauControllerTest extends TestCase
 
     public function testReseauDeleted()
     {
-        $this->artisan('migrate:fresh');
+
         Reseau::factory()->create(["etat" => "corbeille"]);
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->get('/api/reseaus/deleted/all');
@@ -137,7 +140,7 @@ class ReseauControllerTest extends TestCase
 
     public function testReseauEmptyTrash()
     {
-        $this->artisan('migrate:fresh');
+
         Reseau::factory()->create(["etat" => "corbeille"]);
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->post('/api/reseaus/empty-trash');

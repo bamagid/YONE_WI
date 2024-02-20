@@ -20,6 +20,7 @@ Route::get("profile", [UserController::class, "profile"]);
 Route::get("refresh", [UserController::class, "refreshToken"]);
 Route::get("logout", [UserController::class, "logout"]);
 Route::post('updateadmin', [AdminSystemController::class, 'update']);
+Route::get('contactsadmin', [AdminSystemController::class, 'showContact']);
 Route::apiResource('users', UserController::class)->except('show', 'update', 'destroy');
 Route::get('users/blocked', [UserController::class, "usersblocked"]);
 Route::post('/users/{user}', [UserController::class, 'update']);

@@ -6,9 +6,12 @@ use App\Models\role;
 
 class RoleControllerTest extends TestCase
 {
+    public function __construct()
+    {
+        $this->migrateFresh();
+    }
     public function testRoleIndex()
     {
-        $this->artisan('migrate:fresh');
         Role::factory(3)->create();
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->get('/api/roles');
@@ -21,7 +24,6 @@ class RoleControllerTest extends TestCase
 
     public function testRoleStore()
     {
-        $this->artisan('migrate:fresh');
         Role::factory()->create();
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->post('/api/roles', [
@@ -37,7 +39,6 @@ class RoleControllerTest extends TestCase
 
     public function testRoleUpdate()
     {
-        $this->artisan('migrate:fresh');
         $role = Role::factory()->create();
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->patch("/api/roles/$role->id", [
@@ -53,7 +54,6 @@ class RoleControllerTest extends TestCase
 
     public function testRoleDestroy()
     {
-        $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
         $role = Role::factory()->create(["etat" => "actif"]);
         $response = $this->actingAs($admin, 'admin')->delete("/api/roles/$role->id");
@@ -67,7 +67,6 @@ class RoleControllerTest extends TestCase
 
     public function testRoleDelete()
     {
-        $this->artisan('migrate:fresh');
         $role = Role::factory()->create(["etat" => "corbeille"]);
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->put("/api/roles/delete/$role->id");
@@ -80,7 +79,6 @@ class RoleControllerTest extends TestCase
 
     public function testRoleRestore()
     {
-        $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
         $role = Role::factory()->create(["etat" => "corbeille"]);
         $response = $this->actingAs($admin, 'admin')->put("/api/roles/restaurer/$role->id");
@@ -94,7 +92,6 @@ class RoleControllerTest extends TestCase
 
     public function testRoleDeleted()
     {
-        $this->artisan('migrate:fresh');
         Role::factory(3)->create(["etat" => "corbeille"]);
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->get('/api/roles/deleted');
@@ -108,7 +105,6 @@ class RoleControllerTest extends TestCase
 
     public function testRoleEmptyTrash()
     {
-        $this->artisan('migrate:fresh');
         Role::factory(3)->create(["etat" => "corbeille"]);
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->post('/api/roles/empty-trash');

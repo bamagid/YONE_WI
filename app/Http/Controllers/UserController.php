@@ -280,7 +280,7 @@ class UserController extends Controller
                 "status" => false,
                 "message" => "Votre compte a été $user->etat par l'administrateur",
                 "motif" => $user->motif
-            ]);
+            ],401);
         } elseif (!empty($token)) {
 
             return response()->json([

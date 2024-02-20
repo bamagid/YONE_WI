@@ -10,13 +10,17 @@ use App\Models\AdminSystem;
 
 class UserControllerTest extends TestCase
 {
-    public static function createUser(){
+    public function __construct()
+    {
+        $this->migrateFresh();
+    }
+    public static function createUser()
+    {
         Role::factory()->create();
         Reseau::factory()->create();
     }
     public function testUserRegister()
     {
-        $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
         UserControllerTest::createUser();
         $userData = [
@@ -41,10 +45,9 @@ class UserControllerTest extends TestCase
 
     public function testUserUpdate()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
-        
+
         $userData = [
             "nom" => "magid",
             "prenom" => "abdoul",
@@ -68,7 +71,6 @@ class UserControllerTest extends TestCase
     }
     public function testUsersBlocked()
     {
-        $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->get('/api/users/blocked');
         $response->assertStatus(200)
@@ -79,7 +81,6 @@ class UserControllerTest extends TestCase
     }
     public function testUserIndex()
     {
-        $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->get('/api/users');
 
@@ -92,7 +93,6 @@ class UserControllerTest extends TestCase
 
     public function testLogin()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = AdminSystem::factory()->create();
         $response =  $this->post('/api/login', ["email" => $user->email, "password" => "password"]);
@@ -108,7 +108,6 @@ class UserControllerTest extends TestCase
 
     public function testProfile()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         $response = $this->actingAs($user, "api")->get('/api/profile');
@@ -122,7 +121,6 @@ class UserControllerTest extends TestCase
 
     public function testRefreshToken()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         $login =  $this->post('/api/login', ["email" => $user->email, "password" => "Password1@"]);
@@ -138,7 +136,6 @@ class UserControllerTest extends TestCase
 
     public function testLogout()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         $login =  $this->post('/api/login', ["email" => $user->email, "password" => "Password1@"]);
@@ -152,7 +149,6 @@ class UserControllerTest extends TestCase
     }
     public function testDestroyUser()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         $admin = AdminSystem::factory()->create();
@@ -163,7 +159,6 @@ class UserControllerTest extends TestCase
 
     public function testChangerEtat()
     {
-        $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
         UserControllerTest::createUser();
         $user = User::factory()->create();

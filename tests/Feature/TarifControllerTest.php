@@ -10,9 +10,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TarifControllerTest extends TestCase
 {
+    public function __construct(){
+        $this->migrateFresh();
+    }
     public function testTarifIndex()
     {
-        $this->artisan('migrate:fresh');
         $response = $this->get('/api/tarifs');
         $response->assertStatus(200);
         $response->assertJson([
@@ -22,7 +24,6 @@ class TarifControllerTest extends TestCase
     }
     public function testTarifMestarifs()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         Tarif::factory(3)->create();
@@ -36,7 +37,6 @@ class TarifControllerTest extends TestCase
 
     public function testTarifShow()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $tarif = Tarif::factory()->create();
         $response = $this->get("/api/tarifs/$tarif->id");
@@ -49,7 +49,6 @@ class TarifControllerTest extends TestCase
 
     public function testTarifStore()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->post('/api/tarifs', [
@@ -66,7 +65,6 @@ class TarifControllerTest extends TestCase
 
     public function testTarifUpdate()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $tarif = Tarif::factory()->create();
         $user = User::factory()->create();
@@ -84,7 +82,6 @@ class TarifControllerTest extends TestCase
 
     public function testTarifDestroy()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         $tarif = Tarif::factory()->create(["etat" => "actif"]);
@@ -99,7 +96,6 @@ class TarifControllerTest extends TestCase
 
     public function testTarifDelete()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $tarif = Tarif::factory()->create(["etat" => "corbeille"]);
         $user = User::factory()->create();
@@ -113,7 +109,6 @@ class TarifControllerTest extends TestCase
 
     public function testTarifRestore()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         $tarif = Tarif::factory()->create(["etat" => "corbeille"]);
@@ -128,7 +123,6 @@ class TarifControllerTest extends TestCase
 
     public function testTarifDeleted()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         Tarif::factory(3)->create(["etat" => "corbeille"]);
         $user = User::factory()->create();
@@ -143,7 +137,6 @@ class TarifControllerTest extends TestCase
 
     public function testTarifEmptyTrash()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         Tarif::factory(3)->create(["etat" => "corbeille"]);
         $user = User::factory()->create();

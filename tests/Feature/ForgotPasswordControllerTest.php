@@ -11,9 +11,11 @@ use Tests\Feature\UserControllerTest;
 
 class ForgotPasswordControllerTest extends TestCase
 {
+    public function __construct(){
+        $this->migrateFresh();
+    }
     public function testSubmitForgetPasswordForm()
     {
-         $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         User::factory()->create();
         $response = $this->post('/api/forget-password', [
@@ -27,7 +29,6 @@ class ForgotPasswordControllerTest extends TestCase
 
     public function testShowResetPasswordForm()
     {
-         $this->artisan('migrate:fresh');
         $token = Str::random(64);
         DB::table('password_reset_tokens')->insert([
             'email' => "bamagid60@gmail.com",
@@ -40,7 +41,6 @@ class ForgotPasswordControllerTest extends TestCase
 
     public function testSubmitResetPasswordForm()
     {
-         $this->artisan('migrate:fresh');
         $token = Str::random(64);
         DB::table('password_reset_tokens')->insert([
             'email' => 'bamagid60@gmail.com',

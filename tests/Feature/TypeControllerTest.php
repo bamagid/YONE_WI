@@ -1,4 +1,5 @@
 <?php
+
 use Tests\TestCase;
 use App\Models\Role;
 use App\Models\User;
@@ -8,9 +9,12 @@ use Tests\Feature\UserControllerTest;
 
 class TypeControllerTest extends TestCase
 {
+    public function __construct()
+    {
+        $this->migrateFresh();
+    }
     public function testTypeIndex()
     {
-        $this->artisan('migrate:fresh');
         $response = $this->get('/api/types');
         $response->assertStatus(200);
         $response->assertJson([
@@ -20,7 +24,6 @@ class TypeControllerTest extends TestCase
     }
     public function testTypeMestypes()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         Type::factory(3)->create();
@@ -34,7 +37,6 @@ class TypeControllerTest extends TestCase
 
     public function testTypeShow()
     {
-        $this->artisan('migrate:fresh');
         Reseau::factory()->create();
         $type = Type::factory()->create();
         $response = $this->get("/api/types/$type->id");
@@ -47,7 +49,6 @@ class TypeControllerTest extends TestCase
 
     public function testTypeStore()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->post('/api/types', [
@@ -64,7 +65,6 @@ class TypeControllerTest extends TestCase
 
     public function testTypeUpdate()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $type = Type::factory()->create();
         $user = User::factory()->create();
@@ -82,7 +82,6 @@ class TypeControllerTest extends TestCase
 
     public function testTypeDestroy()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         $user = User::factory()->create();
         $type = Type::factory()->create(["etat" => "actif"]);
@@ -97,7 +96,6 @@ class TypeControllerTest extends TestCase
 
     public function testTypeDelete()
     {
-        $this->artisan('migrate:fresh');
         Reseau::factory()->create();
         $type = Type::factory()->create(["etat" => "corbeille"]);
         Role::factory()->create();
@@ -113,7 +111,6 @@ class TypeControllerTest extends TestCase
 
     public function testTypeRestore()
     {
-        $this->artisan('migrate:fresh');
         Reseau::factory()->create();
         Role::factory()->create();
         $user = User::factory()->create();
@@ -129,7 +126,6 @@ class TypeControllerTest extends TestCase
 
     public function testTypeDeleted()
     {
-        $this->artisan('migrate:fresh');
         Reseau::factory()->create();
         Type::factory(3)->create(["etat" => "corbeille"]);
         Role::factory()->create();
@@ -145,7 +141,6 @@ class TypeControllerTest extends TestCase
 
     public function testTypeEmptyTrash()
     {
-        $this->artisan('migrate:fresh');
         Reseau::factory()->create();
         Type::factory(3)->create(["etat" => "corbeille"]);
         Role::factory()->create();

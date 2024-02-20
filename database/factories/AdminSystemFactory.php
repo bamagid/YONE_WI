@@ -22,6 +22,7 @@ class AdminSystemFactory extends Factory
             'prenom' => "Adboul Magid",
             'email' => "bamagid60@gmail.com",
             'password' => Hash::make('password'),
+            'telephone'=>775555555
         ];
     }
 }

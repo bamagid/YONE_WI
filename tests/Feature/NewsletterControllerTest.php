@@ -8,9 +8,12 @@ use App\Models\AdminSystem;
 class NewsletterControllerTest extends TestCase
 {
     use WithFaker;
+    public function __construct()
+    {
+        $this->migrateFresh();
+    }
     public function testSubscribe()
     {
-       $this->artisan('migrate:fresh');
         $response = $this->post('/api/newsletter/subscribe', [
             'email' => $this->faker->unique()->safeEmail,
         ]);
@@ -24,8 +27,6 @@ class NewsletterControllerTest extends TestCase
 
     public function testUnscribe()
     {
-        $this->artisan('migrate:fresh');
-
         $subscriber = Newsletter::factory()->create(['etat' => 'abonné', "email" => $this->faker->unique()->safeEmail]);
 
         $response = $this->patch('/api/newsletter/unscribe', [
@@ -41,7 +42,6 @@ class NewsletterControllerTest extends TestCase
 
     public function testShowSubscribers()
     {
-        $this->artisan('migrate:fresh');
         $admin = AdminSystem::factory()->create();
         $this->actingAs($admin, 'admin');
 

@@ -10,7 +10,12 @@ use Tests\Feature\UserControllerTest;
 
 class SectionControllerTest extends TestCase
 {
-    public static function createSection(){
+    public function __construct()
+    {
+        $this->migrateFresh();
+    }
+    public static function createSection()
+    {
         Type::factory(2)->create();
         Ligne::factory(2)->create();
         Tarif::factory(2)->create();
@@ -18,7 +23,6 @@ class SectionControllerTest extends TestCase
     }
     public function testSectionIndex()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         SectionControllerTest::createSection();
         $response = $this->get('/api/sections');
@@ -30,7 +34,6 @@ class SectionControllerTest extends TestCase
     }
     public function testMesSections()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         SectionControllerTest::createSection();
         $user = User::factory()->create();
@@ -44,7 +47,6 @@ class SectionControllerTest extends TestCase
 
     public function testSectionShow()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         SectionControllerTest::createSection();
         $section = Section::factory()->create();
@@ -58,7 +60,6 @@ class SectionControllerTest extends TestCase
 
     public function testSectionStore()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         SectionControllerTest::createSection();
         $user = User::factory()->create();
@@ -78,7 +79,6 @@ class SectionControllerTest extends TestCase
 
     public function testSectionUpdate()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         SectionControllerTest::createSection();
         $section = Section::factory()->create();
@@ -99,7 +99,6 @@ class SectionControllerTest extends TestCase
 
     public function testSectionDestroy()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         SectionControllerTest::createSection();
         $user = User::factory()->create();
@@ -115,7 +114,6 @@ class SectionControllerTest extends TestCase
 
     public function testSectionDelete()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         SectionControllerTest::createSection();
         $section = Section::factory()->create(["etat" => "corbeille"]);
@@ -131,7 +129,6 @@ class SectionControllerTest extends TestCase
 
     public function testSectionRestore()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         SectionControllerTest::createSection();
         $user = User::factory()->create();
@@ -147,12 +144,11 @@ class SectionControllerTest extends TestCase
 
     public function testSectionDeleted()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         SectionControllerTest::createSection();
         Section::factory(3)->create(["etat" => "corbeille"]);
         $user = User::factory()->create();
-        $response = $this->actingAs($user,'api')->get('/api/sections/deleted/all');
+        $response = $this->actingAs($user, 'api')->get('/api/sections/deleted/all');
 
         $response->assertStatus(200)
             ->assertJson([
@@ -163,7 +159,6 @@ class SectionControllerTest extends TestCase
 
     public function testSectionEmptyTrash()
     {
-        $this->artisan('migrate:fresh');
         UserControllerTest::createUser();
         SectionControllerTest::createSection();
         Section::factory()->create(["etat" => "corbeille"]);
