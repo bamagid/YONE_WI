@@ -370,7 +370,7 @@ class TarifController extends Controller
     public function deleted()
     {
         $tarifsSupprimes = Cache::rememberForever('tarifs_supprimes', function () {
-            return Tarif::where('etat', 'supprimé')
+            return Tarif::where('etat', 'corbeille')
                 ->where('reseau_id', auth()->user()->reseau_id)
                 ->get();
         });
