@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -16,7 +17,14 @@ class RoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nom' => ['required','max:20',"unique:roles,nom",'alpha','min:3'],
+            'nom' => ['required','max:20', function ($attribute, $value, $fail) {
+                $existingRole = Role::where('nom', $value)
+                    ->where('etat', '!=', 'supprimé')
+                    ->exists();
+                if ($existingRole) {
+                    $fail('Ce role existe déja');
+                }
+            },'alpha','min:3'],
         ];
     }
 
