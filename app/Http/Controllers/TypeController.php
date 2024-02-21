@@ -380,7 +380,7 @@ class TypeController extends Controller
     public function deleted()
     {
         $typesSupprimes = Cache::rememberForever('types_supprimes', function () {
-            return Type::where('etat', 'supprimé')
+            return Type::where('etat', 'corbeille')
                 ->where('reseau_id', auth()->user()->reseau_id)
                 ->get();
         });
