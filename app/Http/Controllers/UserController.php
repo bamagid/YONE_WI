@@ -112,7 +112,6 @@ class UserController extends Controller
      *                     @OA\Property(property="reseau_id", type="string"),
      *                     @OA\Property(property="email", type="string"),
      *                     @OA\Property(property="image", type="string", format="binary"),
-     *                     @OA\Property(property="password_confirmation", type="string"),
      *                 },
      *             ),
      *         ),
