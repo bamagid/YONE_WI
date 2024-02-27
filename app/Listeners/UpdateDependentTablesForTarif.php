@@ -14,7 +14,6 @@ class UpdateDependentTablesForTarif
      */
     public function handle(TarifUpdated $event): void
     {
-        $sections = $event->tarif->sections;
-        $sections->each->update(['etat' => $event->tarif->etat]);
+        $event->tarif->sections->each->update(['etat' => $event->tarif->etat]);
     }
 }

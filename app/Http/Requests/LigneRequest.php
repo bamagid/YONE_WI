@@ -13,7 +13,7 @@ class LigneRequest extends FormRequest
     public function rules()
     {
         return [
-            'nom' => ['required', 'regex:/^[1-9]/', function ($attribute, $value, $fail) {
+            'nom' => ['nullable', 'regex:/^[1-9][A-Za-z0-9]/', function ($attribute, $value, $fail) {
                 $existingLine = Ligne::where('nom', $value)
                     ->where('etat', '!=', 'supprimé')
                     ->exists();

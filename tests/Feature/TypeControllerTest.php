@@ -2,16 +2,18 @@
 
 use Tests\TestCase;
 use App\Models\Role;
+use App\Models\Type;
 use App\Models\User;
 use App\Models\Reseau;
-use App\Models\Type;
 use Tests\Feature\UserControllerTest;
+use Illuminate\Support\Facades\Artisan;
 
 class TypeControllerTest extends TestCase
 {
-    public function __construct()
+    protected function setUp(): void
     {
-        $this->migrateFresh();
+        parent::setUp();
+        Artisan::call('migrate:fresh');
     }
     public function testTypeIndex()
     {

@@ -13,4 +13,8 @@ class Tarif extends Model
     {
         return $this->belongsTo(Reseau::class);
     }
+    public function sections()
+    {
+        return $this->hasMany(Section::class);
+    }
 }

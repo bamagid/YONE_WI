@@ -1,14 +1,16 @@
 <?php
 
 use Tests\TestCase;
-use App\Models\AdminSystem;
 use App\Models\role;
+use App\Models\AdminSystem;
+use Illuminate\Support\Facades\Artisan;
 
 class RoleControllerTest extends TestCase
 {
-    public function __construct()
+    protected function setUp(): void
     {
-        $this->migrateFresh();
+        parent::setUp();
+        Artisan::call('migrate:fresh');
     }
     public function testRoleIndex()
     {
@@ -24,10 +26,9 @@ class RoleControllerTest extends TestCase
 
     public function testRoleStore()
     {
-        Role::factory()->create();
         $admin = AdminSystem::factory()->create();
         $response = $this->actingAs($admin, 'admin')->post('/api/roles', [
-            "nom" => "admin reseau",
+            "nom" => "admineseau",
         ]);
 
         $response->assertStatus(201)

@@ -7,12 +7,14 @@ use App\Models\Ligne;
 use App\Models\Tarif;
 use App\Models\Section;
 use Tests\Feature\UserControllerTest;
+use Illuminate\Support\Facades\Artisan;
 
 class SectionControllerTest extends TestCase
 {
-    public function __construct()
+    protected function setUp(): void
     {
-        $this->migrateFresh();
+        parent::setUp();
+        Artisan::call('migrate:fresh');
     }
     public static function createSection()
     {

@@ -157,7 +157,7 @@ class ReseauController extends Controller
         $reseau->update($request->validated());
         Cache::forget('reseaux_actifs');
         return response()->json([
-            "message" => "Le reseau a bien été mise à jour",
+            "message" => "Le reseau a bien été mis à jour",
             "reseau" => $reseau
         ], 200);
     }

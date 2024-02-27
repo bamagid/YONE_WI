@@ -5,13 +5,15 @@ use App\Models\User;
 use App\Models\Reseau;
 use App\Models\AdminSystem;
 use Tests\Feature\UserControllerTest;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ReseauControllerTest extends TestCase
 {
-    public function __construct()
+    protected function setUp(): void
     {
-        $this->migrateFresh();
+        parent::setUp();
+        Artisan::call('migrate:fresh');
     }
     public function testReseauIndex()
     {

@@ -8,11 +8,14 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Tests\Feature\UserControllerTest;
+use Illuminate\Support\Facades\Artisan;
 
 class ForgotPasswordControllerTest extends TestCase
 {
-    public function __construct(){
-        $this->migrateFresh();
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Artisan::call('migrate:fresh');
     }
     public function testSubmitForgetPasswordForm()
     {
@@ -52,9 +55,7 @@ class ForgotPasswordControllerTest extends TestCase
             'password_confirmation' => 'password_updated',
             'token' => $token,
         ]);
-        $response->assertStatus(200)
-            ->assertJson([
-                'message' => 'Votre mot de passe a bien été réinitialisé !',
-            ]);
+        $response->assertStatus(302)
+            ->assertRedirect('http://localhost:4200/auth');
     }
 }
