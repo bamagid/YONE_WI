@@ -81,10 +81,11 @@ class HistoriqueController extends Controller
     public function historiquesentite(Request $request)
     {
         $historiques = Cache::rememberForever('historiques_classe', function () use ($request) {
-            return Historique::where("Entite", $request->entite)
+            return  Historique::where("Entite", $request->entite)
                 ->orderBy("id", "desc")
                 ->get();
         });
+
 
         return $historiques->isEmpty() ?
             response()->json([
