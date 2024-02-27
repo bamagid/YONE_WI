@@ -3781,12 +3781,6 @@
                                     "image": {
                                         "type": "string",
                                         "format": "binary"
-                                    },
-                                    "password": {
-                                        "type": "string"
-                                    },
-                                    "password_confirmation": {
-                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
