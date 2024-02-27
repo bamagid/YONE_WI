@@ -7,12 +7,14 @@ use App\Models\User;
 use App\Models\Ligne;
 use App\Models\Reseau;
 use Tests\Feature\UserControllerTest;
+use Illuminate\Support\Facades\Artisan;
 
 class LigneControllerTest extends TestCase
 {
-    public function __construct()
+    protected function setUp(): void
     {
-        $this->migrateFresh();
+        parent::setUp();
+        Artisan::call('migrate:fresh');
     }
     public function testLigneIndex()
     {
@@ -59,7 +61,7 @@ class LigneControllerTest extends TestCase
         Type::factory(2)->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->post('/api/lignes', [
-            "nom" => "Nouvelle Ligne",
+            "nom" => "100A",
             "type_id" => 1,
             'lieuDepart' => "dakar",
             'lieuArrivee' => "mermoz"
@@ -79,7 +81,7 @@ class LigneControllerTest extends TestCase
         $ligne = Ligne::factory()->create();
         $user = User::factory()->create();
         $response = $this->actingAs($user)->patch("/api/lignes/$ligne->id", [
-            "nom" => "Ligne Modifiée",
+            "nom" => "100A",
             "type_id" => 1,
             'lieuDepart' => "dakar",
             'lieuArrivee' => "mermoz"

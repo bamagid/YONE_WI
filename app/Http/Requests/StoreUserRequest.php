@@ -25,7 +25,7 @@ class StoreUserRequest extends FormRequest
             "role_id" =>[ "required","integer","exists:roles,id"],
             "reseau_id" => ["required","integer","exists:reseaus,id"],
             "email" => ["required","regex:/^[A-Za-z]+[A-Za-z0-9\._%+-]+@+[A-Za-z][A-Za-z0-9\.-]+\.[A-Za-z]{2,}$/","unique:users,email","unique:admin_systems,email"],
-            'password' => ['sometimes',PasswordRule::min(8)->mixedCase()->numbers()->symbols(), 'confirmed'],
+            // 'password' => ['sometimes',PasswordRule::min(8)->mixedCase()->numbers()->symbols(), 'confirmed'],
         ];
     }
 

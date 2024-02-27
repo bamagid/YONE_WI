@@ -7,12 +7,14 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Reseau;
 use App\Models\AdminSystem;
+use Illuminate\Support\Facades\Artisan;
 
 class UserControllerTest extends TestCase
 {
-    public function __construct()
+    protected function setUp(): void
     {
-        $this->migrateFresh();
+        parent::setUp();
+        Artisan::call('migrate:fresh');
     }
     public static function createUser()
     {
@@ -72,6 +74,9 @@ class UserControllerTest extends TestCase
     public function testUsersBlocked()
     {
         $admin = AdminSystem::factory()->create();
+        UserControllerTest::createUser();
+        $user = User::factory()->create();
+        $user->update(['etat' => "bloqué"]);
         $response = $this->actingAs($admin, 'admin')->get('/api/users/blocked');
         $response->assertStatus(200)
             ->assertJson([

@@ -6,16 +6,17 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Reseau;
 use App\Models\Historique;
+use Illuminate\Support\Str;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\MotifRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\StoreUserRequest;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Requests\UpdateUserRequest;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -111,7 +112,6 @@ class UserController extends Controller
      *                     @OA\Property(property="reseau_id", type="string"),
      *                     @OA\Property(property="email", type="string"),
      *                     @OA\Property(property="image", type="string", format="binary"),
-     *                     @OA\Property(property="password", type="string"),
      *                     @OA\Property(property="password_confirmation", type="string"),
      *                 },
      *             ),
@@ -125,7 +125,8 @@ class UserController extends Controller
         Role::FindOrFail($request->role_id);
         Reseau::FindOrFail($request->reseau_id);
         $user = new User();
-        $request->password ? $request->password :  $user->password = Hash::make('password');
+        $password = Str::random(12);
+        $user->password = Hash::make($password);
         $user->fill($request->validated());
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -134,10 +135,10 @@ class UserController extends Controller
         $user->save();
         Mail::send('emaillogin', [
             'username' => $user->email,
-            'password' => $request->password
+            'password' => $password
         ], function ($message) use ($user) {
             $message->to($user->email);
-            $message->subject('Notification de blockage  d\'un compte sur le site');
+            $message->subject('Notification d\'inscription sur le site');
         });
         Cache::forget('users_actifs');
         Cache::forget('users_bloqués');
@@ -280,7 +281,7 @@ class UserController extends Controller
                 "status" => false,
                 "message" => "Votre compte a été $user->etat par l'administrateur",
                 "motif" => $user->motif
-            ],401);
+            ], 401);
         } elseif (!empty($token)) {
 
             return response()->json([
@@ -345,10 +346,9 @@ class UserController extends Controller
 
     public function refreshToken()
     {
-        $nouveauToken = auth('api')->refresh();
-        if ($nouveauToken === null) {
-            $nouveauToken = auth('admin')->refresh();
-        }
+        $guard = auth('api')->check() ? "api" : "admin";
+        $nouveauToken = auth($guard)->refresh();
+
         return response()->json([
             "status" => true,
             "message" => "Votre nouveau token",

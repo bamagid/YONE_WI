@@ -5,12 +5,15 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\Contact;
 use App\Models\AdminSystem;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Testing\WithFaker;
 
 class ContactControllerTest extends TestCase
 {
-    public function __construct(){
-        $this->migrateFresh();
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Artisan::call('migrate:fresh');
     }
     public function testContactIndex()
     {
@@ -21,6 +24,16 @@ class ContactControllerTest extends TestCase
             ->assertJson([
                 "message" => $response->json('message'),
                 "contact" => $response->json('contact')
+            ]);
+    }
+    public function testContactAdmin()
+    {
+         AdminSystem::factory()->create();
+        $response = $this->get('/api/contactsadmin');
+        $response->assertStatus(200)
+            ->assertJson([
+                "email" => $response->json('email'),
+                "telephone" => $response->json('telephone')
             ]);
     }
     public function testContactStore()
@@ -37,4 +50,5 @@ class ContactControllerTest extends TestCase
                 "contact" => $response->json('contact')
             ]);
     }
+
 }

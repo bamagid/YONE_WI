@@ -1,16 +1,18 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Newsletter;
 use App\Models\AdminSystem;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class NewsletterControllerTest extends TestCase
 {
     use WithFaker;
-    public function __construct()
+    protected function setUp(): void
     {
-        $this->migrateFresh();
+        parent::setUp();
+        Artisan::call('migrate:fresh');
     }
     public function testSubscribe()
     {
@@ -29,7 +31,7 @@ class NewsletterControllerTest extends TestCase
     {
         $subscriber = Newsletter::factory()->create(['etat' => 'abonné', "email" => $this->faker->unique()->safeEmail]);
 
-        $response = $this->patch('/api/newsletter/unscribe', [
+        $response = $this->post('/api/newsletter/unscribe', [
             'email' => $subscriber->email,
         ]);
 

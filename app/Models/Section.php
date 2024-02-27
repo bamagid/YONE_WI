@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Tarif;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Section extends Model
 {
@@ -12,5 +13,9 @@ class Section extends Model
     public function ligne()
     {
         return $this->belongsTo(Ligne::class);
+    }
+    public function tarif()
+    {
+        return $this->belongsTo(Tarif::class);
     }
 }

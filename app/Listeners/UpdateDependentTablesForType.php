@@ -15,7 +15,6 @@ class UpdateDependentTablesForType
      */
     public function handle(TypeUpdated $event): void
     {
-        $lignes = $event->type->lignes;
-        $lignes->each->update([ 'etat' => $event->type->etat]);
+        $event->type->lignes->each->update([ 'etat' => $event->type->etat]);
     }
 }

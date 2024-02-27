@@ -15,7 +15,6 @@ class UpdateDependentTablesForLigne
      */
     public function handle(LigneUpdated $event): void
     {
-        $sections = $event->ligne->sections;
-        $sections->each->update(["etat" => $event->ligne->etat]);
+        $event->ligne->sections->each->update(["etat" => $event->ligne->etat]);
     }
 }

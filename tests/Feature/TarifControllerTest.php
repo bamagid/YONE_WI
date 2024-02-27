@@ -6,12 +6,15 @@ use App\Models\User;
 use App\Models\Tarif;
 use App\Models\Reseau;
 use Tests\Feature\UserControllerTest;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TarifControllerTest extends TestCase
 {
-    public function __construct(){
-        $this->migrateFresh();
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Artisan::call('migrate:fresh');
     }
     public function testTarifIndex()
     {

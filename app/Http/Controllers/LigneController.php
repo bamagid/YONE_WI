@@ -71,11 +71,11 @@ class LigneController extends Controller
 
         return $lignes->isEmpty() ?
             response()->json([
-                "message" => "Vous n'avez pas de lignes actifs"
+                "message" => "Vous n'avez pas de lignes actives"
             ])
             :
             response()->json([
-                "message" => "La liste de mes lignes actifs",
+                "message" => "La liste de mes lignes actives",
                 "lignes" => $lignes
             ], 200);
     }
@@ -293,7 +293,7 @@ class LigneController extends Controller
             $ligne->update(['etat' => 'corbeille']);
             event(new LigneUpdated($ligne));
             return response()->json([
-                "message" => "La ligne a bien été mise dans la  corbeillee",
+                "message" => "La ligne a bien été mise dans la  corbeille",
                 "ligne" => $ligne
             ], 200);
         }
