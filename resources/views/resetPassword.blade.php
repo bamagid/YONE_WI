@@ -61,13 +61,13 @@
         <div class="card mb-3" style="max-width: 840px;">
             <div class="row g-0">
                 <div class="col-md-6">
-                    <img src="{{asset('auth1.png')}}" class="img-fluid rounded-start" alt="...">
+                    <img src="https://i.ibb.co/mNQ3kc8/auth1.png" class="img-fluid rounded-start" alt="...">
                 </div>
                 <div class="col-md-6 colAuth rounded-end">
                     <div class="card-body">
                         <h3 class="card-title text-center">REINITIALISER</h3>
                         <div class="text-center">
-                            <img src="{{ asset('yonewilogo.png')}}" alt="Logo yone_wi" class="logo">
+                            <img src="https://i.ibb.co/dJg1jcj/logo.png" alt="Logo yone_wi" class="logo">
                         </div>
 
                         <form action="{{ route('reset.password.post') }}" method="POST">
