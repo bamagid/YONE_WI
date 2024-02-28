@@ -29,16 +29,23 @@ class HistoriqueController extends Controller
      *     tags={"Gestion des historiques"},
      * ),
      */
-    public  function index()
+    public function index()
     {
         $historiques = Cache::rememberForever('historiques', function () {
-            return Historique::all()->orderBy("id", "desc");
+            return Historique::orderBy("id", "desc")->get();
         });
-        return response()->json([
-            'status' => true,
-            "message" => "voici  l'historique de la plateforme",
-            "historiques" => $historiques
-        ]);
+
+        return $historiques->isEmpty() ?
+            response()->json([
+                'status' => false,
+                'message' => 'Aucun historique trouvé'
+            ], 404)
+            :
+            response()->json([
+                'status' => true,
+                "message" => "Voici l'historique de la plateforme",
+                "historiques" => $historiques
+            ]);
     }
 
     /**
@@ -71,13 +78,15 @@ class HistoriqueController extends Controller
      * ),
      */
 
-    public  function historiquesentite(Request $request)
+    public function historiquesentite(Request $request)
     {
         $historiques = Cache::rememberForever('historiques_classe', function () use ($request) {
-            return Historique::where("Entite", $request->entite)
+            return  Historique::where("Entite", $request->entite)
                 ->orderBy("id", "desc")
                 ->get();
         });
+
+
         return $historiques->isEmpty() ?
             response()->json([
                 'status' => false,
@@ -86,11 +95,10 @@ class HistoriqueController extends Controller
             :
             response()->json([
                 'status' => true,
-                'message' => 'voici l\'historiques des ' . $request->entite,
+                'message' => 'Voici l\'historique des ' . $request->entite,
                 "historiques" => $historiques
             ]);
     }
-
     /**
      * @OA\POST(
      *     path="/api/historiques/user",
@@ -120,13 +128,14 @@ class HistoriqueController extends Controller
      *     tags={"Gestion des historiques"},
      * ),
      */
-    public  function historiquesuser(Request $request)
+    public function historiquesuser(Request $request)
     {
         $historiques = Cache::rememberForever('historiques_user', function () use ($request) {
             return Historique::where("id_user", $request->id_user)
                 ->orderBy("id", "desc")
                 ->get();
         });
+
         return $historiques->isEmpty() ?
             response()->json([
                 'status' => false,
@@ -135,7 +144,7 @@ class HistoriqueController extends Controller
             :
             response()->json([
                 'status' => true,
-                'message' => 'Voici l\historique de l\'utilisateur avec l\'id ' . $request->id_user,
+                'message' => 'Voici l\'historique de l\'utilisateur avec l\'id ' . $request->id_user,
                 "historiques" => $historiques
             ]);
     }

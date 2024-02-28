@@ -32,9 +32,7 @@ class UserControllerTest extends TestCase
             "telephone" => "778552240",
             "email" => "email@gmail.com",
             "reseau_id" => 1,
-            "role_id" => 1,
-            "password" => "Password1@",
-            "password_confirmation" => "Password1@"
+            "role_id" => 1
         ];
         $response = $this->actingAs($admin, 'admin')->post('/api/users', $userData);
         $response->assertStatus(201)
