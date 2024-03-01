@@ -33,7 +33,7 @@ class StoreUserRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success' => false,
-             $validator->errors()
+            'errors' => $validator->errors()
         ],422));
     }
 }
